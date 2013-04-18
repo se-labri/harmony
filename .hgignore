@@ -6,6 +6,6 @@
 ^.*\.trace\.db$
 ^.*\.jdbc$        
 ^.*\.log$
-^.*\.class
+^.*\.class$
 .buildpath
 ^.*.orig$
