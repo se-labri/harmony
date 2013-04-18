@@ -143,16 +143,30 @@ public class DaoImpl implements Dao {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public <D extends Data> List<D> getData(String a, Class<D> d, int elementKind, int elementId) {
+	public <D extends Data> List<D> getDataList(String a, Class<D> d, int elementKind, int elementId) {
 		EntityManager m = getEntityManager(a);
 		m.getTransaction().begin();
-		String sQuery = "SELECT d FROM " + d + " d WHERE d.elementKind = :elementKind AND d.elementId = :elementId";
+		String sQuery = "SELECT d FROM " + d.getSimpleName() + " d WHERE d.elementKind = :elementKind AND d.elementId = :elementId";
 		Query query = m.createQuery(sQuery);
 		query.setParameter("elementKind", elementKind);
 		query.setParameter("elementId", elementId);
 		List<D> results = query.getResultList();
 		m.getTransaction().commit();
 		return results;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <D extends Data> D getData(String a, Class<D> d, int elementKind, int elementId) {
+		EntityManager m = getEntityManager(a);
+		m.getTransaction().begin();
+		String sQuery = "SELECT d FROM " + d.getSimpleName() + " d WHERE d.elementKind = :elementKind AND d.elementId = :elementId";
+		Query query = m.createQuery(sQuery);
+		query.setParameter("elementKind", elementKind);
+		query.setParameter("elementId", elementId);
+		D result = (D) query.getSingleResult();
+		m.getTransaction().commit();
+		return result;
 	}
 	
 	@Override

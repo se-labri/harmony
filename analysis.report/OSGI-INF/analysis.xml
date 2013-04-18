@@ -5,4 +5,5 @@
       <provide interface="fr.labri.harmony.core.Analysis"/>
    </service>
    <property name="persistence-unit" type="String" value="report"/>
+   <property name="depends" type="String" value="ClocAnalysis"/>
 </scr:component> 

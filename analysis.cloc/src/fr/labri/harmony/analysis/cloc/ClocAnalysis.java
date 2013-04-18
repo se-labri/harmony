@@ -37,8 +37,6 @@ public class ClocAnalysis extends AbstractAnalysis {
 	@Override
     public void run(Source src) throws WorkspaceException {
     	LOGGER.info("Starting ClocAnalysis on source: " + src);
-    	//for (Event ev : dao.getEvents(src)) {
-    	LOGGER.info("Nb. events: " + src.getEvents().size());
     	for (Event ev : src.getEvents()) {
             String workspacePath = src.getWorkspace().update(ev);
             try {

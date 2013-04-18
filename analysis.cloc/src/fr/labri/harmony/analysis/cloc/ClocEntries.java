@@ -55,6 +55,11 @@ public class ClocEntries implements Data {
 	public List<ClocEntry> getEntries() {
 		return entries;
 	}
+	
+	public ClocEntry getEntry(String language) {
+		for (ClocEntry entry: getEntries()) if (language.equals(entry.getLanguage())) return entry;
+		return null;
+	}
 
 	public void setEntries(List<ClocEntry> entries) {
 		this.entries = entries;

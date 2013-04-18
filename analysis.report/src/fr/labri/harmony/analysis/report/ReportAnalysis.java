@@ -12,6 +12,7 @@ import org.jfree.chart.ChartUtilities;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import fr.labri.harmony.analysis.report.charts.ClocChart;
 import fr.labri.harmony.analysis.report.charts.ItemNumberChart;
 import fr.labri.harmony.core.AbstractAnalysis;
 import fr.labri.harmony.core.Dao;
@@ -48,6 +49,7 @@ public class ReportAnalysis extends AbstractAnalysis {
 	public List<ProduceChart> getProduceCharts() {
 		List<ProduceChart> produces = new ArrayList<>();
 		produces.add(new ItemNumberChart(dao));
+		produces.add(new ClocChart(dao));
 		//produces.add(new EventAuthorChart(dao));
 		//produces.add(new ActionAuthorChart(dao));
 		//produces.add(new AuthorEventChart(dao));

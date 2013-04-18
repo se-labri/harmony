@@ -9,7 +9,6 @@ public class ClocEntry {
 	
 	@Id @GeneratedValue
 	private int id;
-	
 
 	private String language;
 	

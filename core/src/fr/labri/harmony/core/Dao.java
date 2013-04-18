@@ -46,7 +46,9 @@ public interface Dao {
 	
 	void saveData(String analysis, Data d, int elementKind, int elementId);
 	
-	<D extends Data> List<D> getData(String analysis, Class<D> d, int elementKind, int elementId);
+	<D extends Data> List<D> getDataList(String analysis, Class<D> d, int elementKind, int elementId);
+	
+	<D extends Data> D getData(String analysis, Class<D> d, int elementKind, int elementId);
 	
 	void disconnect();
 
