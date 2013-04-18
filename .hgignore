@@ -1,0 +1,11 @@
+^.*/target/.*$
+^.*\.DS_Store.*$
+^.*\.settings.*$
+^\.metadata.*$
+^.*\.h2\.db$
+^.*\.trace\.db$
+^.*\.jdbc$        
+^.*\.log$
+^.*\.class
+.buildpath
+^.*.orig$
