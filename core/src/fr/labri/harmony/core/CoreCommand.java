@@ -7,6 +7,8 @@ import org.eclipse.osgi.framework.console.CommandProvider;
 
 import fr.labri.harmony.core.config.GlobalConfigReader;
 import fr.labri.harmony.core.config.SourceConfigReader;
+import fr.labri.harmony.core.dao.Dao;
+import fr.labri.harmony.core.dao.DaoImpl;
 import fr.labri.harmony.core.source.SourceExtractor;
 
 public class CoreCommand implements CommandProvider {

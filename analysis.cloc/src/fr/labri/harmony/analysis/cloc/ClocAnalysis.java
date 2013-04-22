@@ -19,7 +19,7 @@ import org.xml.sax.InputSource;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import fr.labri.harmony.core.AbstractAnalysis;
-import fr.labri.harmony.core.Dao;
+import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.model.Data;
 import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.Source;
@@ -44,11 +44,10 @@ public class ClocAnalysis extends AbstractAnalysis {
                 BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
                 StringBuffer b = new StringBuffer();
                 String line;
-
                 while ((line = r.readLine()) != null) {
                     if (line.trim().startsWith("<"))
                         b.append(line + "\n");
-                }
+                    }
                 p.waitFor();
                 r.close();
 

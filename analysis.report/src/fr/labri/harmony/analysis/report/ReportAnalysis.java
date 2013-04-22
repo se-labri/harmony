@@ -15,8 +15,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import fr.labri.harmony.analysis.report.charts.ClocChart;
 import fr.labri.harmony.analysis.report.charts.ItemNumberChart;
 import fr.labri.harmony.core.AbstractAnalysis;
-import fr.labri.harmony.core.Dao;
 import fr.labri.harmony.core.config.ConfigProperties;
+import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.model.Source;
 import fr.labri.harmony.core.source.WorkspaceException;
 

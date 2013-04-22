@@ -1,4 +1,4 @@
-package fr.labri.harmony.core;
+package fr.labri.harmony.core.dao;
 
 import java.util.List;
 import java.util.logging.Logger;

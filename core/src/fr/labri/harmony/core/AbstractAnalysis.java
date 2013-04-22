@@ -4,6 +4,8 @@ import java.util.Properties;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import fr.labri.harmony.core.dao.Dao;
+
 public abstract class AbstractAnalysis extends AbstractHarmonyService implements Analysis {
 
 	public AbstractAnalysis() {

@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import fr.labri.harmony.core.config.ConfigProperties;
 import fr.labri.harmony.core.config.GlobalConfigReader;
 import fr.labri.harmony.core.config.SourceConfigReader;
+import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.source.SourceExtractor;
 
 public class HarmonyManager {

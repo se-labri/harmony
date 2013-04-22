@@ -5,6 +5,8 @@ import java.util.logging.Logger;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import fr.labri.harmony.core.dao.Dao;
+
 
 public interface HarmonyService {
 	

@@ -14,7 +14,7 @@ import org.jfree.data.time.TimeSeriesCollection;
 
 import fr.labri.harmony.analysis.report.EventComparator;
 import fr.labri.harmony.analysis.report.ProduceChart;
-import fr.labri.harmony.core.Dao;
+import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.ActionKind;
 import fr.labri.harmony.core.model.Event;

@@ -6,9 +6,9 @@ import java.util.Arrays;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 
-import fr.labri.harmony.core.Dao;
-import fr.labri.harmony.core.DaoImpl;
 import fr.labri.harmony.core.config.ConfigBuilder;
+import fr.labri.harmony.core.dao.Dao;
+import fr.labri.harmony.core.dao.DaoImpl;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.ActionKind;
 import fr.labri.harmony.core.model.Author;

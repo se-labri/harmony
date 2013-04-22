@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import fr.labri.harmony.core.AbstractHarmonyService;
 import fr.labri.harmony.core.Analysis;
-import fr.labri.harmony.core.Dao;
+import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.model.Source;
 
 public abstract class AbstractSourceExtractor<W extends Workspace> extends AbstractHarmonyService implements SourceExtractor<W> {

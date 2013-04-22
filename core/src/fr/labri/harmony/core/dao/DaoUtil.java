@@ -1,4 +1,4 @@
-package fr.labri.harmony.core;
+package fr.labri.harmony.core.dao;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
