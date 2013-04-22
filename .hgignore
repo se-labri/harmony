@@ -4,8 +4,10 @@
 ^\.metadata.*$
 ^.*\.h2\.db$
 ^.*\.trace\.db$
-^.*\.jdbc$        
+^.*\.jdbc$
 ^.*\.log$
 ^.*\.class$
 .buildpath
 ^.*.orig$
+syntax: glob
+core/HarmonyEquinoxPerso.launch
