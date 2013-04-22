@@ -2,11 +2,11 @@ package fr.labri.harmony.core.config.model;
 
 import fr.labri.harmony.core.source.SourceExtractor;
 
-public class SourceConfig {
+public class SourceConfiguration {
 	private String repositoryURL;
 	private SourceExtractor<?> srcConnector;
 	
-	public SourceConfig(String repositoryURL, SourceExtractor<?> srcConnector) {
+	public SourceConfiguration(String repositoryURL, SourceExtractor<?> srcConnector) {
 		super();
 		this.repositoryURL = repositoryURL;
 		this.srcConnector = srcConnector;
