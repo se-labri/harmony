@@ -1,6 +1,6 @@
 [
 	{
-		"url":"http://se.labri.fr/data/harmony/test-hg",
-		"class":"CreateHg4jSource"
+		"url":"https://github.com/jrfaller/test-git.git",
+		"class":"GitSourceExtractor"
 	}
 ]
