@@ -56,8 +56,8 @@ public class TestCommand implements CommandProvider {
 	}
 
 	public Dao getDao(String path) {
-		DaoImpl dao = new DaoImpl(ConfigBuilder.getDatabaseConfig("jdbc:h2:" + path, "sa", "", "org.h2.Driver"));
-		return dao;
+//		DaoImpl dao = new DaoImpl(ConfigBuilder.getDatabaseConfig("jdbc:h2:" + path, "sa", "", "org.h2.Driver"));
+		return null;
 	}
 
 	@Override

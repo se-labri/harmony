@@ -1,9 +1,5 @@
 package fr.labri.harmony.core.dao;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -11,21 +7,16 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
-import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.jpa.EntityManagerFactoryBuilder;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import fr.labri.harmony.core.config.ConfigProperties;
+import fr.labri.harmony.core.config.model.DatabaseConfiguration;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.Author;
 import fr.labri.harmony.core.model.Data;
@@ -38,37 +29,16 @@ public class DaoImpl implements Dao {
 
 	private Map<String, EntityManager> entityManagers;
 
-	public DaoImpl(ObjectNode config) {
+	public DaoImpl(DatabaseConfiguration config) {
 		BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
 		try {
 			Collection<ServiceReference<EntityManagerFactoryBuilder>> refs = context.getServiceReferences(EntityManagerFactoryBuilder.class, null);
 			entityManagers = new HashMap<>();
 			for (ServiceReference<EntityManagerFactoryBuilder> ref : refs) {
 				String name = (String) ref.getProperty(EntityManagerFactoryBuilder.JPA_UNIT_NAME);
+				HarmonyEntityManagerFactory factory = new HarmonyEntityManagerFactory(config, ref, context);
 
-				Map<String, String> props = toProps(config, name);
-				LOGGER.info("Loading EntityManagerFactory: " + name);
-				EntityManagerFactoryBuilder b = context.getService(ref);
-				EntityManagerFactory f = b.createEntityManagerFactory(props);
-
-				EntityManager em = null;
-				try {
-					em = f.createEntityManager();
-				} catch (PersistenceException e) {
-					try {
-						// Create the database if it doesn't exist
-						// FIXME : Test if the exception is that the database does not exist
-						Connection conn = DriverManager.getConnection(getJdbcUrl(config) + "?user=" + getUser(config) + "&password=" + getPassword(config));
-						Statement s = conn.createStatement();
-						s.executeUpdate("CREATE DATABASE " + name);
-						
-					} catch (SQLException e1) {
-						e1.printStackTrace();
-					}
-					em = f.createEntityManager();
-				} finally {
-					entityManagers.put(name, em);
-				}
+				entityManagers.put(name, factory.createEntityManager());
 
 			}
 		} catch (InvalidSyntaxException e) {
@@ -76,16 +46,8 @@ public class DaoImpl implements Dao {
 		}
 	}
 
-	private String getUser(ObjectNode config) {
-		return config.get(ConfigProperties.DATABASE_USER).asText();
-	}
-
-	private String getPassword(ObjectNode config) {
-		return config.get(ConfigProperties.DATABASE_PASSWORD).asText();
-	}
-
 	@Override
-	public Dao create(ObjectNode config) {
+	public Dao create(DatabaseConfiguration config) {
 		return new DaoImpl(config);
 	}
 
@@ -95,19 +57,6 @@ public class DaoImpl implements Dao {
 
 	private EntityManager getEntityManager() {
 		return entityManagers.get(HARMONY_PERSISTENCE_UNIT);
-	}
-
-	private Map<String, String> toProps(ObjectNode config, String name) {
-		Map<String, String> props = new HashMap<>();
-		props.put(PersistenceUnitProperties.JDBC_USER, getUser(config));
-		props.put(PersistenceUnitProperties.JDBC_PASSWORD, getPassword(config));
-		props.put(PersistenceUnitProperties.JDBC_DRIVER, config.get(ConfigProperties.DATABASE_DRIVER).asText());
-		props.put(PersistenceUnitProperties.JDBC_URL, getJdbcUrl(config) + name);
-		return props;
-	}
-	
-	private String getJdbcUrl(ObjectNode config) {
-		return config.get(ConfigProperties.DATABASE_URL).asText();
 	}
 
 	@Override

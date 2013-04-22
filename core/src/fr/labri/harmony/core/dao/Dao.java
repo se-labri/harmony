@@ -3,8 +3,7 @@ package fr.labri.harmony.core.dao;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
+import fr.labri.harmony.core.config.model.DatabaseConfiguration;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.Author;
 import fr.labri.harmony.core.model.Data;
@@ -18,7 +17,7 @@ public interface Dao {
 	
 	static final Logger LOGGER = Logger.getLogger("fr.labri.harmony.core");
 	
-	Dao create(ObjectNode config);
+	Dao create(DatabaseConfiguration config);
 	
 	void saveSource(Source s);
 	

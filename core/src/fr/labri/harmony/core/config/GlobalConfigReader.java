@@ -1,7 +1,16 @@
 package fr.labri.harmony.core.config;
 
-import static fr.labri.harmony.core.config.ConfigProperties.*;
-import static fr.labri.harmony.core.config.JsonUtils.*;
+import static fr.labri.harmony.core.config.ConfigProperties.ANALYSES;
+import static fr.labri.harmony.core.config.ConfigProperties.CLASSPATH;
+import static fr.labri.harmony.core.config.ConfigProperties.DATABASE;
+import static fr.labri.harmony.core.config.ConfigProperties.FOLDERS;
+import static fr.labri.harmony.core.config.ConfigProperties.MANAGE_CREATE_SOURCES;
+import static fr.labri.harmony.core.config.ConfigProperties.NUM_THREADS;
+import static fr.labri.harmony.core.config.ConfigProperties.OUT;
+import static fr.labri.harmony.core.config.ConfigProperties.TIMEOUT;
+import static fr.labri.harmony.core.config.ConfigProperties.TMP;
+import static fr.labri.harmony.core.config.JsonUtils.getInteger;
+import static fr.labri.harmony.core.config.JsonUtils.getString;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,6 +20,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import fr.labri.harmony.core.config.model.DatabaseConfiguration;
 
 /**
  * 
@@ -31,8 +42,17 @@ public class GlobalConfigReader {
 		}
 	}
 
-	public ObjectNode getDatabaseConfig() {
-		return (ObjectNode) globalConfig.get(DATABASE);
+	public DatabaseConfiguration getDatabaseConfig() {
+		JsonNode dbNode = globalConfig.get(DATABASE);
+
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			return mapper.readValue(dbNode.toString(), DatabaseConfiguration.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public ArrayNode getClasspathConfig() {
@@ -53,7 +73,8 @@ public class GlobalConfigReader {
 
 	public ArrayNode getAnalysesConfig() {
 		ArrayNode n = (ArrayNode) globalConfig.get(ANALYSES);
-		for (JsonNode c : n) ((ObjectNode) c).put(FOLDERS, getFoldersConfig());
+		for (JsonNode c : n)
+			((ObjectNode) c).put(FOLDERS, getFoldersConfig());
 		return n;
 	}
 

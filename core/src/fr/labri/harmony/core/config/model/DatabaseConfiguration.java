@@ -1,58 +1,81 @@
 package fr.labri.harmony.core.config.model;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.persistence.config.PersistenceUnitProperties;
 
-public class DatabaseConfiguration extends HashMap<String, String> {
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-	private static final long serialVersionUID = 6532030853123974291L;
+public class DatabaseConfiguration {
 
-	public DatabaseConfiguration(String url, String driver, String login) {
-		super();
-		this.put(PersistenceUnitProperties.JDBC_URL, url);
-		this.put(PersistenceUnitProperties.JDBC_USER, login);
-		this.put(PersistenceUnitProperties.JDBC_DRIVER, driver);
-	}
-
-	public DatabaseConfiguration(String url, String driver, String login, String password) {
-		this(url, driver, login);
-		this.put(PersistenceUnitProperties.JDBC_PASSWORD, password);
-	}
+	private HashMap<String, String> properties;
 
 	public DatabaseConfiguration() {
-	};
-
-	public String getUrl() {
-		return this.get(PersistenceUnitProperties.JDBC_URL);
+		super();
+		properties = new HashMap<>();
 	}
 
+	public DatabaseConfiguration(String url, String driver, String user) {
+		this();
+		properties.put(PersistenceUnitProperties.JDBC_URL, url);
+		properties.put(PersistenceUnitProperties.JDBC_USER, user);
+		properties.put(PersistenceUnitProperties.JDBC_DRIVER, driver);
+	}
+
+	public DatabaseConfiguration(String url, String driver, String user, String password) {
+		this(url, driver, user);
+		properties.put(PersistenceUnitProperties.JDBC_PASSWORD, password);
+	}
+	
+	/**
+	 * Copy constructor.
+	 */
+	public DatabaseConfiguration(DatabaseConfiguration other) {
+		this(other.getUrl(), other.getDriver(), other.getUser(), other.getPassword());
+	}
+
+	public String getUrl() {
+		return properties.get(PersistenceUnitProperties.JDBC_URL);
+	}
+
+	@JsonProperty("url")
 	public void setUrl(String url) {
-		this.put(PersistenceUnitProperties.JDBC_URL, url);
+		properties.put(PersistenceUnitProperties.JDBC_URL, url);
 	}
 
 	public String getUser() {
-		return this.get(PersistenceUnitProperties.JDBC_USER);
+		return properties.get(PersistenceUnitProperties.JDBC_USER);
 	}
 
+	@JsonProperty("user")
 	public void setUser(String user) {
-		this.put(PersistenceUnitProperties.JDBC_USER, user);
+		properties.put(PersistenceUnitProperties.JDBC_USER, user);
 	}
 
 	public String getPassword() {
-		return this.get(PersistenceUnitProperties.JDBC_PASSWORD);
+		return properties.get(PersistenceUnitProperties.JDBC_PASSWORD);
 	}
 
+	@JsonProperty("password")
 	public void setPassword(String password) {
-		this.put(PersistenceUnitProperties.JDBC_PASSWORD, password);
+		properties.put(PersistenceUnitProperties.JDBC_PASSWORD, password);
 	}
 
 	public String getDriver() {
-		return this.get(PersistenceUnitProperties.JDBC_DRIVER);
+		return properties.get(PersistenceUnitProperties.JDBC_DRIVER);
 	}
 
+	@JsonProperty("driver")
 	public void setDriver(String driver) {
-		this.put(PersistenceUnitProperties.JDBC_DRIVER, driver);
+		properties.put(PersistenceUnitProperties.JDBC_DRIVER, driver);
 	}
+
+	@JsonIgnore
+	public Map<String, String> getProperties() {
+		return properties;
+	}
+
 
 }
