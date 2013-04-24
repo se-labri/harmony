@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import fr.labri.harmony.core.config.model.SourceConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.ActionKind;
@@ -28,7 +29,7 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 	public GitSourceExtractor() {
 	}
 	
-	public GitSourceExtractor(ObjectNode config, Dao dao, Properties properties) {
+	public GitSourceExtractor(SourceConfiguration config, Dao dao, Properties properties) {
 		super(config, dao, properties);
 	}
 
@@ -168,7 +169,7 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public GitSourceExtractor create(ObjectNode config, Dao dao, Properties properties) {
+	public GitSourceExtractor create(SourceConfiguration config, Dao dao, Properties properties) {
 		return new GitSourceExtractor(config, dao, properties);
 	}
 

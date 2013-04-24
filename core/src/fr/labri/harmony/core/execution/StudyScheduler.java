@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import org.osgi.framework.BundleContext;
@@ -71,6 +72,7 @@ public class StudyScheduler {
 			for (ServiceReference<Analysis> ref : refs) {
 
 				String depends = (String) ref.getProperty(Analysis.PROPERTY_DEPENDS);
+				
 			}
 		} catch (InvalidSyntaxException e) {
 		}
@@ -97,6 +99,26 @@ public class StudyScheduler {
 				}
 			}
 		});
+
+	}
+
+	private void shutdownThreadsPool() {
+		// Disable new tasks from being submitted
+		threadsPool.shutdown();
+
+		try {
+			// Wait a while for existing tasks to terminate
+			if (!threadsPool.awaitTermination(schedulerConfiguration.getGlobalTimeOut(), TimeUnit.MINUTES)) {
+				threadsPool.shutdownNow(); // Cancel currently executing tasks
+				// Wait a while for tasks to respond to being cancelled
+				if (!threadsPool.awaitTermination(schedulerConfiguration.getGlobalTimeOut(), TimeUnit.MINUTES)) System.err.println("Pool did not terminate");
+			}
+		} catch (InterruptedException ie) {
+			// (Re-)Cancel if current thread also interrupted
+			threadsPool.shutdownNow();
+			// Preserve interrupt status
+			Thread.currentThread().interrupt();
+		}
 
 	}
 
