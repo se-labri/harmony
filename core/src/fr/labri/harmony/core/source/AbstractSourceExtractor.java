@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import fr.labri.harmony.core.AbstractHarmonyService;
 import fr.labri.harmony.core.Analysis;
+import fr.labri.harmony.core.config.model.SourceConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.model.Source;
 
@@ -19,11 +18,14 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 
 	protected List<Analysis> analyses;
 	
+	protected SourceConfiguration config;
+	
 	public AbstractSourceExtractor() {
 	}
 	
-	public AbstractSourceExtractor(ObjectNode config, Dao dao, Properties properties) {
-		super(config, dao, properties);
+	public AbstractSourceExtractor(SourceConfiguration config, Dao dao, Properties properties) {
+		super(dao, properties);
+		this.config = config;
 		analyses = new ArrayList<>();
 	}
 
@@ -75,7 +77,12 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 	}
 	
 	public String getUrl() {
-		return config.get("url").asText();
+		return config.getRepositoryURL();
+	}
+	
+	@Override
+	public SourceConfiguration getConfig() {
+		return config;
 	}
 	
 }

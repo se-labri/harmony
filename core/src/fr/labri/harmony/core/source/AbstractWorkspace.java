@@ -1,6 +1,5 @@
 package fr.labri.harmony.core.source;
 
-import fr.labri.harmony.core.config.ConfigProperties;
 
 public abstract class AbstractWorkspace implements Workspace {
 	
@@ -15,15 +14,15 @@ public abstract class AbstractWorkspace implements Workspace {
 	}
 	
 	public String getTmpPath() {
-		return sourceExtractor.getConfig().get(ConfigProperties.FOLDERS).get(ConfigProperties.TMP).asText();
+		return sourceExtractor.getConfig().getTmpFolder();
 	}
 	
 	public String getOutPath() {
-		return sourceExtractor.getConfig().get(ConfigProperties.FOLDERS).get(ConfigProperties.OUT).asText();
+		return sourceExtractor.getConfig().getOutFolder();
 	}
 	
 	public String getUrl() {
-		return sourceExtractor.getConfig().get(ConfigProperties.URL).asText();
+		return sourceExtractor.getConfig().getRepositoryURL();
 	}
 	
 }

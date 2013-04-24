@@ -6,7 +6,7 @@ import java.util.Arrays;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 
-import fr.labri.harmony.core.config.ConfigBuilder;
+import fr.labri.harmony.core.config.model.DatabaseConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.dao.DaoImpl;
 import fr.labri.harmony.core.model.Action;
@@ -56,8 +56,8 @@ public class TestCommand implements CommandProvider {
 	}
 
 	public Dao getDao(String path) {
-//		DaoImpl dao = new DaoImpl(ConfigBuilder.getDatabaseConfig("jdbc:h2:" + path, "sa", "", "org.h2.Driver"));
-		return null;
+		DaoImpl dao = new DaoImpl(new DatabaseConfiguration("jdbc:h2:" + path, "sa", "", "org.h2.Driver"));
+		return dao;
 	}
 
 	@Override

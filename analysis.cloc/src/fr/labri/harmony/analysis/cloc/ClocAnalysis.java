@@ -16,9 +16,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import fr.labri.harmony.core.AbstractAnalysis;
+import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.model.Data;
 import fr.labri.harmony.core.model.Event;
@@ -30,7 +29,7 @@ public class ClocAnalysis extends AbstractAnalysis {
 	public ClocAnalysis() {
 	}
 	
-    public ClocAnalysis(ObjectNode config, Dao dao, Properties properties) {
+    public ClocAnalysis(AnalysisConfiguration config, Dao dao, Properties properties) {
 		super(config, dao, properties);
 	}
 
@@ -78,11 +77,13 @@ public class ClocAnalysis extends AbstractAnalysis {
             }
         }
     }
-	
+
+
 	@SuppressWarnings("unchecked")
 	@Override
-	public ClocAnalysis create(ObjectNode config, Dao dao, Properties properties) {
+	public ClocAnalysis create(AnalysisConfiguration config, Dao dao, Properties properties) {
 		return new ClocAnalysis(config, dao, properties);
+
 	}
 
 }

@@ -21,6 +21,7 @@ Import-Package: com.mysql.jdbc;version="5.1.24",
  org.osgi.service.jpa
 Export-Package: fr.labri.harmony.core,
  fr.labri.harmony.core.config,
+ fr.labri.harmony.core.config.model,
  fr.labri.harmony.core.dao,
  fr.labri.harmony.core.model,
  fr.labri.harmony.core.source,

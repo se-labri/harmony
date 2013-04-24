@@ -10,12 +10,10 @@ import java.util.Properties;
 
 import org.jfree.chart.ChartUtilities;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import fr.labri.harmony.analysis.report.charts.ClocChart;
 import fr.labri.harmony.analysis.report.charts.ItemNumberChart;
 import fr.labri.harmony.core.AbstractAnalysis;
-import fr.labri.harmony.core.config.ConfigProperties;
+import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.model.Source;
 import fr.labri.harmony.core.source.WorkspaceException;
@@ -25,14 +23,14 @@ public class ReportAnalysis extends AbstractAnalysis {
 	public ReportAnalysis() {
 	}
 
-	public ReportAnalysis(ObjectNode config, Dao dao, Properties properties) {
+	public ReportAnalysis(AnalysisConfiguration config, Dao dao, Properties properties) {
 		super(config, dao, properties);
 	}
 
 	@Override
 	public void run(Source src) throws WorkspaceException {
 		LOGGER.info("Starting reporting analysis on " + src.getUrl() + ".");
-		String baseFolder = config.get(ConfigProperties.FOLDERS).get(ConfigProperties.OUT).asText();
+		String baseFolder = config.getOutFolder();
 		String urlFolder = convertToFolderName(src.getUrl());
 		Path outputPath = Paths.get(baseFolder,urlFolder);
 		File outputFolder = outputPath.toFile();
@@ -70,7 +68,7 @@ public class ReportAnalysis extends AbstractAnalysis {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public ReportAnalysis create(ObjectNode config, Dao dao, Properties properties) {
+	public ReportAnalysis create(AnalysisConfiguration config, Dao dao, Properties properties) {
 		return new ReportAnalysis(config, dao, properties);
 	}
 }

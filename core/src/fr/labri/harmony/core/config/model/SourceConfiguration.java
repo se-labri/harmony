@@ -1,30 +1,50 @@
 package fr.labri.harmony.core.config.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import fr.labri.harmony.core.source.SourceExtractor;
 
 public class SourceConfiguration {
 	private String repositoryURL;
-	private SourceExtractor<?> srcConnector;
-	
+	private String sourceExtractorName;
+
+	public SourceConfiguration() {
+	}
+
 	public SourceConfiguration(String repositoryURL, SourceExtractor<?> srcConnector) {
 		super();
 		this.repositoryURL = repositoryURL;
-		this.srcConnector = srcConnector;
 	}
+
 	public String getRepositoryURL() {
 		return repositoryURL;
 	}
+
+	@JsonProperty("url")
 	public void setRepositoryURL(String repositoryURL) {
 		this.repositoryURL = repositoryURL;
 	}
-	public SourceExtractor<?> getSrcConnector() {
-		return srcConnector;
+
+	@JsonProperty("class")
+	public String getSourceExtractorName() {
+		return sourceExtractorName;
 	}
-	public void setSrcConnector(SourceExtractor<?> srcConnector) {
-		this.srcConnector = srcConnector;
+	
+	public void setSourceExtractorName(String sourceExtractorName) {
+		this.sourceExtractorName = sourceExtractorName;
 	}
-	
-	
-	
+
+	@JsonIgnore
+	public String getTmpFolder() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@JsonIgnore
+	public String getOutFolder() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
