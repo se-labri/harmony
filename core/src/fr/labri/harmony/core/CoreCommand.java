@@ -9,6 +9,7 @@ import fr.labri.harmony.core.config.GlobalConfigReader;
 import fr.labri.harmony.core.config.SourceConfigReader;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.dao.DaoImpl;
+import fr.labri.harmony.core.execution.StudyScheduler;
 import fr.labri.harmony.core.source.SourceExtractor;
 
 public class CoreCommand implements CommandProvider {
@@ -27,6 +28,8 @@ public class CoreCommand implements CommandProvider {
 			Dao dao = new DaoImpl(global.getDatabaseConfig());
 
 			//HarmonyManager.createAnalyses(global, dao);
+			
+			//new StudyScheduler().run(global, sources);
 			
 			List<SourceExtractor<?>> extractors = HarmonyManager.createSourceExtractors(sources, dao);
 			for (SourceExtractor<?> e: extractors) {

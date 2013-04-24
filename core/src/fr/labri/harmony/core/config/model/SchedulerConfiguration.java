@@ -7,14 +7,19 @@ public class SchedulerConfiguration {
 	public SchedulerConfiguration(){};
 	
 	public SchedulerConfiguration(int numberOfThreads, int cloneTimeOut) {
-		super();
-		this.numberOfThreads = numberOfThreads;
+		this(numberOfThreads);
 		this.cloneTimeOut = cloneTimeOut;
 	}
 	
 	public SchedulerConfiguration(int numberOfThreads) {
 		super();
-		this.numberOfThreads = numberOfThreads;
+		
+		if(numberOfThreads>0){
+			this.numberOfThreads = numberOfThreads;
+		}
+		else{
+			// A negative or null number of threads was requested, the value was left to default (1 thread)
+		}
 	}
 
 	public int getNumberOfThreads() {
