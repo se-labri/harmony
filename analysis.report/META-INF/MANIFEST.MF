@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Service-Component: OSGI-INF/*.xml
+Bundle-ManifestVersion: 2
+Bundle-Name: ReportAnalysis
+Bundle-SymbolicName: fr.labri.harmony.analysis.report
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: fr.labri.harmony.core;bundle-version="1.0.0",
+ jackson;bundle-version="2.1.4",
+ jfreechart;bundle-version="1.0.14",
+ fr.labri.harmony.analysis.cloc;bundle-version="1.0.0"
+Import-Package: javax.persistence;version="2.0.4",
+ org.osgi.framework;version="1.7.0"
+Export-Package: fr.labri.harmony.analysis.report,
+ fr.labri.harmony.analysis.report.charts
+Bundle-ClassPath: .

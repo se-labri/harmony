@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Service-Component: OSGI-INF/*.xml
+Bundle-ManifestVersion: 2
+Bundle-Name: GitSourceExtractor
+Bundle-SymbolicName: fr.labri.harmony.source.git
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: fr.labri.harmony.core;bundle-version="1.0.0",
+ jackson;bundle-version="2.1.4"
+Export-Package: fr.labri.harmony.source.git
