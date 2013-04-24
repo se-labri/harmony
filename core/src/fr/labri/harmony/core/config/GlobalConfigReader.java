@@ -44,15 +44,15 @@ public class GlobalConfigReader {
 
 	public DatabaseConfiguration getDatabaseConfig() {
 		JsonNode dbNode = globalConfig.get(DATABASE);
-
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			return mapper.readValue(dbNode.toString(), DatabaseConfiguration.class);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (dbNode != null) {
+			ObjectMapper mapper = new ObjectMapper();
+			try {
+				return mapper.readValue(dbNode.toString(), DatabaseConfiguration.class);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-		return null;
+		return new DatabaseConfiguration();
 	}
 
 	public ArrayNode getClasspathConfig() {

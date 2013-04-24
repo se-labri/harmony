@@ -3,10 +3,6 @@ package fr.labri.harmony.core.config;
 public class ConfigProperties {
 
 	public static final String DATABASE = "database";
-	public static final String DATABASE_PASSWORD = "password";
-	public static final String DATABASE_URL = "url";
-	public static final String DATABASE_USER = "user";
-	public static final String DATABASE_DRIVER = "driver";
 	
 	public static final String MANAGE_CREATE_SOURCES = "manage-create-sources";
 	public static final String NUM_THREADS = "threads";

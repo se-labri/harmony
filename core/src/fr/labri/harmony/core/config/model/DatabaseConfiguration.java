@@ -9,24 +9,35 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DatabaseConfiguration {
+	
+	private static final String DEFAULT_URL = "jdbc:h2:tmp";
+	private static final String DEFAULT_USER = "SA";
+	private static final String DEFAULT_PASSWORD = "";
+	private static final String DEFAULT_DRIVER = "org.h2.Driver";
+
 
 	private HashMap<String, String> properties;
 
 	public DatabaseConfiguration() {
 		super();
 		properties = new HashMap<>();
+		setUrl(DEFAULT_URL);
+		setDriver(DEFAULT_DRIVER);
+		setUser(DEFAULT_USER);
+		setPassword(DEFAULT_PASSWORD);
+		
 	}
 
 	public DatabaseConfiguration(String url, String driver, String user) {
 		this();
-		properties.put(PersistenceUnitProperties.JDBC_URL, url);
-		properties.put(PersistenceUnitProperties.JDBC_USER, user);
-		properties.put(PersistenceUnitProperties.JDBC_DRIVER, driver);
+		setUrl(url);
+		setUser(user);
+		setDriver(driver);
 	}
 
 	public DatabaseConfiguration(String url, String driver, String user, String password) {
 		this(url, driver, user);
-		properties.put(PersistenceUnitProperties.JDBC_PASSWORD, password);
+		setPassword(password);
 	}
 	
 	/**

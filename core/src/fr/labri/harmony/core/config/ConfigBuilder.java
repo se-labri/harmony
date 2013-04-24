@@ -12,14 +12,6 @@ import fr.labri.utils.file.FileUtils;
 
 public class ConfigBuilder {
 
-	public static ObjectNode getDatabaseConfig(String url, String user, String password, String driver) {
-		ObjectNode n = JsonNodeFactory.instance.objectNode();
-		n.put(DATABASE_URL, (url != null) ? url : "jdbc:h2:tmp");
-		n.put(DATABASE_USER, (user != null) ? user : "SA");
-		n.put(DATABASE_PASSWORD, (password != null) ? password : "");
-		n.put(DATABASE_DRIVER, (driver != null) ? driver : "org.h2.Driver");
-		return n;
-	}
 
 	public static ObjectNode getManageCreateSourcesConfig(Integer numThreads, Integer timeout) {
 		ObjectNode n = JsonNodeFactory.instance.objectNode();
