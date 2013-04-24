@@ -37,6 +37,11 @@ public class AnalysisConfiguration {
 	public void setOptions(HashMap<String, String> options) {
 		this.options = options;
 	}
+
+	public String getOutFolder() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 
