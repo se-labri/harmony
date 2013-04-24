@@ -16,22 +16,25 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import fr.labri.harmony.core.config.ConfigProperties;
 import fr.labri.harmony.core.config.GlobalConfigReader;
 import fr.labri.harmony.core.config.SourceConfigReader;
+import fr.labri.harmony.core.config.model.SourceConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.source.SourceExtractor;
 
 public class HarmonyManager {
-	
+
 	public static List<SourceExtractor<?>> createSourceExtractors(SourceConfigReader r, Dao dao) {
 		List<SourceExtractor<?>> extractors = new ArrayList<>();
-		ArrayNode configs = r.getSourcesConfig();
+		for (SourceConfiguration config : r.getSourcesConfigurations()) {
+			config.setSourceExtractor(getSourceExtractor(config.getSourceExtractorName(), config, dao));
+		}
 		for (int i = 0; i < configs.size(); i++) {
-			ObjectNode config = (ObjectNode) configs.get(i);
+			ObjectNode config = configs.get(i);
 			String name = config.get(ConfigProperties.CLASS).asText();
-			extractors.add(getSourceExtractor(name , config, dao));
+			extractors.add(getSourceExtractor(name, config, dao));
 		}
 		return extractors;
 	}
-	
+
 	public static List<Analysis> createAnalyses(GlobalConfigReader r, Dao dao) {
 		List<Analysis> analyses = new ArrayList<>();
 		ArrayNode configs = r.getAnalysesConfig();
@@ -43,15 +46,28 @@ public class HarmonyManager {
 		return analyses;
 	}
 
-	public static SourceExtractor<?> getSourceExtractor(String name, ObjectNode config, Dao dao) {
-		return createHarmonyService(SourceExtractor.class, name, config, dao);
-	}
+	@SuppressWarnings("rawtypes")
+	public static SourceExtractor<?> getSourceExtractor(String name, SourceConfiguration config, Dao dao) {
+		BundleContext context = FrameworkUtil.getBundle(HarmonyManager.class).getBundleContext();
+		try {
+			Collection<ServiceReference<SourceExtractor>> refs = context.getServiceReferences(SourceExtractor.class, getFilter(name));
+			if (refs != null && !refs.isEmpty()) {
+				ServiceReference<SourceExtractor> ref = refs.iterator().next();
+				Properties properties = extractProperties(ref);
+				SourceExtractor serviceDef = context.getService(ref);
+				SourceExtractor service = serviceDef.create(config, dao, properties);
+				return service;
+			}
+		} catch (InvalidSyntaxException e) {
+			e.printStackTrace();
+		}
+		return null;	}
 
 	@SuppressWarnings("rawtypes")
 	public static Collection<SourceExtractor> getSourceExtractors(ObjectNode config, Dao dao) {
 		return createHarmonyServices(SourceExtractor.class, config, dao);
 	}
-	
+
 	public static Analysis getAnalysis(String name, ObjectNode config, Dao dao) {
 		return createHarmonyService(Analysis.class, name, config, dao);
 	}
@@ -92,15 +108,16 @@ public class HarmonyManager {
 		}
 		return null;
 	}
-	
+
 	private static Properties extractProperties(ServiceReference<?> ref) {
 		Properties properties = new Properties();
-		for (String key: ref.getPropertyKeys()) properties.put(key, ref.getProperty(key));
+		for (String key : ref.getPropertyKeys())
+			properties.put(key, ref.getProperty(key));
 		return properties;
 	}
-	
+
 	private static String getFilter(String name) {
-		return "(" + HarmonyService.PROPERTY_NAME + "=" + name + ")";	
+		return "(" + HarmonyService.PROPERTY_NAME + "=" + name + ")";
 	}
 
 }

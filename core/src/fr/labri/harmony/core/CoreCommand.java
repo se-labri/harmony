@@ -25,7 +25,7 @@ public class CoreCommand implements CommandProvider {
 			GlobalConfigReader global = new GlobalConfigReader(globalConfigPath);
 			SourceConfigReader sources = new SourceConfigReader(sourceConfigPath, global);
 
-			Dao dao = new DaoImpl(global.getDatabaseConfig());
+			Dao dao = new DaoImpl(global.getDatabaseConfiguration());
 
 			//HarmonyManager.createAnalyses(global, dao);
 			
