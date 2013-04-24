@@ -2,13 +2,15 @@ package fr.labri.harmony.core.config.model;
 
 public class SchedulerConfiguration {
 	private int numberOfThreads=1;
-	private int cloneTimeOut=100000;
+	
+	// Global timeout in secint
+	private int globalTimeOut=108;
 	
 	public SchedulerConfiguration(){};
 	
-	public SchedulerConfiguration(int numberOfThreads, int cloneTimeOut) {
+	public SchedulerConfiguration(int numberOfThreads, int globalTimeOut) {
 		this(numberOfThreads);
-		this.cloneTimeOut = cloneTimeOut;
+		this.globalTimeOut = globalTimeOut;
 	}
 	
 	public SchedulerConfiguration(int numberOfThreads) {
@@ -30,12 +32,12 @@ public class SchedulerConfiguration {
 		this.numberOfThreads = numberOfThreads;
 	}
 
-	public int getCloneTimeOut() {
-		return cloneTimeOut;
+	public int getGlobalTimeOut() {
+		return globalTimeOut;
 	}
 
-	public void setCloneTimeOut(int cloneTimeOut) {
-		this.cloneTimeOut = cloneTimeOut;
+	public void setGlobalTimeOut(int globalTimeOut) {
+		this.globalTimeOut = globalTimeOut;
 	}
 	
 	
