@@ -167,10 +167,4 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 		workspace = new GitWorkspace();
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public GitSourceExtractor create(SourceConfiguration config, Dao dao, Properties properties) {
-		return new GitSourceExtractor(config, dao, properties);
-	}
-
 }

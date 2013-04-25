@@ -71,11 +71,6 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 		return this.workspace;
 	}
 	
-	@Override
-	public void setAnalyses(List<Analysis> analyses) {
-		this.analyses = analyses;
-	}
-	
 	public String getUrl() {
 		return config.getRepositoryURL();
 	}
