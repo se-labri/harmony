@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="fr.labri.harmony.core.feature"
+      label="Harmony Core"
+      version="1.0.0">
+
+
+   <url>
+      <discovery label="Juno" url="http://download.eclipse.org/releases/juno"/>
+      <discovery label="Gemini" url="http://download.eclipse.org/gemini/updates/jpa/1.1.0"/>
+      <discovery label="DBAccess" url="http://download.eclipse.org/gemini/updates/dbaccess/1.1.0"/>
+   </url>
+
+   <requires>
+      <import feature="org.eclipse.gemini.dbaccess.feature" version="1.1.0.RELEASE"/>
+      <import feature="org.eclipse.gemini.dbaccess.h2.feature" version="1.1.0.RELEASE"/>
+      <import feature="org.eclipse.gemini.dbaccess.mysql.feature" version="1.1.0.RELEASE"/>
+      <import feature="org.eclipse.gemini.jpa.feature" version="1.1.0.RELEASE"/>
+   </requires>
+
+   <plugin
+         id="fr.labri.harmony.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+            <plugin
+         id="jackson"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="mysql"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="h2"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+
+</feature>

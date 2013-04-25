@@ -11,3 +11,8 @@
 ^.*.orig$
 syntax: glob
 core/HarmonyEquinoxPerso.launch
+update-site/artifacts.*
+update-site/content.*
+update-site/features/
+update-site/logs.zip
+update-site/plugins/
