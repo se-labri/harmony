@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="fr.labri.harmony.source.git.feature"
+      label="Harmony Git Extractor"
+      version="1.0.0"
+      plugin="fr.labri.harmony.source.git">
+
+</feature>
