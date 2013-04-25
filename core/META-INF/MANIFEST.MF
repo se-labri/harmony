@@ -4,7 +4,7 @@ Service-Component: OSGI-INF/*.xml
 Bundle-ManifestVersion: 2
 Bundle-Name: Core
 Bundle-SymbolicName: fr.labri.harmony.core;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.0
 Bundle-Activator: fr.labri.harmony.core.CoreActivator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
