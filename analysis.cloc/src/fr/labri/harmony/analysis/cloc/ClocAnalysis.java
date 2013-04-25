@@ -34,7 +34,7 @@ public class ClocAnalysis extends AbstractAnalysis {
 	}
 
 	@Override
-    public void run(Source src) throws WorkspaceException {
+    public void runOn(Source src) throws WorkspaceException {
     	LOGGER.info("Starting ClocAnalysis on source: " + src);
     	for (Event ev : src.getEvents()) {
             String workspacePath = src.getWorkspace().update(ev);
@@ -77,13 +77,5 @@ public class ClocAnalysis extends AbstractAnalysis {
             }
         }
     }
-
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public ClocAnalysis create(AnalysisConfiguration config, Dao dao, Properties properties) {
-		return new ClocAnalysis(config, dao, properties);
-
-	}
 
 }

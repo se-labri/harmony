@@ -7,7 +7,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
-import fr.labri.harmony.core.HarmonyManager;
+import fr.labri.harmony.core.AbstractHarmonyService;
 import fr.labri.harmony.core.config.model.SourceConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 
@@ -21,9 +21,9 @@ public class SourceExtractorFactory {
 
 	@SuppressWarnings("rawtypes")
 	public SourceExtractor<?> createSourceExtractor(SourceConfiguration config) {
-		BundleContext context = FrameworkUtil.getBundle(HarmonyManager.class).getBundleContext();
+		BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
 		try {
-			Collection<ServiceReference<SourceExtractor>> refs = context.getServiceReferences(SourceExtractor.class, HarmonyManager.getFilter(config.getSourceExtractorName()));
+			Collection<ServiceReference<SourceExtractor>> refs = context.getServiceReferences(SourceExtractor.class, getFilter(config.getSourceExtractorName()));
 			if (refs != null && !refs.isEmpty()) {
 				ServiceReference<SourceExtractor> ref = refs.iterator().next();
 				Properties properties = extractProperties(ref);
@@ -43,6 +43,10 @@ public class SourceExtractorFactory {
 		for (String key : ref.getPropertyKeys())
 			properties.put(key, ref.getProperty(key));
 		return properties;
+	}
+	
+	public static String getFilter(String name) {
+		return "(" + AbstractHarmonyService.PROPERTY_NAME + "=" + name + ")";
 	}
 
 }

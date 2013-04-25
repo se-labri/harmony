@@ -19,12 +19,12 @@ public abstract class AbstractAnalysis extends AbstractHarmonyService implements
 
 	@Override
 	public String getPersistenceUnit() {
-		return properties.getProperty(Analysis.PROPERTY_PERSISTENCE_UNIT);
+		return getComponentProperty(Analysis.PROPERTY_PERSISTENCE_UNIT);
 	}
 	
 	@Override
-	public String getDepends() {
-		return properties.getProperty(Analysis.PROPERTY_DEPENDS);
+	public String getDependencies() {
+		return getComponentProperty(Analysis.PROPERTY_DEPENDENCIES);
 	}
 	
 	@Override

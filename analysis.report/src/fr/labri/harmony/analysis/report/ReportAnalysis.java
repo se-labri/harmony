@@ -28,7 +28,7 @@ public class ReportAnalysis extends AbstractAnalysis {
 	}
 
 	@Override
-	public void run(Source src) throws WorkspaceException {
+	public void runOn(Source src) throws WorkspaceException {
 		LOGGER.info("Starting reporting analysis on " + src.getUrl() + ".");
 		String baseFolder = config.getOutFolder();
 		String urlFolder = convertToFolderName(src.getUrl());
@@ -64,11 +64,5 @@ public class ReportAnalysis extends AbstractAnalysis {
 
 	private static String convertToFolderName(String src) {
 		return src.replaceAll("http://", "").replaceAll("https://", "").replaceAll("/","-").replaceAll(":", "");
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public ReportAnalysis create(AnalysisConfiguration config, Dao dao, Properties properties) {
-		return new ReportAnalysis(config, dao, properties);
 	}
 }
