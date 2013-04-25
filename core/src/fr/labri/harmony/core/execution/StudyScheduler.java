@@ -37,8 +37,7 @@ public class StudyScheduler {
 
 	public void run(GlobalConfigReader global, SourceConfigReader sources) {
 
-		// We create a global DAO which is in charge of building and managing
-		// the EntityManagers
+		// We create a global DAO which is in charge of building and managing the EntityManagers
 		// from all the bundles defining analyses
 		Dao dao = new DaoImpl(global.getDatabaseConfiguration());
 
@@ -55,13 +54,19 @@ public class StudyScheduler {
 		}
 		this.threadsPool = Executors.newFixedThreadPool(this.schedulerConfiguration.getNumberOfThreads());
 
-		List<SourceConfiguration> configurations = sources.getSourcesConfigurations();
-		SourceExtractorFactory factory = new SourceExtractorFactory(dao);
-		// We iterate on each sources and for each one we run the set of
-		// analysis in the right order
-		for (SourceConfiguration config : configurations) {
-			launchSortedAnalysisOnSource(factory.createSourceExtractor(config), scheduledAnalyses);
+		// We retrieve the list of source that we will look at
+		List<SourceConfiguration> sourceConfigurations = sources.getSourcesConfigurations();
+		SourceExtractorFactory sourceExtractorFactory = new SourceExtractorFactory(dao);
+		
+		
+		// We iterate on each sources and for each one we run the set of analysis in the right order
+		for (SourceConfiguration sourceConfiguration : sourceConfigurations) {
+			launchSortedAnalysisOnSource(sourceExtractorFactory.createSourceExtractor(sourceConfiguration), scheduledAnalyses);
 		}
+		
+		// We wait for the threads to finish to the extent that the timeout limit is not reached
+		shutdownThreadsPool();
+		
 	}
 
 	public Collection<Analysis> getScheduledAnalyses() {
@@ -81,14 +86,20 @@ public class StudyScheduler {
 	}
 
 	private void launchSortedAnalysisOnSource(final SourceExtractor<?> e, final Collection<Analysis> scheduledAnalyses) {
+		
+		// Before launching any analysis on the source we must extract it (clone, build of the Harmony model)
+		//TODO
 
-		// We create a thread dedicated to this source which will be in charge
+		// We create a thread dedicated to this source. It will be in charge
 		// of launching the set of analyses on it
 		threadsPool.execute(new Thread() {
+			
 			@Override
 			public void run() {
 				try {
-					for (Iterator<Analysis> analyses = scheduledAnalyses.iterator(); analyses.hasNext();) {
+					// We perform the analysis one after the other and between each of them we check that an interruption
+					// of the thread wasn't requested due to the timeout limit.
+					for (Iterator<Analysis> analyses = scheduledAnalyses.iterator(); analyses.hasNext()&&!this.isInterrupted();) {
 						Analysis currentAnalysis = analyses.next();
 						currentAnalysis.run(e.getSource());
 					}
@@ -105,21 +116,28 @@ public class StudyScheduler {
 	private void shutdownThreadsPool() {
 
 		// Disable new tasks from being submitted
-
 		threadsPool.shutdown();
 
 		try {
-			// Wait a while for existing tasks to terminate
+			// Wait until the end of configuration timeout for existing tasks to terminate
 			if (!threadsPool.awaitTermination(schedulerConfiguration.getGlobalTimeOut(), TimeUnit.MINUTES)) {
-				threadsPool.shutdownNow(); // Cancel currently executing tasks
+				
+				LOGGER.severe("Execution timeout, the pool of analysis threads will be shutdown (You may check your configuration file for running longer analysis)");
+				
+				// Cancel currently executing tasks
+				threadsPool.shutdownNow(); 
+				
 				// Wait a while for tasks to respond to being cancelled
-				if (!threadsPool.awaitTermination(schedulerConfiguration.getGlobalTimeOut(), TimeUnit.MINUTES)) System.err.println("Pool did not terminate");
-
+				if (!threadsPool.awaitTermination(60, TimeUnit.SECONDS)){
+					LOGGER.severe("Harmony was not able to shutdown the pool of threads in charge of running your analyses");
+				}			
 			}
 		} catch (InterruptedException ie) {
 			// (Re-)Cancel if current thread also interrupted
 			threadsPool.shutdownNow();
+			
 			// Preserve interrupt status
+			// @see: http://www.ibm.com/developerworks/java/library/j-jtp05236/
 			Thread.currentThread().interrupt();
 		}
 
