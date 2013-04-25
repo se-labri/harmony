@@ -1,6 +1,6 @@
 package fr.labri.harmony.core.source;
 
-public class SourceExtractorException extends Exception {
+public class SourceExtractorException extends RuntimeException {
 	
 	private static final long serialVersionUID = 1L;
 

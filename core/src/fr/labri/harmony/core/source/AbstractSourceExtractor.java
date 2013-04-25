@@ -29,12 +29,10 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 		analyses = new ArrayList<>();
 	}
 
-	@Override
 	public void run() throws SourceExtractorException, WorkspaceException {
 		LOGGER.info("Starting extraction of source " + getUrl());
 		long start = System.currentTimeMillis();
 		
-		createWorkspace();
 		workspace.setSourceExtractor(this);
 		workspace.init();
 		
@@ -47,7 +45,7 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 		extractSource();
 		dao.refreshElement(source);
 		
-		for (Analysis a: analyses) a.run(source);
+		for (Analysis a: analyses) a.runOn(source);
 		
 		workspace.clean();
 		
@@ -55,11 +53,7 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 		long time = (stop - start) / 1000;
 		LOGGER.info("Source " + getUrl() + " processed. Time: " + time + " seconds.");
 	}
-	
-	//TODO these two methods should be documented
-	protected abstract void createWorkspace() throws WorkspaceException;
-	
-	protected abstract void extractSource() throws SourceExtractorException;
+
 
 	@Override
 	public Source getSource() {

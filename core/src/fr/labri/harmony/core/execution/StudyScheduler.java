@@ -76,7 +76,7 @@ public class StudyScheduler {
 			Collection<ServiceReference<Analysis>> refs = context.getServiceReferences(Analysis.class, null);
 			for (ServiceReference<Analysis> ref : refs) {
 
-				String depends = (String) ref.getProperty(Analysis.PROPERTY_DEPENDS);
+				String depends = (String) ref.getProperty(Analysis.PROPERTY_DEPENDENCIES);
 
 			}
 		} catch (InvalidSyntaxException e) {
@@ -101,7 +101,7 @@ public class StudyScheduler {
 					// of the thread wasn't requested due to the timeout limit.
 					for (Iterator<Analysis> analyses = scheduledAnalyses.iterator(); analyses.hasNext()&&!this.isInterrupted();) {
 						Analysis currentAnalysis = analyses.next();
-						currentAnalysis.run(e.getSource());
+						currentAnalysis.runOn(e.getSource());
 					}
 
 				} catch (Exception e) {
