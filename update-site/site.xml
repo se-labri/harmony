@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/fr.labri.harmony.core.feature_1.0.0.jar" id="fr.labri.harmony.core.feature" version="1.0.0">
+      <category name="harmony"/>
+   </feature>
+   <feature url="features/fr.labri.harmony.source.git.feature_1.0.0.jar" id="fr.labri.harmony.source.git.feature" version="1.0.0">
+      <category name="harmony"/>
+   </feature>
+   <category-def name="harmony" label="Harmony"/>
+</site>
