@@ -1,5 +1,6 @@
 package fr.labri.harmony.core.config.model;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,6 +9,11 @@ public class AnalysisConfiguration {
 	private String analysisName;
 	private HashMap<String,String> options;
 	
+	// List of analyses required by this analysis and thus they need to be performed before it
+	private Collection<String> dependencies;
+	
+	
+
 	public AnalysisConfiguration(){};
 	
 	public AnalysisConfiguration(String analysisName) {
@@ -43,6 +49,13 @@ public class AnalysisConfiguration {
 		return null;
 	}
 	
+	public Collection<String> getDependencies() {
+		return dependencies;
+	}
+
+	public void setDependencies(Collection<String> dependencies) {
+		this.dependencies = dependencies;
+	}
 	
 
 }
