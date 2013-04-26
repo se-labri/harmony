@@ -10,6 +10,7 @@ import fr.labri.harmony.core.config.model.SourceConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.model.Source;
 
+
 public abstract class AbstractSourceExtractor<W extends Workspace> extends AbstractHarmonyService implements SourceExtractor<W> {
 	
 	protected W workspace;
@@ -29,6 +30,7 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 		analyses = new ArrayList<>();
 	}
 
+	//@deprecated TODO remove after validation
 	public void run() throws SourceExtractorException, WorkspaceException {
 		LOGGER.info("Starting extraction of source " + getUrl());
 		long start = System.currentTimeMillis();
@@ -72,6 +74,20 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 	@Override
 	public SourceConfiguration getConfig() {
 		return config;
+	}
+	
+	@Override
+	public void initializeSourceFully() {
+		initializeWorkspace();
+		
+		source = new Source();
+		source.setUrl(getUrl());
+		source.setWorkspace(workspace);
+		
+		dao.saveSource(source);		
+		//FIXME seems really long!
+		extractSource();
+		dao.refreshElement(source);
 	}
 	
 }

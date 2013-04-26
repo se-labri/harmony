@@ -50,5 +50,10 @@ public abstract class AbstractHarmonyService {
 		return componentProperties.getProperty(key);
 
 	}
+	
+	public static String getFilter(String name) {
+		return "(" + PROPERTY_NAME + "=" + name + ")";
+	}
+
 
 }
