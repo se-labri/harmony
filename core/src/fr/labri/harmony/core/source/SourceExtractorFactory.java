@@ -23,7 +23,7 @@ public class SourceExtractorFactory {
 	public SourceExtractor<?> createSourceExtractor(SourceConfiguration config) {
 		BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
 		try {
-			Collection<ServiceReference<SourceExtractor>> refs = context.getServiceReferences(SourceExtractor.class, getFilter(config.getSourceExtractorName()));
+			Collection<ServiceReference<SourceExtractor>> refs = context.getServiceReferences(SourceExtractor.class, AbstractHarmonyService.getFilter(config.getSourceExtractorName()));
 			if (refs != null && !refs.isEmpty()) {
 				ServiceReference<SourceExtractor> ref = refs.iterator().next();
 				Properties properties = extractProperties(ref);
@@ -45,8 +45,5 @@ public class SourceExtractorFactory {
 		return properties;
 	}
 	
-	public static String getFilter(String name) {
-		return "(" + AbstractHarmonyService.PROPERTY_NAME + "=" + name + ")";
-	}
-
+	
 }

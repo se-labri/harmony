@@ -87,11 +87,7 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 		}
 	}
 
-	@Override
-	public void initializeSource() {
-		workspace = new GitWorkspace();
-		workspace.init();
-	}
+
 
 	@Override
 	public void extractEvents() {
@@ -167,6 +163,12 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 		extractEvents();
 		for (Event e : source.getEvents())
 			extractActions(e);
+	}
+
+	@Override
+	public void initializeWorkspace() {
+		workspace = new GitWorkspace();
+		workspace.init();	
 	}
 
 }
