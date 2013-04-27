@@ -167,7 +167,7 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 
 	@Override
 	public void initializeWorkspace() {
-		workspace = new GitWorkspace();
+		workspace = new GitWorkspace(this);
 		workspace.init();	
 	}
 

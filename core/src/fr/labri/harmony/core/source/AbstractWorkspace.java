@@ -6,7 +6,8 @@ public abstract class AbstractWorkspace implements Workspace {
 	
 	protected SourceExtractor<?> sourceExtractor;
 	
-	public AbstractWorkspace() {
+	public AbstractWorkspace(SourceExtractor<?> sourceExtractor) {
+		this.sourceExtractor = sourceExtractor;
 	}
 	
 	@Override

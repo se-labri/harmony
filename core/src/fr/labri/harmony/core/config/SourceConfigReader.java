@@ -14,7 +14,6 @@ import fr.labri.harmony.core.config.model.SourceConfiguration;
 public class SourceConfigReader {
 
 	private ArrayNode sourceConfig;
-	// TODO: Use global to get the folders config
 	private GlobalConfigReader global;
 	private ObjectMapper mapper;
 

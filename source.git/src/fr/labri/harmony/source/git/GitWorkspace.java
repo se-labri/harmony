@@ -7,6 +7,10 @@ import fr.labri.harmony.core.source.*;
 
 public class GitWorkspace extends AbstractLocalWorkspace {
 	
+	public GitWorkspace(SourceExtractor<?> sourceExtractor) {
+		super(sourceExtractor);
+	}
+
 	@Override
 	public void init() throws WorkspaceException {
 		super.init();
