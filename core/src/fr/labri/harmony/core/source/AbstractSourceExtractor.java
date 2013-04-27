@@ -20,40 +20,10 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 
 	protected SourceConfiguration config;
 
-	public AbstractSourceExtractor() {
-	}
-
 	public AbstractSourceExtractor(SourceConfiguration config, Dao dao, Properties properties) {
 		super(dao, properties);
 		this.config = config;
 		analyses = new ArrayList<>();
-	}
-
-	// @deprecated TODO remove after validation
-	public void run() throws SourceExtractorException, WorkspaceException {
-		LOGGER.info("Starting extraction of source " + getUrl());
-		long start = System.currentTimeMillis();
-
-		workspace.setSourceExtractor(this);
-		workspace.init();
-
-		source = new Source();
-		source.setUrl(getUrl());
-		source.setWorkspace(workspace);
-		dao.saveSource(source);
-
-		// FIXME seems really long!
-		extractSource();
-		dao.refreshElement(source);
-
-		for (Analysis a : analyses)
-			a.runOn(source);
-
-		workspace.clean();
-
-		long stop = System.currentTimeMillis();
-		long time = (stop - start) / 1000;
-		LOGGER.info("Source " + getUrl() + " processed. Time: " + time + " seconds.");
 	}
 
 	@Override
