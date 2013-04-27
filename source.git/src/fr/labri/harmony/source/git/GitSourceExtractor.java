@@ -25,9 +25,6 @@ import fr.labri.harmony.core.source.SourceExtractorException;
 
 public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 
-	public GitSourceExtractor() {
-	}
-
 	public GitSourceExtractor(SourceConfiguration config, Dao dao, Properties properties) {
 		super(config, dao, properties);
 	}
