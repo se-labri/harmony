@@ -1,6 +1,5 @@
 package fr.labri.harmony.core.config.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import fr.labri.harmony.core.source.SourceExtractor;
@@ -8,6 +7,7 @@ import fr.labri.harmony.core.source.SourceExtractor;
 public class SourceConfiguration {
 	private String repositoryURL;
 	private String sourceExtractorName;
+	private FoldersConfiguration foldersConfiguration;
 
 	public SourceConfiguration() {
 	}
@@ -35,16 +35,12 @@ public class SourceConfiguration {
 		this.sourceExtractorName = sourceExtractorName;
 	}
 
-	@JsonIgnore
-	public String getTmpFolder() {
-		// TODO Auto-generated method stub
-		return null;
+	public void setFoldersConfiguration(FoldersConfiguration foldersConfiguration) {
+		this.foldersConfiguration = foldersConfiguration;
 	}
-
-	@JsonIgnore
-	public String getOutFolder() {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public FoldersConfiguration getFoldersConfiguration() {
+		return foldersConfiguration;
 	}
 
 }
