@@ -30,7 +30,7 @@ public class ReportAnalysis extends AbstractAnalysis {
 	@Override
 	public void runOn(Source src) throws WorkspaceException {
 		LOGGER.info("Starting reporting analysis on " + src.getUrl() + ".");
-		String baseFolder = config.getOutFolder();
+		String baseFolder = config.getFoldersConfiguration().getOutFolder();
 		String urlFolder = convertToFolderName(src.getUrl());
 		Path outputPath = Paths.get(baseFolder,urlFolder);
 		File outputFolder = outputPath.toFile();

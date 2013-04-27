@@ -4,9 +4,6 @@ import static fr.labri.harmony.core.config.ConfigProperties.ANALYSES;
 import static fr.labri.harmony.core.config.ConfigProperties.DATABASE;
 import static fr.labri.harmony.core.config.ConfigProperties.FOLDERS;
 import static fr.labri.harmony.core.config.ConfigProperties.MANAGE_CREATE_SOURCES;
-import static fr.labri.harmony.core.config.ConfigProperties.OUT;
-import static fr.labri.harmony.core.config.ConfigProperties.TMP;
-import static fr.labri.harmony.core.config.JsonUtils.getString;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,10 +13,10 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.config.model.DatabaseConfiguration;
+import fr.labri.harmony.core.config.model.FoldersConfiguration;
 import fr.labri.harmony.core.config.model.SchedulerConfiguration;
 
 /**
@@ -32,7 +29,6 @@ public class GlobalConfigReader {
 
 	private JsonNode globalConfig;
 	private ObjectMapper mapper;
-
 
 	public GlobalConfigReader(String path) {
 		mapper = new ObjectMapper();
@@ -60,7 +56,9 @@ public class GlobalConfigReader {
 		ArrayNode n = (ArrayNode) globalConfig.get(ANALYSES);
 		for (JsonNode c : n) {
 			try {
-				configs.add(mapper.readValue(c.toString(), AnalysisConfiguration.class));
+				AnalysisConfiguration config = mapper.readValue(c.toString(), AnalysisConfiguration.class);
+				config.setFoldersConfiguration(getFoldersConfig());
+				configs.add(config);
 			} catch (IOException e) {
 				System.out.println("analysis config error");
 			}
@@ -68,7 +66,7 @@ public class GlobalConfigReader {
 		return configs;
 
 	}
-	
+
 	public SchedulerConfiguration getSchedulerConfiguration() {
 		JsonNode n = globalConfig.get(MANAGE_CREATE_SOURCES);
 		try {
@@ -78,12 +76,16 @@ public class GlobalConfigReader {
 		return new SchedulerConfiguration();
 	}
 
-
-	public ObjectNode getFoldersConfig() {
-		if (!globalConfig.has(FOLDERS)) return ConfigBuilder.getFoldersConfig(null, null);
-		JsonNode n = globalConfig.get(FOLDERS);
-		return ConfigBuilder.getFoldersConfig(getString(n.get(OUT)), getString(n.get(TMP)));
+	public FoldersConfiguration getFoldersConfig() {
+		if (globalConfig.has(FOLDERS)) {
+			JsonNode n = globalConfig.get(FOLDERS);
+			try {
+				return mapper.readValue(n.toString(), FoldersConfiguration.class);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return new FoldersConfiguration();
 	}
-
 
 }

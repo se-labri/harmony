@@ -3,6 +3,7 @@ package fr.labri.harmony.core.config.model;
 import java.util.Collection;
 import java.util.HashMap;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AnalysisConfiguration {
@@ -12,7 +13,7 @@ public class AnalysisConfiguration {
 	// List of analyses required by this analysis and thus they need to be performed before it
 	private Collection<String> dependencies;
 	
-	
+	private FoldersConfiguration foldersConfiguration;
 
 	public AnalysisConfiguration(){};
 	
@@ -34,7 +35,8 @@ public class AnalysisConfiguration {
 	public void setAnalysisName(String analysisName) {
 		this.analysisName = analysisName;
 	}
-
+	
+	//TODO options have to be tested
 	@JsonProperty("options")
 	public HashMap<String, String> getOptions() {
 		return options;
@@ -43,19 +45,25 @@ public class AnalysisConfiguration {
 	public void setOptions(HashMap<String, String> options) {
 		this.options = options;
 	}
-
-	public String getOutFolder() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	public Collection<String> getDependencies() {
 		return dependencies;
 	}
 
+	@JsonIgnore
 	public void setDependencies(Collection<String> dependencies) {
 		this.dependencies = dependencies;
 	}
+
+	public FoldersConfiguration getFoldersConfiguration() {
+		return foldersConfiguration;
+	}
+
+	@JsonIgnore
+	public void setFoldersConfiguration(FoldersConfiguration foldersConfiguration) {
+		this.foldersConfiguration = foldersConfiguration;
+	}
+	
 	
 
 }

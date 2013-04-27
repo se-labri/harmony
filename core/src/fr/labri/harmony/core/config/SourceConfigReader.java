@@ -32,7 +32,9 @@ public class SourceConfigReader {
 		ArrayList<SourceConfiguration> configs = new ArrayList<>();
 		for (JsonNode c : sourceConfig) {
 			try {
-				configs.add(mapper.readValue(c.toString(), SourceConfiguration.class));
+				SourceConfiguration config = mapper.readValue(c.toString(), SourceConfiguration.class);
+				config.setFoldersConfiguration(global.getFoldersConfig());
+				configs.add(config);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
