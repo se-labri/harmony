@@ -5,6 +5,10 @@ import fr.labri.utils.file.FileUtils;
 
 public abstract class AbstractLocalWorkspace extends AbstractWorkspace {
 
+	public AbstractLocalWorkspace(SourceExtractor<?> sourceExtractor) {
+		super(sourceExtractor);
+	}
+
 	protected String path;
 	
 	public void init() throws WorkspaceException {

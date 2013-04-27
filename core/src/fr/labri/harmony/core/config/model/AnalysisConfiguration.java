@@ -1,6 +1,7 @@
 package fr.labri.harmony.core.config.model;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -15,10 +16,12 @@ public class AnalysisConfiguration {
 	
 	private FoldersConfiguration foldersConfiguration;
 
-	public AnalysisConfiguration(){};
+	public AnalysisConfiguration(){
+		dependencies = Collections.emptyList();
+	};
 	
 	public AnalysisConfiguration(String analysisName) {
-		super();
+		this();
 		this.analysisName = analysisName;
 	}
 	

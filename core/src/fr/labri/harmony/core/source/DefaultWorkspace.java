@@ -9,6 +9,10 @@ import fr.labri.harmony.core.model.Event;
  */
 public class DefaultWorkspace extends AbstractWorkspace {
 
+	public DefaultWorkspace(SourceExtractor<?> sourceExtractor) {
+		super(sourceExtractor);
+	}
+
 	@Override
 	public void init() throws WorkspaceException {
 	}
