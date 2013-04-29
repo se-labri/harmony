@@ -14,7 +14,6 @@ public interface Workspace {
 	 */
     void init() throws WorkspaceException;
     
-    void setSourceExtractor(SourceExtractor<?> e);
     
     /**
      * Updates the workspace to its state after the given {@link Event}
@@ -22,8 +21,7 @@ public interface Workspace {
      * @return The workspace path
      * @throws WorkspaceException
      */
-    //FIXME: is returning the workspace path necessary?
-    String update(Event e) throws WorkspaceException;
+     void update(Event e) throws WorkspaceException;
     
     /**
      * Clean the workspace

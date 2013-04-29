@@ -5,10 +5,6 @@ import fr.labri.harmony.core.model.Source;
 
 public interface Analysis {
 
-	static final String PROPERTY_DEPENDENCIES = "depends";
-
-	static final String PROPERTY_PERSISTENCE_UNIT = "persistence-unit";
-
 	/**
 	 * Main method of an analysis. Called when the source has been initialized
 	 * 
@@ -16,9 +12,9 @@ public interface Analysis {
 	 */
 	void runOn(Source src);
 
-	String getPersistenceUnit();
-
-	String getDependencies();
-
+	/**
+	 * Implemented by {@link AbstractAnalysis#getConfig()}
+	 * 
+	 */
 	AnalysisConfiguration getConfig();
 }

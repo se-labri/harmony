@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AnalysisConfiguration {
 	private String analysisName;
+	private String persistenceUnit;
+	
 	private HashMap<String,String> options;
 	
 	// List of analyses required by this analysis and thus they need to be performed before it
@@ -67,6 +69,15 @@ public class AnalysisConfiguration {
 		this.foldersConfiguration = foldersConfiguration;
 	}
 	
+	@JsonIgnore
+	public String getPersistenceUnit() {
+		return persistenceUnit;
+	}
+
+	public void setPersistenceUnit(String persistenceUnit) {
+		this.persistenceUnit = persistenceUnit;
+	}
+
 	
 
 }

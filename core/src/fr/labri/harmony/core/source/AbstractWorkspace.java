@@ -10,10 +10,6 @@ public abstract class AbstractWorkspace implements Workspace {
 		this.sourceExtractor = sourceExtractor;
 	}
 	
-	@Override
-	public void setSourceExtractor(SourceExtractor<?> sourceExtractor) {
-		this.sourceExtractor = sourceExtractor;
-	}
 	
 	public String getTmpPath() {
 		return sourceExtractor.getConfig().getFoldersConfiguration().getTmpFolder();

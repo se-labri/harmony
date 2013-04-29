@@ -3,6 +3,7 @@ package fr.labri.harmony.core.dao;
 import java.util.List;
 import java.util.logging.Logger;
 
+import fr.labri.harmony.core.analysis.Analysis;
 import fr.labri.harmony.core.config.model.DatabaseConfiguration;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.Author;
@@ -43,7 +44,7 @@ public interface Dao {
 	
 	List<Action> getActions(Source s);
 	
-	void saveData(String analysis, Data d, int elementKind, int elementId);
+	void saveData(Analysis analysis, Data d, int elementKind, int elementId);
 	
 	<D extends Data> List<D> getDataList(String analysis, Class<D> d, int elementKind, int elementId);
 	

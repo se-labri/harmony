@@ -24,13 +24,12 @@ public class GitWorkspace extends AbstractLocalWorkspace {
 	}
 
 	@Override
-	public String update(Event e) throws WorkspaceException {
+	public void update(Event e) throws WorkspaceException {
 		try {
 			ProcessBuilder b = new ProcessBuilder("git", "reset", "--hard", e.getNativeId());
 			b.directory(new File(getPath()));
 			Process p = b.start();
 			p.waitFor();
-			return getPath();
 		} catch (Exception ex) {
 			throw new WorkspaceException(ex);
 		}
