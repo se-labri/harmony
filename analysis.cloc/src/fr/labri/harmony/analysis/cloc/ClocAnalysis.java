@@ -34,7 +34,8 @@ public class ClocAnalysis extends AbstractAnalysis {
     public void runOn(Source src) throws WorkspaceException {
     	LOGGER.info("Starting ClocAnalysis on source: " + src);
     	for (Event ev : src.getEvents()) {
-            String workspacePath = src.getWorkspace().update(ev);
+    		src.getWorkspace().update(ev);
+            String workspacePath = src.getWorkspace().getPath();
             try {
                 Process p = Runtime.getRuntime().exec(new String[] { "cloc", new File(workspacePath).getAbsolutePath(), "--xml", "--quiet" });
                 BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -67,7 +68,7 @@ public class ClocAnalysis extends AbstractAnalysis {
                     entries.getEntries().add(e);
                 }
 
-                dao.saveData(getPersistenceUnit(), entries, Data.EVENT, ev.getId());
+                dao.saveData(this, entries, Data.EVENT, ev.getId());
                 p.waitFor();
             } catch (Exception ex) {
                throw new WorkspaceException(ex);

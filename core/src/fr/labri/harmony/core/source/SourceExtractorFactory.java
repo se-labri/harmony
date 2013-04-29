@@ -26,6 +26,11 @@ public class SourceExtractorFactory {
 			Collection<ServiceReference<SourceExtractor>> refs = context.getServiceReferences(SourceExtractor.class, AbstractHarmonyService.getFilter(config.getSourceExtractorName()));
 			if (refs != null && !refs.isEmpty()) {
 				ServiceReference<SourceExtractor> ref = refs.iterator().next();
+				
+				if(refs.size()>1){
+					// TODO LOG : Multiple implementations of the source extractor +config.getSourceExtractorName()+ have been found. The first one found has been selected
+				}
+				
 				Properties properties = extractProperties(ref);
 				SourceExtractor<?> serviceDef = context.getService(ref);
 				SourceExtractor<?> service = serviceDef.getClass().getConstructor(SourceConfiguration.class, Dao.class, Properties.class).newInstance(config, dao, properties);

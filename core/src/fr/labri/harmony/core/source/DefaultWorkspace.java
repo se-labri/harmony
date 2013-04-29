@@ -18,7 +18,7 @@ public class DefaultWorkspace extends AbstractWorkspace {
 	}
 
 	@Override
-	public String update(Event e) throws WorkspaceException {
+	public void update(Event e) throws WorkspaceException {
 		throw new WorkspaceException("Workspace not updatable.");
 	}
 

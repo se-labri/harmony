@@ -16,6 +16,7 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.jpa.EntityManagerFactoryBuilder;
 
+import fr.labri.harmony.core.analysis.Analysis;
 import fr.labri.harmony.core.config.model.DatabaseConfiguration;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.Author;
@@ -155,10 +156,10 @@ public class DaoImpl implements Dao {
 	}
 
 	@Override
-	public void saveData(String a, Data d, int elementKind, int elementId) {
+	public void saveData(Analysis a, Data d, int elementKind, int elementId) {
 		d.setElementId(elementId);
 		d.setElementKind(elementKind);
-		EntityManager m = getEntityManager(a);
+		EntityManager m = getEntityManager(a.getConfig().getPersistenceUnit());
 		m.getTransaction().begin();
 		m.persist(d);
 		m.getTransaction().commit();
