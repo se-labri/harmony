@@ -2,13 +2,8 @@
 <feature
       id="fr.labri.harmony.core.feature"
       label="Harmony Core"
-      version="1.0.0">
-
-   <url>
-      <discovery label="Juno" url="http://download.eclipse.org/releases/juno"/>
-      <discovery label="Gemini" url="http://download.eclipse.org/gemini/updates/jpa/1.1.0"/>
-      <discovery label="DBAccess" url="http://download.eclipse.org/gemini/updates/dbaccess/1.1.0"/>
-   </url>
+      version="1.0.0"
+      plugin="fr.labri.harmony.core">
 
    <requires>
       <import feature="org.eclipse.gemini.dbaccess.feature" version="1.1.0.RELEASE"/>
@@ -21,13 +16,6 @@
       <import plugin="org.eclipse.persistence.core"/>
       <import plugin="org.eclipse.persistence.jpa"/>
    </requires>
-
-   <plugin
-         id="fr.labri.harmony.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="jackson"

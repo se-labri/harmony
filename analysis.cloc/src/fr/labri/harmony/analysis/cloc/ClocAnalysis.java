@@ -16,7 +16,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import fr.labri.harmony.core.AbstractAnalysis;
+import fr.labri.harmony.core.analysis.AbstractAnalysis;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.model.Data;
@@ -25,9 +25,6 @@ import fr.labri.harmony.core.model.Source;
 import fr.labri.harmony.core.source.WorkspaceException;
 
 public class ClocAnalysis extends AbstractAnalysis {
-
-	public ClocAnalysis() {
-	}
 	
     public ClocAnalysis(AnalysisConfiguration config, Dao dao, Properties properties) {
 		super(config, dao, properties);

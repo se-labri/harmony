@@ -1,4 +1,4 @@
-package fr.labri.harmony.core.test;
+package fr.labri.harmony.core;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -2,6 +2,9 @@ package fr.labri.harmony.core.config.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Threads Configuration
+ */
 public class SchedulerConfiguration {
 	private int numberOfThreads = 1;
 

@@ -8,7 +8,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import fr.labri.harmony.core.Analysis;
+import fr.labri.harmony.core.analysis.Analysis;
 import fr.labri.harmony.core.analysis.AnalysisFactory;
 import fr.labri.harmony.core.config.GlobalConfigReader;
 import fr.labri.harmony.core.config.SourceConfigReader;
@@ -28,12 +28,20 @@ public class StudyScheduler {
 	private ExecutorService threadsPool;
 	private SchedulerConfiguration schedulerConfiguration;
 	private Dao dao;
+
 	public StudyScheduler(SchedulerConfiguration schedulerConfiguration) {
 		this.schedulerConfiguration = schedulerConfiguration;
 	}
 
 	// TODO instrumentation for performance assessment as well as report
 	// creation (analyses failed/done)
+	/**
+	 * Main method of the core. Runs all analyses on all sources according to
+	 * the configuration
+	 * 
+	 * @param global
+	 * @param sources
+	 */
 	public void run(GlobalConfigReader global, SourceConfigReader sources) {
 
 		// We create a global DAO which is in charge of building and managing
@@ -70,8 +78,13 @@ public class StudyScheduler {
 
 	}
 
-	// TODO check and comment
-	public List<Analysis> getScheduledAnalyses(List<AnalysisConfiguration> analysisConfigurations) {
+	/**
+	 * 
+	 * @param analysisConfigurations
+	 * @return A list of {@link Analysis} which is order according to the
+	 *         execution order
+	 */
+	private List<Analysis> getScheduledAnalyses(List<AnalysisConfiguration> analysisConfigurations) {
 
 		AnalysisFactory factory = new AnalysisFactory(dao);
 		Dag<Analysis> analysisDAG = new Dag<Analysis>();
@@ -82,7 +95,9 @@ public class StudyScheduler {
 
 			analysisDAG.addVertex(analysisConfiguration.getAnalysisName(), currentAnalysis);
 			for (String requiredAnalysis : analysisConfiguration.getDependencies()) {
-				// TODO Mat check the direction
+				// To have a Topological Sorting that returns the execution
+				// order, the edges have to be oriented as
+				// dependency -> dependent
 				analysisDAG.addEdge(requiredAnalysis, analysisConfiguration.getAnalysisName());
 			}
 
