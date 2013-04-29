@@ -9,7 +9,6 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
 import fr.labri.harmony.core.AbstractHarmonyService;
-import fr.labri.harmony.core.Analysis;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 

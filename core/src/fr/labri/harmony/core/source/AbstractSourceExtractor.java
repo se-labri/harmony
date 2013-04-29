@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Properties;
 
 import fr.labri.harmony.core.AbstractHarmonyService;
-import fr.labri.harmony.core.Analysis;
+import fr.labri.harmony.core.analysis.Analysis;
 import fr.labri.harmony.core.config.model.SourceConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.model.Source;

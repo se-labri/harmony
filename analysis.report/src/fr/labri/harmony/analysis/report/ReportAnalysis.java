@@ -12,16 +12,13 @@ import org.jfree.chart.ChartUtilities;
 
 import fr.labri.harmony.analysis.report.charts.ClocChart;
 import fr.labri.harmony.analysis.report.charts.ItemNumberChart;
-import fr.labri.harmony.core.AbstractAnalysis;
+import fr.labri.harmony.core.analysis.AbstractAnalysis;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.model.Source;
 import fr.labri.harmony.core.source.WorkspaceException;
 
 public class ReportAnalysis extends AbstractAnalysis {
-
-	public ReportAnalysis() {
-	}
 
 	public ReportAnalysis(AnalysisConfiguration config, Dao dao, Properties properties) {
 		super(config, dao, properties);
