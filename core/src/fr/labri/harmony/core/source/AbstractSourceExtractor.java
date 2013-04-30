@@ -12,11 +12,11 @@ import fr.labri.harmony.core.model.Source;
 
 public abstract class AbstractSourceExtractor<W extends Workspace> extends AbstractHarmonyService implements SourceExtractor<W> {
 
-	//Vcs properties
+	// Vcs properties
 	public final static String COMMIT_LOG = "commit_log";
 	public final static String COMMITTER = "committer";
 	public final static String BRANCH = "branch";
-	
+
 	protected W workspace;
 
 	protected Source source;
@@ -29,6 +29,10 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 		super(dao, properties);
 		this.config = config;
 		analyses = new ArrayList<>();
+	}
+
+	public AbstractSourceExtractor() {
+		super();
 	}
 
 	@Override
@@ -57,7 +61,7 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 		source = new Source();
 		source.setUrl(getUrl());
 		source.setWorkspace(workspace);
-		
+
 		dao.saveSource(source);
 		// FIXME seems really long!
 		extractSource();

@@ -2,7 +2,7 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="false" name="ReportAnalysis">
 <implementation class="fr.labri.harmony.analysis.report.ReportAnalysis"/>
    <service>
-      <provide interface="fr.labri.harmony.core.Analysis"/>
+      <provide interface="fr.labri.harmony.core.analysis.Analysis"/>
    </service>
    <property name="persistence-unit" type="String" value="report"/>
    <property name="depends" type="String" value="ClocAnalysis"/>

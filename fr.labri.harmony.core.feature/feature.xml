@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="fr.labri.harmony.core.feature"
+      id="fr.labri.harmony.core"
       label="Harmony Core"
-      version="1.0.0"
+      version="1.0.0.qualifier"
       plugin="fr.labri.harmony.core">
 
    <requires>
@@ -33,6 +33,13 @@
 
    <plugin
          id="h2"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="fr.labri.harmony.core"
          download-size="0"
          install-size="0"
          version="0.0.0"

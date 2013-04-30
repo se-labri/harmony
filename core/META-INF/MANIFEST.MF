@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Meta-Persistence: META-INF/persistence.xml
 Service-Component: OSGI-INF/*.xml
 Bundle-ManifestVersion: 2
-Bundle-Name: Core
+Bundle-Name: Harmony Core
 Bundle-SymbolicName: fr.labri.harmony.core;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: fr.labri.harmony.core.CoreActivator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

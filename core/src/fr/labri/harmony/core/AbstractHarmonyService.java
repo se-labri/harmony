@@ -12,7 +12,6 @@ public abstract class AbstractHarmonyService {
 
 	protected Dao dao;
 	
-
 	/**
 	 * Properties defined in the service's component.xml
 	 */
