@@ -39,7 +39,7 @@ public class AnalysisFactory {
 			String dependencies = (String) analysisReference.getProperty(PROPERTY_DEPENDENCIES);
 			if (dependencies != null) analysisConfig.setDependencies(Arrays.asList(dependencies.split(":")));
 			
-			analysisConfig.setPersistenceUnit((String) analysisReference.getProperty(PROPERTY_DEPENDENCIES));
+			analysisConfig.setPersistenceUnit((String) analysisReference.getProperty(PROPERTY_PERSISTENCE_UNIT));
 
 
 			Analysis analysis = context.getService(analysisReference).getClass().getConstructor(AnalysisConfiguration.class, Dao.class, Properties.class)
@@ -50,7 +50,6 @@ public class AnalysisFactory {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		return null;
 	}
 	private Properties extractProperties(ServiceReference<?> ref) {

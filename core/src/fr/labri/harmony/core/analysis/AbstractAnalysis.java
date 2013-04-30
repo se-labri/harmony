@@ -13,6 +13,10 @@ import fr.labri.harmony.core.dao.Dao;
 public abstract class AbstractAnalysis extends AbstractHarmonyService implements Analysis {
 
 	protected AnalysisConfiguration config;
+	
+	public AbstractAnalysis() {
+		super();
+	}
 
 	public AbstractAnalysis(AnalysisConfiguration config, Dao dao, Properties properties) {
 		// Be careful if you modify the signature of this constructor, it is

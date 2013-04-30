@@ -34,7 +34,6 @@ public class ClocChart extends ProduceChart {
 		XYSeries java = new XYSeries("Java CLOC");
 		int nb = 0;
 		List<Event> events = new ArrayList<>(src.getEvents());
-		System.out.println(events.size());
 		Collections.sort(events, new EventComparator());
 		for(Event event: events) {
 			ClocEntries entries = dao.getData("cloc", ClocEntries.class, Data.EVENT, event.getId());

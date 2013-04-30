@@ -20,6 +20,10 @@ import fr.labri.harmony.core.source.WorkspaceException;
 
 public class ReportAnalysis extends AbstractAnalysis {
 
+	public ReportAnalysis() {
+		super();
+	}
+
 	public ReportAnalysis(AnalysisConfiguration config, Dao dao, Properties properties) {
 		super(config, dao, properties);
 	}
@@ -29,10 +33,10 @@ public class ReportAnalysis extends AbstractAnalysis {
 		LOGGER.info("Starting reporting analysis on " + src.getUrl() + ".");
 		String baseFolder = config.getFoldersConfiguration().getOutFolder();
 		String urlFolder = convertToFolderName(src.getUrl());
-		Path outputPath = Paths.get(baseFolder,urlFolder);
+		Path outputPath = Paths.get(baseFolder, urlFolder);
 		File outputFolder = outputPath.toFile();
 		if (!outputFolder.exists()) outputFolder.mkdir();
-		for (ProduceChart produce: getProduceCharts()) {
+		for (ProduceChart produce : getProduceCharts()) {
 			try {
 				ChartUtilities.saveChartAsPNG(new File(outputFolder.getAbsolutePath() + File.separator + produce.getChartName() + ".png"), produce.createChart(src), 1680, 1050);
 			} catch (IOException e) {
@@ -45,21 +49,21 @@ public class ReportAnalysis extends AbstractAnalysis {
 		List<ProduceChart> produces = new ArrayList<>();
 		produces.add(new ItemNumberChart(dao));
 		produces.add(new ClocChart(dao));
-		//produces.add(new EventAuthorChart(dao));
-		//produces.add(new ActionAuthorChart(dao));
-		//produces.add(new AuthorEventChart(dao));
-		//produces.add(new ItemEditionChart(dao));
-		//produces.add(new ItemAuthorChart(dao));
-		//produces.add(new ItemKindChart(dao));
-		//produces.add(new AuthorItemCreateChart(dao));
-		//produces.add(new AuthorItemDeleteChart(dao));
-		//produces.add(new AuthorItemNonSelfDeleteChart(dao));
-		//produces.add(new AuthorDeletedRatioChart(dao));
-		//produces.add(new AuthorActionChart(dao));
+		// produces.add(new EventAuthorChart(dao));
+		// produces.add(new ActionAuthorChart(dao));
+		// produces.add(new AuthorEventChart(dao));
+		// produces.add(new ItemEditionChart(dao));
+		// produces.add(new ItemAuthorChart(dao));
+		// produces.add(new ItemKindChart(dao));
+		// produces.add(new AuthorItemCreateChart(dao));
+		// produces.add(new AuthorItemDeleteChart(dao));
+		// produces.add(new AuthorItemNonSelfDeleteChart(dao));
+		// produces.add(new AuthorDeletedRatioChart(dao));
+		// produces.add(new AuthorActionChart(dao));
 		return produces;
 	}
 
 	private static String convertToFolderName(String src) {
-		return src.replaceAll("http://", "").replaceAll("https://", "").replaceAll("/","-").replaceAll(":", "");
+		return src.replaceAll("http://", "").replaceAll("https://", "").replaceAll("/", "-").replaceAll(":", "");
 	}
 }
