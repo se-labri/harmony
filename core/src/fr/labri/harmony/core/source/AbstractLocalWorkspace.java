@@ -11,6 +11,7 @@ public abstract class AbstractLocalWorkspace extends AbstractWorkspace {
 
 	protected String path;
 	
+	@Override
 	public void init() throws WorkspaceException {
 		path = FileUtils.createTmpFolder("workspace", getTmpPath());
 		LOGGER.info("Created folder for local workspace in: " + getPath());
