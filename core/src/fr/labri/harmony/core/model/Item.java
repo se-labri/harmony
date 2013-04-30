@@ -26,6 +26,12 @@ public class Item extends SourceElement {
 		this.actions = new ArrayList<Action>();
 	}
 	
+	public Item(Source source, String path) {
+		super();
+		setSource(source);
+		setNativeId(path);
+	}
+
 	public int getId() {
 		return id;
 	}

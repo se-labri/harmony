@@ -8,6 +8,7 @@
    <requires>
       <import plugin="fr.labri.harmony.core" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="jackson" version="2.1.4" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jgit" version="2.2.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

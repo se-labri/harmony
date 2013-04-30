@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/fr.harmony.analysis.cloc_1.0.0.201304301230.jar" id="fr.harmony.analysis.cloc" version="1.0.0.201304301230">
+   <feature url="features/fr.harmony.analysis.cloc_1.0.0.201304301607.jar" id="fr.harmony.analysis.cloc" version="1.0.0.201304301607">
       <category name="harmony"/>
    </feature>
-   <feature url="features/fr.harmony.anaylisis.report_1.0.0.201304301230.jar" id="fr.harmony.anaylisis.report" version="1.0.0.201304301230">
+   <feature url="features/fr.harmony.anaylisis.report_1.0.0.201304301607.jar" id="fr.harmony.anaylisis.report" version="1.0.0.201304301607">
       <category name="harmony"/>
    </feature>
-   <feature url="features/fr.labri.harmony.core_1.0.0.201304301230.jar" id="fr.labri.harmony.core" version="1.0.0.201304301230">
+   <feature url="features/fr.labri.harmony.core_1.0.0.201304301607.jar" id="fr.labri.harmony.core" version="1.0.0.201304301607">
       <category name="harmony"/>
    </feature>
-   <feature url="features/fr.labri.harmony.source.git_1.0.0.201304301230.jar" id="fr.labri.harmony.source.git" version="1.0.0.201304301230">
+   <feature url="features/fr.labri.harmony.source.git_1.0.0.201304301607.jar" id="fr.labri.harmony.source.git" version="1.0.0.201304301607">
       <category name="harmony"/>
    </feature>
    <category-def name="harmony" label="Harmony"/>
