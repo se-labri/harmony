@@ -83,7 +83,7 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 		case "D":
 			return ActionKind.Delete;
 		default:
-			LOGGER.severe("Unknown action kind: " + s);
+			LOGGER.error("Unknown action kind: " + s);
 			return null;
 		}
 	}
@@ -157,13 +157,6 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 		} catch (Exception ex) {
 			throw new SourceExtractorException(ex);
 		}
-	}
-
-	@Override
-	public void extractSource() {
-		extractEvents();
-		for (Event e : source.getEvents())
-			extractActions(e);
 	}
 
 	@Override

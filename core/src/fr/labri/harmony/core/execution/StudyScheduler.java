@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.labri.harmony.core.analysis.Analysis;
 import fr.labri.harmony.core.analysis.AnalysisFactory;
@@ -22,7 +24,7 @@ import fr.labri.harmony.core.source.SourceExtractorFactory;
 
 public class StudyScheduler {
 
-	private final static Logger LOGGER = Logger.getLogger("fr.labri.harmony.scheduler");
+	private static Logger LOGGER;
 	private static final int NUMBER_OF_EXECUTION_UNIT_AVAILABLE = Runtime.getRuntime().availableProcessors();
 
 	private ExecutorService threadsPool;
@@ -30,6 +32,7 @@ public class StudyScheduler {
 	private Dao dao;
 
 	public StudyScheduler(SchedulerConfiguration schedulerConfiguration) {
+		LOGGER = LoggerFactory.getLogger(getClass());
 		this.schedulerConfiguration = schedulerConfiguration;
 	}
 
@@ -113,7 +116,14 @@ public class StudyScheduler {
 
 		// Before launching any analysis on the source we must extract it (clone
 		// repository, build and store of the Harmony model)
-		sourceExtractor.initializeSourceFully();
+		
+		// If at least one analysis requires the actions, we have to extract them
+		boolean extractActions = false;
+		for (Analysis a : scheduledAnalyses) {
+			extractActions = (a.getConfig().requireActions()) || extractActions;
+		}
+		
+		sourceExtractor.initializeSource(extractActions);
 
 		// We create a thread dedicated to this source. It will be in charge of
 		// launching the set of analyses on it
@@ -131,7 +141,7 @@ public class StudyScheduler {
 					}
 
 				} catch (Exception e) {
-					LOGGER.severe(e.getMessage());
+					LOGGER.error(e.getMessage());
 					e.printStackTrace();
 				}
 			}
@@ -149,14 +159,14 @@ public class StudyScheduler {
 			// terminate
 			if (!threadsPool.awaitTermination(schedulerConfiguration.getGlobalTimeOut(), TimeUnit.MINUTES)) {
 
-				LOGGER.severe("Execution timeout, the pool of analysis threads will be shutdown (You may check your configuration file for running longer analysis)");
+				LOGGER.error("Execution timeout, the pool of analysis threads will be shutdown (You may check your configuration file for running longer analysis)");
 
 				// Cancel currently executing tasks
 				threadsPool.shutdownNow();
 
 				// Wait a while for tasks to respond to being cancelled
 				if (!threadsPool.awaitTermination(60, TimeUnit.SECONDS)) {
-					LOGGER.severe("Harmony was not able to shutdown the pool of threads in charge of running your analyses");
+					LOGGER.error("Harmony was not able to shutdown the pool of threads in charge of running your analyses");
 				}
 			}
 		} catch (InterruptedException ie) {

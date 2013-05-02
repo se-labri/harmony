@@ -107,7 +107,7 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 			kind = ActionKind.Create;
 			break;
 		default:
-			LOGGER.severe("Unknown action kind: " + d.getChangeType());
+			LOGGER.error("Unknown action kind: " + d.getChangeType());
 			break;
 		}
 		Item i = dao.getItem(source, path);
@@ -123,13 +123,6 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 	public void initializeWorkspace() {
 		workspace = new JGitWorkspace(this);
 		workspace.init();
-	}
-
-	@Override
-	public void extractSource() {
-		extractEvents();
-		for (Event e : source.getEvents())
-			extractActions(e);
 	}
 
 	@Override

@@ -10,11 +10,13 @@
 		"timeout":100000
 	},
 	"source-analyses":[
-		{
-			"class":"ClocAnalysis"	
+	{
+			"class":"ClocAnalysis",
+			"require-actions":false
 		},
 		{
-			"class":"ReportAnalysis"	
+			"class":"ReportAnalysis",
+			"require-actions":false
 		}
 	]
 }
