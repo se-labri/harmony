@@ -13,27 +13,17 @@ public interface SourceExtractor<W extends Workspace> {
 	W getWorkspace();
 
 	/**
-	 * Build the complete Harmony model thanks to the local repository.
-	 * This method depends on :
-	 * - {@link initializeWorkspace()} for building the local repository
-	 * - {@link extractSource()} for building entirely the source
+	 * Initializes the workspace and extracts the harmony model from the source </br>
+	 * 
+	 * @param extractActions
+	 *            Whether {@link #extractActions(Event)} will be called or not.
 	 */
-	void initializeSourceFully();
-	
-	//TODO offer partial loading of the model in the database with another method
-	
+	void initializeSource(boolean extractActions);
+
 	/**
-	 * Initialize the workspace by performing the clone operation on the repository 
+	 * Initialize the workspace by performing the clone operation on the repository
 	 */
 	void initializeWorkspace();
-	
-	/**
-	 * Build the source entirely. That means that every Harmony entity (event,action) is loaded then stored in the database
-	 * This method depends on :
-	 * - {@link extractEvents()}
-	 * - {@link extractActions(Event e)}
-	 */
-	void extractSource();
 
 	void extractEvents();
 
