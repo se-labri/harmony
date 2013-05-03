@@ -6,7 +6,12 @@ Bundle-SymbolicName: fr.labri.harmony.source.git
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: fr.labri.harmony.core;bundle-version="1.0.0",
- jackson;bundle-version="2.1.4",
- org.eclipse.jgit;bundle-version="2.2.0"
+ jackson;bundle-version="2.1.4"
 Export-Package: fr.labri.harmony.source.git
-Import-Package: org.slf4j;version="1.6.4"
+Import-Package: org.eclipse.jgit.api,
+ org.eclipse.jgit.diff,
+ org.eclipse.jgit.lib,
+ org.eclipse.jgit.revwalk,
+ org.eclipse.jgit.treewalk,
+ org.eclipse.jgit.util.io,
+ org.slf4j
