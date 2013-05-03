@@ -25,10 +25,7 @@ Export-Package: fr.labri.harmony.core,
  fr.labri.harmony.core.config.model,
  fr.labri.harmony.core.dao,
  fr.labri.harmony.core.model,
- fr.labri.harmony.core.source,
- fr.labri.utils.collections,
- fr.labri.utils.digest,
- fr.labri.utils.file
-Bundle-ClassPath: .,
- lib/utils.jar
-Require-Bundle: jackson;bundle-version="2.1.0"
+ fr.labri.harmony.core.source
+Bundle-ClassPath: .
+Require-Bundle: jackson;bundle-version="2.1.0",
+ org.apache.commons.io;bundle-version="2.0.1"

@@ -1,6 +1,10 @@
 package fr.labri.harmony.core.source;
 
-import fr.labri.utils.file.FileUtils;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+
+import org.apache.commons.io.FileUtils;
 
 
 public abstract class AbstractLocalWorkspace extends AbstractWorkspace {
@@ -12,15 +16,34 @@ public abstract class AbstractLocalWorkspace extends AbstractWorkspace {
 	protected String path;
 	
 	@Override
-	public void init() throws WorkspaceException {
-		path = FileUtils.createTmpFolder("workspace", getTmpPath());
-		LOGGER.info("Created folder for local workspace in: " + getPath());
+	public void init() {
+		try {
+			URL url = new URL(getUrl());
+			File workspaceDir = new File(getTmpPath() + "/" + url.getHost() + url.getPath());
+			FileUtils.forceMkdir(workspaceDir);
+			path = workspaceDir.getAbsolutePath();
+
+			if (isInitialized()) {
+				LOGGER.info("Initializing existing local workspace at: " + getPath());
+				initExistingWorkspace();
+			} else {
+				LOGGER.info("Initializing new local workspace at: " + getPath());
+				FileUtils.cleanDirectory(workspaceDir);
+				initNewWorkspace();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
+
+	public abstract boolean isInitialized();
+	public abstract void initNewWorkspace();
+	public abstract void initExistingWorkspace();
 
 	@Override
 	public void clean() throws WorkspaceException {
-		FileUtils.deleteFolder(path);
-		LOGGER.info("Deleted folder for local workspace in: " + getPath());
+		/*FileUtils.deleteFolder(path);
+		LOGGER.info("Deleted folder for local workspace in: " + getPath());*/
 	}
 
 	public String getPath() {
