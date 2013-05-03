@@ -19,16 +19,38 @@ public class JGitWorkspace extends AbstractLocalWorkspace {
 		super(sourceExtractor);
 	}
 	
-
 	public Git getGit() {
 		return git;
 	}
 	
 	@Override
-	public void init() throws WorkspaceException {
+	public void init() {
 		super.init();
+	}
+
+	@Override
+	public boolean isInitialized() {
+		try {
+			Git.open(new File(getPath()));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	@Override
+	public void initNewWorkspace() {
 		try {
 			git = Git.cloneRepository().setURI(getUrl()).setDirectory(new File((getPath()))).setTimeout(600).call();
+		} catch (Exception e) {
+			throw new WorkspaceException(e);
+		}
+	}
+
+	@Override
+	public void initExistingWorkspace() {
+		try {
+			git = Git.open(new File(getPath()));
 		} catch (Exception e) {
 			throw new WorkspaceException(e);
 		}

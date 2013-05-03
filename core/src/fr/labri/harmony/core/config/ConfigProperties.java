@@ -20,7 +20,7 @@ public class ConfigProperties {
 	public static final String ANALYSES = "source-analyses";
 	public static final String CLASSPATH = "classpath";
 	
-	public static final String DEFAULT_TMP_FOLDER = "harmony";
+	public static final String DEFAULT_TMP_FOLDER = "tmp";
 	public static final String DEFAULT_OUT_FOLDER = "out";
 	public static final String DEFAULT_DB_NAME = "harmony";
 	public static final String DEFAULT_DB_SERVER = "localhost";
