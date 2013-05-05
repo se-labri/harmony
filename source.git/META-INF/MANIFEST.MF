@@ -13,5 +13,4 @@ Import-Package: org.eclipse.jgit.api,
  org.eclipse.jgit.lib,
  org.eclipse.jgit.revwalk,
  org.eclipse.jgit.treewalk,
- org.eclipse.jgit.util.io,
- org.slf4j
+ org.eclipse.jgit.util.io

@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import fr.labri.harmony.core.config.model.SourceConfiguration;
 import fr.labri.harmony.core.dao.Dao;
+import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.ActionKind;
 import fr.labri.harmony.core.model.Author;
@@ -83,7 +84,7 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 		case "D":
 			return ActionKind.Delete;
 		default:
-			LOGGER.error("Unknown action kind: " + s);
+			HarmonyLogger.error("Unknown action kind: " + s);
 			return null;
 		}
 	}
@@ -92,7 +93,7 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 
 	@Override
 	public void extractEvents() {
-		LOGGER.info("Starting event extraction for source : " + source + ".");
+		HarmonyLogger.info("Starting event extraction for source : " + source + ".");
 		try {
 			ArrayNode logs = extractGitLog();
 

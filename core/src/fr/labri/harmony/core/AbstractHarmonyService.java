@@ -2,15 +2,11 @@ package fr.labri.harmony.core;
 
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import fr.labri.harmony.core.dao.Dao;
 
 public abstract class AbstractHarmonyService {
 
 	public static final String PROPERTY_NAME = "component.name";
-	protected static Logger LOGGER;
 
 	protected Dao dao;
 	
@@ -20,7 +16,6 @@ public abstract class AbstractHarmonyService {
 	private Properties componentProperties;
 
 	public AbstractHarmonyService() {
-		LOGGER = LoggerFactory.getLogger(getClass());;
 	}
 
 	public AbstractHarmonyService(Dao dao, Properties properties) {
