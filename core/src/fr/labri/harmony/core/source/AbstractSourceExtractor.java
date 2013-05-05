@@ -8,6 +8,7 @@ import fr.labri.harmony.core.AbstractHarmonyService;
 import fr.labri.harmony.core.analysis.Analysis;
 import fr.labri.harmony.core.config.model.SourceConfiguration;
 import fr.labri.harmony.core.dao.Dao;
+import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.Source;
 
@@ -57,7 +58,7 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 	
 	@Override
 	public void initializeSource(boolean extractActions) {
-		LOGGER.debug("Initializing Workspace for source " + getUrl());
+		HarmonyLogger.info("Initializing Workspace for source " + getUrl());
 		initializeWorkspace();
 
 		source = new Source();
@@ -65,11 +66,11 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 		source.setWorkspace(workspace);
 
 		dao.saveSource(source);
-		LOGGER.debug("Extracting Events for source " + getUrl());
+		HarmonyLogger.info("Extracting Events for source " + getUrl());
 		extractEvents();
 		
 		if (extractActions) {
-			LOGGER.debug("Extracting Actions for source " + getUrl());
+			HarmonyLogger.info("Extracting Actions for source " + getUrl());
 			for (Event e : source.getEvents()) 
 				extractActions(e);
 		}

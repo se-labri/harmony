@@ -15,6 +15,7 @@ import fr.labri.harmony.analysis.report.charts.ItemNumberChart;
 import fr.labri.harmony.core.analysis.AbstractAnalysis;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
+import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Source;
 import fr.labri.harmony.core.source.WorkspaceException;
 
@@ -30,7 +31,7 @@ public class ReportAnalysis extends AbstractAnalysis {
 
 	@Override
 	public void runOn(Source src) throws WorkspaceException {
-		LOGGER.info("Starting reporting analysis on " + src.getUrl() + ".");
+		HarmonyLogger.info("Starting reporting analysis on " + src.getUrl() + ".");
 		String baseFolder = config.getFoldersConfiguration().getOutFolder();
 		String urlFolder = convertToFolderName(src.getUrl());
 		Path outputPath = Paths.get(baseFolder, urlFolder);

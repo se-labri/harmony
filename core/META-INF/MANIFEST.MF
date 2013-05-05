@@ -19,12 +19,12 @@ Import-Package: com.mysql.jdbc;version="5.1.24",
  org.eclipse.persistence.jpa;version="2.4.1",
  org.h2,
  org.osgi.framework;version="1.4.0",
- org.osgi.service.jpa,
- org.slf4j
+ org.osgi.service.jpa
 Export-Package: fr.labri.harmony.core,
  fr.labri.harmony.core.analysis,
  fr.labri.harmony.core.config.model,
  fr.labri.harmony.core.dao,
+ fr.labri.harmony.core.log,
  fr.labri.harmony.core.model,
  fr.labri.harmony.core.source
 Bundle-ClassPath: .

@@ -6,6 +6,8 @@ import java.net.URL;
 
 import org.apache.commons.io.FileUtils;
 
+import fr.labri.harmony.core.log.HarmonyLogger;
+
 
 public abstract class AbstractLocalWorkspace extends AbstractWorkspace {
 
@@ -24,10 +26,10 @@ public abstract class AbstractLocalWorkspace extends AbstractWorkspace {
 			path = workspaceDir.getAbsolutePath();
 
 			if (isInitialized()) {
-				LOGGER.info("Initializing existing local workspace at: " + getPath());
+				HarmonyLogger.info("Initializing existing local workspace at: " + getPath());
 				initExistingWorkspace();
 			} else {
-				LOGGER.info("Initializing new local workspace at: " + getPath());
+				HarmonyLogger.info("Initializing new local workspace at: " + getPath());
 				FileUtils.cleanDirectory(workspaceDir);
 				initNewWorkspace();
 			}

@@ -23,6 +23,7 @@ import org.eclipse.jgit.util.io.DisabledOutputStream;
 
 import fr.labri.harmony.core.config.model.SourceConfiguration;
 import fr.labri.harmony.core.dao.Dao;
+import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.ActionKind;
 import fr.labri.harmony.core.model.Author;
@@ -43,8 +44,6 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 
 	protected Map<String, RevCommit> revs = new HashMap<String, RevCommit>();
 
-	
-	
 	@Override
 	public void extractEvents() {
 		try {
@@ -74,11 +73,8 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 				dao.saveEvent(e);
 				// TODO : add commit log
 				/*
-				 * Metadata metadata = new Metadata();
-				 * metadata.getMetadata().put(VcsProperties.COMMIT_LOG,
-				 * c.getFullMessage());
-				 * metadata.getMetadata().put(VcsProperties.COMMITTER,
-				 * c.getCommitterIdent().getName()); dao.addData(e, metadata);
+				 * Metadata metadata = new Metadata(); metadata.getMetadata().put(VcsProperties.COMMIT_LOG, c.getFullMessage());
+				 * metadata.getMetadata().put(VcsProperties.COMMITTER, c.getCommitterIdent().getName()); dao.addData(e, metadata);
 				 */
 			}
 		} catch (Exception e) {
@@ -107,7 +103,7 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 			kind = ActionKind.Create;
 			break;
 		default:
-			LOGGER.error("Unknown action kind: " + d.getChangeType());
+			HarmonyLogger.error("Unknown action kind: " + d.getChangeType());
 			break;
 		}
 		Item i = dao.getItem(source, path);

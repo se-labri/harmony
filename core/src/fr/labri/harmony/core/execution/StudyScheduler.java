@@ -7,9 +7,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import fr.labri.harmony.core.analysis.Analysis;
 import fr.labri.harmony.core.analysis.AnalysisFactory;
 import fr.labri.harmony.core.config.GlobalConfigReader;
@@ -19,12 +16,12 @@ import fr.labri.harmony.core.config.model.SchedulerConfiguration;
 import fr.labri.harmony.core.config.model.SourceConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.dao.DaoImpl;
+import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.source.SourceExtractor;
 import fr.labri.harmony.core.source.SourceExtractorFactory;
 
 public class StudyScheduler {
 
-	private static Logger LOGGER;
 	private static final int NUMBER_OF_EXECUTION_UNIT_AVAILABLE = Runtime.getRuntime().availableProcessors();
 
 	private ExecutorService threadsPool;
@@ -32,7 +29,6 @@ public class StudyScheduler {
 	private Dao dao;
 
 	public StudyScheduler(SchedulerConfiguration schedulerConfiguration) {
-		LOGGER = LoggerFactory.getLogger(getClass());
 		this.schedulerConfiguration = schedulerConfiguration;
 	}
 
@@ -61,7 +57,7 @@ public class StudyScheduler {
 		if (this.schedulerConfiguration.getNumberOfThreads() > NUMBER_OF_EXECUTION_UNIT_AVAILABLE) {
 			// TODO Use an OSGI compliant logging service / Some profiling to
 			// determine best ration number of threads per core
-			LOGGER.info("You requested more threads than the number of execution unit (core) available, this choice might lead to lower execution performance");
+			HarmonyLogger.info("You requested more threads than the number of execution unit (core) available, this choice might lead to lower execution performance");
 		}
 		this.threadsPool = Executors.newFixedThreadPool(this.schedulerConfiguration.getNumberOfThreads());
 
@@ -141,7 +137,7 @@ public class StudyScheduler {
 					}
 
 				} catch (Exception e) {
-					LOGGER.error(e.getMessage());
+					HarmonyLogger.error(e.getMessage());
 					e.printStackTrace();
 				}
 			}
@@ -159,14 +155,14 @@ public class StudyScheduler {
 			// terminate
 			if (!threadsPool.awaitTermination(schedulerConfiguration.getGlobalTimeOut(), TimeUnit.MINUTES)) {
 
-				LOGGER.error("Execution timeout, the pool of analysis threads will be shutdown (You may check your configuration file for running longer analysis)");
+				HarmonyLogger.error("Execution timeout, the pool of analysis threads will be shutdown (You may check your configuration file for running longer analysis)");
 
 				// Cancel currently executing tasks
 				threadsPool.shutdownNow();
 
 				// Wait a while for tasks to respond to being cancelled
 				if (!threadsPool.awaitTermination(60, TimeUnit.SECONDS)) {
-					LOGGER.error("Harmony was not able to shutdown the pool of threads in charge of running your analyses");
+					HarmonyLogger.error("Harmony was not able to shutdown the pool of threads in charge of running your analyses");
 				}
 			}
 		} catch (InterruptedException ie) {

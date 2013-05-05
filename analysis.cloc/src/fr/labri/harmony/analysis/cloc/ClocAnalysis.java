@@ -18,6 +18,7 @@ import org.xml.sax.InputSource;
 import fr.labri.harmony.core.analysis.AbstractAnalysis;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
+import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Data;
 import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.Source;
@@ -35,7 +36,7 @@ public class ClocAnalysis extends AbstractAnalysis {
 
 	@Override
 	public void runOn(Source src) throws WorkspaceException {
-		LOGGER.info("Starting ClocAnalysis on source: " + src);
+		HarmonyLogger.info("Starting ClocAnalysis on source: " + src);
 		for (Event ev : src.getEvents()) {
 			src.getWorkspace().update(ev);
 			String workspacePath = src.getWorkspace().getPath();
