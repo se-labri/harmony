@@ -25,6 +25,7 @@ import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.Item;
 import fr.labri.harmony.core.model.Source;
 import fr.labri.harmony.core.model.SourceElement;
+import fr.labri.harmony.core.source.Workspace;
 
 public class DaoImpl implements Dao {
 
@@ -204,11 +205,30 @@ public class DaoImpl implements Dao {
 	}
 
 	@Override
-	public void refreshElement(Object o) {
+	public <T> T refreshElement(T element) {
 		EntityManager m = getEntityManager();
 		m.getTransaction().begin();
-		m.refresh(m.merge(o));
+		element = m.merge(element);
+		m.refresh(element);
 		m.getTransaction().commit();
+		
+		return element;
+	}
+
+	@Override
+	public Source refreshSource(Source source) {
+		Workspace ws = source.getWorkspace();
+		
+		EntityManager m = getEntityManager();
+		m.getTransaction().begin();
+		source = m.merge(source);
+		m.refresh(source);
+		m.getTransaction().commit();
+		
+		// The workspace is transient, so we have to reset it when refreshing the source;
+		source.setWorkspace(ws);
+		
+		return source;
 	}
 
 }

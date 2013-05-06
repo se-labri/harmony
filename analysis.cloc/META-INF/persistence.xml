@@ -17,8 +17,6 @@
 			<!-- Optimization #11 - disable caching for batch insert (caching only 
 				improves reads, so only adds overhead for inserts) -->
 			<property name="eclipselink.cache.shared.default" value="false" />
-			<!-- Except for Customer which is shared by orders -->
-			<property name="eclipselink.cache.shared.Customer" value="true" />
 			<!-- Optimization #12 - turn logging off -->
 			<!-- property name="eclipselink.logging.level" value="FINE" / -->
 			<property name="eclipselink.logging.level" value="off" />
