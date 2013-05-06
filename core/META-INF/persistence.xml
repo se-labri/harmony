@@ -37,7 +37,6 @@
 			<property name="eclipselink.persistence-context.persist-on-commit"
 				value="false" />
 			<property name="eclipselink.logging.logger" value="DefaultLogger" />
-			<property name="eclipselink.logging.level" value="OFF" />
 			<property name="eclipselink.logging.timestamp" value="false" />
 			<property name="eclipselink.logging.thread" value="false" />
 			<property name="eclipselink.logging.exceptions" value="true" />

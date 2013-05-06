@@ -62,15 +62,15 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 					parents.add(dao.getEvent(source, parent.getName()));
 
 				String user = c.getAuthorIdent().getName();
-				Author author = dao.getAuthor(source, user);
+				Author author = getAuthor(user);
 				if (author == null) {
 					author = new Author(source, user, user);
-					dao.saveAuthor(author);
+					addAuthor(author);
 				}
 				List<Author> authors = new ArrayList<>(Arrays.asList(new Author[] { author }));
 
 				Event e = new Event(source, c.getName(), c.getAuthorIdent().getWhen().getTime(), parents, authors);
-				dao.saveEvent(e);
+				addEvent(e); 
 				// TODO : add commit log
 				/*
 				 * Metadata metadata = new Metadata(); metadata.getMetadata().put(VcsProperties.COMMIT_LOG, c.getFullMessage());
@@ -106,13 +106,13 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 			HarmonyLogger.error("Unknown action kind: " + d.getChangeType());
 			break;
 		}
-		Item i = dao.getItem(source, path);
+		Item i = getItem(path);
 		if (i == null) {
 			i = new Item(source, path);
-			dao.saveItem(i);
+			saveItem(i);
 		}
-		Action a = new Action(i, kind, e, p);
-		dao.saveAction(a);
+		Action a = new Action(i, kind, e, p, source);
+		saveAction(a);
 	}
 
 	@Override

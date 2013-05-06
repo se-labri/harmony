@@ -211,24 +211,54 @@ public class DaoImpl implements Dao {
 		element = m.merge(element);
 		m.refresh(element);
 		m.getTransaction().commit();
-		
+
 		return element;
 	}
 
 	@Override
 	public Source refreshSource(Source source) {
 		Workspace ws = source.getWorkspace();
-		
+
 		EntityManager m = getEntityManager();
 		m.getTransaction().begin();
 		source = m.merge(source);
 		m.refresh(source);
 		m.getTransaction().commit();
-		
+
 		// The workspace is transient, so we have to reset it when refreshing the source;
 		source.setWorkspace(ws);
-		
+
 		return source;
+	}
+
+	@Override
+	public void saveEvents(List<Event> events) {
+		save(events);
+	}
+
+	@Override
+	public void saveAuthors(List<Author> authors) {
+		save(authors);
+	}
+
+	private <E> void save(List<E> elements) {
+		EntityManager m = getEntityManager();
+		if (!m.getTransaction().isActive())
+		m.getTransaction().begin();
+		for (E e : elements) {
+			m.persist(e);
+		}
+		m.getTransaction().commit();
+	}
+
+	@Override
+	public void saveItems(List<Item> items) {
+		save(items);
+	}
+
+	@Override
+	public void saveActions(List<Action> actions) {
+		save(actions);
 	}
 
 }
