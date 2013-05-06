@@ -18,8 +18,9 @@ import javax.persistence.OneToMany;
 
 @Entity
 public class Event extends SourceElement {
-	
-	@Id @GeneratedValue
+
+	@Id
+	@GeneratedValue
 	private int id;
 
 	@ManyToMany
@@ -28,9 +29,9 @@ public class Event extends SourceElement {
 	@ManyToMany
 	private List<Event> parents;
 
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="event")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "event")
 	private List<Action> actions;
-	
+
 	@Basic
 	private long timestamp;
 
@@ -40,7 +41,7 @@ public class Event extends SourceElement {
 		parents = new ArrayList<Event>();
 		actions = new ArrayList<Action>();
 	}
-	
+
 	public Event(Source source, String nativeId, long timestamp, List<Event> parents, List<Author> authors) {
 		this.source = source;
 		this.nativeId = nativeId;
@@ -80,7 +81,7 @@ public class Event extends SourceElement {
 	public void setActions(List<Action> actions) {
 		this.actions = actions;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -88,7 +89,7 @@ public class Event extends SourceElement {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	/**
 	 * 
 	 * @param parent
@@ -102,17 +103,14 @@ public class Event extends SourceElement {
 		}
 		return result;
 	}
-	
+
 	public String getTimestampAsString() {
 		DateFormat f = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
 		return f.format(new Date(timestamp));
 	}
-	
+
 	/*
-	public String getTimestampAsString() {
-		DateFormat f = new UTCSimpleDateFormat("y M d H");
-		return f.format(new Date(timestamp));
-	}
-	*/
+	 * public String getTimestampAsString() { DateFormat f = new UTCSimpleDateFormat("y M d H"); return f.format(new Date(timestamp)); }
+	 */
 
 }

@@ -32,12 +32,13 @@ public class Action extends SourceElement {
         super();
     }
 
-    public Action(Item item, ActionKind kind, Event event, Event parentEvent) {
+    public Action(Item item, ActionKind kind, Event event, Event parentEvent, Source source) {
         this();
         this.item = item;
         this.kind = kind;
         this.event = event;
         this.parentEvent = parentEvent;
+        setSource(source);
     }
     
     public int getId() {

@@ -54,4 +54,12 @@ public interface Dao {
 
 	Source refreshSource(Source source);
 
+	void saveEvents(List<Event> events);
+
+	void saveAuthors(List<Author> authors);
+
+	void saveItems(List<Item> items);
+
+	void saveActions(List<Action> actions);
+
 }

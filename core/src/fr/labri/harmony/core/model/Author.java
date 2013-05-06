@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
@@ -20,7 +18,7 @@ public class Author extends SourceElement {
 	@Basic
 	private String name;
 	
-	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	@ManyToMany(mappedBy="authors")
 	private List<Event> events;
 
 	public Author() {

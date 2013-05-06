@@ -58,12 +58,12 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 
 	private void extractAction(String line, Event e, Event p) {
 		String[] tokens = line.split("\\s+");
-		Item i = dao.getItem(source, tokens[1]);
+		Item i = getItem(tokens[1]);
 		if (i == null) {
 			i = new Item();
 			i.setSource(source);
 			i.setNativeId(tokens[1]);
-			dao.saveItem(i);
+			saveItem(i);
 		}
 		ActionKind kind = extractKind(tokens[0]);
 		Action a = new Action();
@@ -72,7 +72,7 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 		a.setParentEvent(p);
 		a.setKind(kind);
 		a.setItem(i);
-		dao.saveAction(a);
+		saveAction(a);
 	}
 
 	private ActionKind extractKind(String s) {
@@ -114,14 +114,15 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 					}
 				}
 
-				Author a = dao.getAuthor(source, authorName);
+				Author a = getAuthor(authorName);
 				if (a == null) {
 					a = new Author(source, authorName, authorName);
-					dao.saveAuthor(a);
+					addAuthor(a);
 				}
 
 				Event e = new Event(source, hash, time, parents, Arrays.asList(new Author[] { a }));
-				dao.saveEvent(e);
+				
+				addEvent(e);
 			}
 		} catch (Exception e) {
 			throw new SourceExtractorException(e);
