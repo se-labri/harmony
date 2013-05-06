@@ -11,21 +11,46 @@
 		<class>fr.labri.harmony.core.model.Author</class>
 		<class>fr.labri.harmony.core.model.Item</class>
 		<class>fr.labri.harmony.core.model.Action</class>
-		
+
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 
-		<properties>			
-			<property name="eclipselink.logging.logger" value="DefaultLogger"/>
+		<properties>
+			<!-- Optimization #9 - statement caching -->
+			<property name="eclipselink.jdbc.cache-statements" value="true" />
+			<!-- Optimization #10 - batch writing -->
+			<property name="eclipselink.jdbc.batch-writing" value="JDBC" />
+			<property name="eclipselink.jdbc.batch-writing.size" value="1000" />
+			<!-- Optimization #11 - disable caching for batch insert (caching only 
+				improves reads, so only adds overhead for inserts) -->
+			<property name="eclipselink.cache.shared.default" value="false" />
+			<!-- Except for Customer which is shared by orders -->
+			<property name="eclipselink.cache.shared.Customer" value="true" />
+			<!-- Optimization #12 - turn logging off -->
+			<!-- property name="eclipselink.logging.level" value="FINE" / -->
+			<property name="eclipselink.logging.level" value="off" />
+			<!-- Optimization #13 - close EntityManager on commit, to avoid cost of 
+				resume -->
+			<property name="eclipselink.persistence-context.close-on-commit"
+				value="true" />
+			<!-- Optimization #14 - avoid auto flush cost on query execution -->
+			<property name="eclipselink.persistence-context.flush-mode"
+				value="commit" />
+			<!-- Optimization #15 - avoid cost of persist on commit -->
+			<property name="eclipselink.persistence-context.persist-on-commit"
+				value="false" />
+			<property name="eclipselink.logging.logger" value="DefaultLogger" />
 			<property name="eclipselink.logging.level" value="OFF" />
 			<property name="eclipselink.logging.timestamp" value="false" />
 			<property name="eclipselink.logging.thread" value="false" />
 			<property name="eclipselink.logging.exceptions" value="true" />
 			<property name="eclipselink.orm.throw.exceptions" value="true" />
-			<property name="eclipselink.jdbc.read-connections.min" value="1" />
-			<property name="eclipselink.jdbc.write-connections.min" value="1" />
+			<property name="eclipselink.jdbc.read-connections.min"
+				value="1" />
+			<property name="eclipselink.jdbc.write-connections.min"
+				value="1" />
 			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
 			<property name="eclipselink.weaving" value="true" />
 		</properties>
-		
+
 	</persistence-unit>
 </persistence>
