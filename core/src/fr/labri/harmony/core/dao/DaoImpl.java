@@ -207,7 +207,7 @@ public class DaoImpl implements Dao {
 	public void refreshElement(Object o) {
 		EntityManager m = getEntityManager();
 		m.getTransaction().begin();
-		m.refresh(o);
+		m.refresh(m.merge(o));
 		m.getTransaction().commit();
 	}
 
