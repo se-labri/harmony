@@ -24,7 +24,7 @@ public interface Dao {
 	
 	Source getSource(int id);
 	
-	void refreshElement(Object o);
+	<T> T refreshElement(T element);
 	
 	Event getEvent(Source s, String nativeId);
 	
@@ -51,5 +51,7 @@ public interface Dao {
 	<D extends Data> D getData(String analysis, Class<D> d, int elementKind, int elementId);
 	
 	void disconnect();
+
+	Source refreshSource(Source source);
 
 }

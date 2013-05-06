@@ -75,7 +75,7 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 				extractActions(e);
 		}
 		
-		dao.refreshElement(source);		
+		source = dao.refreshSource(source);		
 	}
 
 }
