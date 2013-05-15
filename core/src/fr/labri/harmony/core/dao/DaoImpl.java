@@ -29,18 +29,21 @@ import fr.labri.harmony.core.source.Workspace;
 
 public class DaoImpl implements Dao {
 
-	private Map<String, EntityManager> entityManagers;
+	/**
+	 * We keep references on the EntityManagerFactories instead of the entity managers themselves
+	 */
+	private Map<String, HarmonyEntityManagerFactory> entityManagerFactories;
 
 	public DaoImpl(DatabaseConfiguration config) {
 		BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
 		try {
 			Collection<ServiceReference<EntityManagerFactoryBuilder>> refs = context.getServiceReferences(EntityManagerFactoryBuilder.class, null);
-			entityManagers = new HashMap<>();
+			entityManagerFactories = new HashMap<>();
 			for (ServiceReference<EntityManagerFactoryBuilder> ref : refs) {
 				String name = (String) ref.getProperty(EntityManagerFactoryBuilder.JPA_UNIT_NAME);
 				HarmonyEntityManagerFactory factory = new HarmonyEntityManagerFactory(config, ref, context);
 
-				entityManagers.put(name, factory.createEntityManager());
+				entityManagerFactories.put(name, factory);
 
 			}
 		} catch (InvalidSyntaxException e) {
@@ -54,17 +57,19 @@ public class DaoImpl implements Dao {
 	}
 
 	private EntityManager getEntityManager(String a) {
-		return entityManagers.get(a);
+		HarmonyEntityManagerFactory f = entityManagerFactories.get(a);
+		if (f == null) return null;
+		return f.createEntityManager();
 	}
 
 	private EntityManager getEntityManager() {
-		return entityManagers.get(HARMONY_PERSISTENCE_UNIT);
+		return getEntityManager(HARMONY_PERSISTENCE_UNIT);
 	}
 
 	@Override
 	public void disconnect() {
-		for (EntityManager f : entityManagers.values())
-			f.close();
+	//	for (EntityManager f : entityManagers.values())
+		//	f.close();
 	}
 
 	@Override
@@ -164,6 +169,7 @@ public class DaoImpl implements Dao {
 		m.getTransaction().begin();
 		m.persist(d);
 		m.getTransaction().commit();
+		m.close();
 		if (LOGGER.isLoggable(Level.FINEST)) LOGGER.finest("Persisted data " + d + ".");
 	}
 
@@ -172,6 +178,7 @@ public class DaoImpl implements Dao {
 		m.getTransaction().begin();
 		m.persist(e);
 		m.getTransaction().commit();
+		m.close();
 		if (LOGGER.isLoggable(Level.FINEST)) LOGGER.finest("Persisted element " + e + ".");
 	}
 
@@ -201,6 +208,7 @@ public class DaoImpl implements Dao {
 		Query query = m.createQuery(sQuery);
 		List<E> results = (List<E>) query.getResultList();
 		m.getTransaction().commit();
+		m.close();
 		return results;
 	}
 
@@ -249,6 +257,7 @@ public class DaoImpl implements Dao {
 			m.persist(e);
 		}
 		m.getTransaction().commit();
+		m.close();
 	}
 
 	@Override

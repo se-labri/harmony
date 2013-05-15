@@ -13,11 +13,15 @@ import fr.labri.harmony.core.config.model.SourceConfiguration;
 
 public class SourceConfigReader {
 
+	private final static String DEFAULT_CONFIG_PATH = "configurations/source-config.json";
+
+	
 	private ArrayNode sourceConfig;
 	private GlobalConfigReader global;
 	private ObjectMapper mapper;
 
 	public SourceConfigReader(String path, GlobalConfigReader global) {
+		if (path == null) path = DEFAULT_CONFIG_PATH;
 		this.global = global;
 		mapper = new ObjectMapper();
 		try {
