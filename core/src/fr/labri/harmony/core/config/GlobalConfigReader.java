@@ -27,10 +27,13 @@ import fr.labri.harmony.core.config.model.SchedulerConfiguration;
  */
 public class GlobalConfigReader {
 
+	private final static String DEFAULT_CONFIG_PATH = "configurations/global-config.json";
+	
 	private JsonNode globalConfig;
 	private ObjectMapper mapper;
 
 	public GlobalConfigReader(String path) {
+		if (path == null) path = DEFAULT_CONFIG_PATH;
 		mapper = new ObjectMapper();
 		try {
 			globalConfig = mapper.readTree(new File(path));

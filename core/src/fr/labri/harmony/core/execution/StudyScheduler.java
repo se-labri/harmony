@@ -1,11 +1,15 @@
 package fr.labri.harmony.core.execution;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.io.FileUtils;
 
 import fr.labri.harmony.core.analysis.Analysis;
 import fr.labri.harmony.core.analysis.AnalysisFactory;
@@ -35,17 +39,24 @@ public class StudyScheduler {
 	// TODO instrumentation for performance assessment as well as report
 	// creation (analyses failed/done)
 	/**
-	 * Main method of the core. Runs all analyses on all sources according to
-	 * the configuration
+	 * Main method of the core. Runs all analyses on all sources according to the configuration
 	 * 
 	 * @param global
 	 * @param sources
 	 */
 	public void run(GlobalConfigReader global, SourceConfigReader sources) {
 
+		// We create the directories specified in the folder configuration
+		try {
+			FileUtils.forceMkdir(new File(global.getFoldersConfig().getOutFolder()));
+			FileUtils.forceMkdir(new File(global.getFoldersConfig().getTmpFolder()));
+		} catch (IOException e) {
+			HarmonyLogger.error("An error occured while creating working folders");
+			e.printStackTrace();
+		}
+
 		// We create a global DAO which is in charge of building and managing
-		// the EntityManagers
-		// from all the bundles defining analyses
+		// the EntityManagers from all the bundles defining analyses
 		dao = new DaoImpl(global.getDatabaseConfiguration());
 
 		// We grab the list of analyses which have been scheduled according to
@@ -80,8 +91,7 @@ public class StudyScheduler {
 	/**
 	 * 
 	 * @param analysisConfigurations
-	 * @return A list of {@link Analysis} which is order according to the
-	 *         execution order
+	 * @return A list of {@link Analysis} which is order according to the execution order
 	 */
 	private List<Analysis> getScheduledAnalyses(List<AnalysisConfiguration> analysisConfigurations) {
 
@@ -112,13 +122,13 @@ public class StudyScheduler {
 
 		// Before launching any analysis on the source we must extract it (clone
 		// repository, build and store of the Harmony model)
-		
+
 		// If at least one analysis requires the actions, we have to extract them
 		boolean extractActions = false;
 		for (Analysis a : scheduledAnalyses) {
 			extractActions = (a.getConfig().requireActions()) || extractActions;
 		}
-		
+		// FIXME : move extraction in the thread?
 		sourceExtractor.initializeSource(extractActions);
 
 		// We create a thread dedicated to this source. It will be in charge of
@@ -164,6 +174,8 @@ public class StudyScheduler {
 				if (!threadsPool.awaitTermination(60, TimeUnit.SECONDS)) {
 					HarmonyLogger.error("Harmony was not able to shutdown the pool of threads in charge of running your analyses");
 				}
+			} else {
+				HarmonyLogger.info("Finished execution of analyses");
 			}
 		} catch (InterruptedException ie) {
 			// (Re-)Cancel if current thread also interrupted

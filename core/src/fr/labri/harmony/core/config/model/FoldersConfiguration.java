@@ -6,8 +6,8 @@ import static fr.labri.harmony.core.config.ConfigProperties.*;
 
 public class FoldersConfiguration {
 
-	String tmpFolder;
-	String outFolder;
+	private String tmpFolder;
+	private String outFolder;
 
 	public FoldersConfiguration(String tmpFolder, String outFolder) {
 		super();

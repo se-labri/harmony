@@ -8,7 +8,10 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: fr.labri.harmony.core.CoreActivator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: com.mysql.jdbc;version="5.1.24",
+Import-Package: com.fasterxml.jackson.annotation,
+ com.fasterxml.jackson.databind,
+ com.fasterxml.jackson.databind.node,
+ com.mysql.jdbc;version="5.1.24",
  javax.persistence;jpa="2.0";version="1.1.0",
  javax.persistence.criteria;jpa="2.0";version="1.1.0",
  javax.persistence.metamodel;jpa="2.0";version="1.1.0",
@@ -28,4 +31,3 @@ Export-Package: fr.labri.harmony.core,
  fr.labri.harmony.core.model,
  fr.labri.harmony.core.source
 Bundle-ClassPath: .
-Require-Bundle: jackson;bundle-version="2.1.0"

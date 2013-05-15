@@ -15,13 +15,13 @@ import org.jfree.util.ShapeUtilities;
 import fr.labri.harmony.analysis.cloc.ClocEntries;
 import fr.labri.harmony.analysis.cloc.ClocEntry;
 import fr.labri.harmony.analysis.report.EventComparator;
-import fr.labri.harmony.analysis.report.ProduceChart;
+import fr.labri.harmony.analysis.report.ChartDrawer;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.model.Data;
 import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.Source;
 
-public class ClocChart extends ProduceChart {
+public class ClocChart extends ChartDrawer {
 
 	public ClocChart(Dao dao) {
 		super(dao);

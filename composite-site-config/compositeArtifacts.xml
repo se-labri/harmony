@@ -10,6 +10,7 @@
 		<child location="http://download.eclipse.org/releases/juno" />
 		<child location="http://download.eclipse.org/gemini/updates/jpa/1.1.0" />
 		<child location="http://download.eclipse.org/gemini/updates/dbaccess/1.1.0" />
+		<child location="http://download.eclipse.org/tools/orbit/downloads/drops/R20130118183705/repository" />
 		<child location="harmony" />
 
 	</children>

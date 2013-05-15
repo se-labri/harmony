@@ -16,7 +16,7 @@
 		},
 		{
 			"class":"ReportAnalysis",
-			"require-actions":false
+			"require-actions":true
 		}
 	]
 }
