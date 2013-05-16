@@ -4,7 +4,7 @@
       Harmony Update Site
    </description>
    <category-def name="harmony" label="Harmony"/>
-   <feature url="features/fr.labri.harmony_1.0.0.201305151016.jar" id="fr.labri.harmony" version="1.0.0.201305151016">
+   <feature url="features/fr.labri.harmony_1.0.0.201305151045.jar" id="fr.labri.harmony" version="1.0.0.201305151045">
       <category name="harmony"/>
    </feature>
 </site>
