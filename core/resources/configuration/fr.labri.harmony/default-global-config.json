@@ -11,12 +11,8 @@
 	},
 	"source-analyses":[
 		{
-			"class":"ClocAnalysis",
-			"require-actions":false
-		},
-		{
 			"class":"ReportAnalysis",
-			"require-actions":false
+			"require-actions":true
 		}
 	]
 }
