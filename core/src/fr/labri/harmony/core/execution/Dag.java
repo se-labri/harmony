@@ -30,7 +30,7 @@ public class Dag<N> {
 	
 	public void addVertex(String name, N value) {
 		vertices.put(name, value);
-		edges.put(name, new HashSet<String>());
+		if (edges.get(name) == null ) edges.put(name, new HashSet<String>());
 	}
 	
 	public List<N> getTopoOrder() {
@@ -84,6 +84,7 @@ public class Dag<N> {
 		Set<String> e = edges.get(source);
 		if (e == null) e = new HashSet<>();
 		e.add(target);
+		edges.put(source, e);
 	}
 	
 	public boolean hasEdges() {

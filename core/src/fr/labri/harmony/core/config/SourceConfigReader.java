@@ -20,15 +20,11 @@ public class SourceConfigReader {
 	private GlobalConfigReader global;
 	private ObjectMapper mapper;
 
-	public SourceConfigReader(String path, GlobalConfigReader global) {
+	public SourceConfigReader(String path, GlobalConfigReader global) throws IOException {
 		if (path == null) path = DEFAULT_CONFIG_PATH;
 		this.global = global;
 		mapper = new ObjectMapper();
-		try {
-			sourceConfig = (ArrayNode) mapper.readTree(new File(path));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		sourceConfig = (ArrayNode) mapper.readTree(new File(path));
 	}
 
 	public List<SourceConfiguration> getSourcesConfigurations() {

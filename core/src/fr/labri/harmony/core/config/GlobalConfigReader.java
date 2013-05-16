@@ -21,25 +21,21 @@ import fr.labri.harmony.core.config.model.SchedulerConfiguration;
 
 /**
  * 
- * Reads a global configuration file and adds missing default values to the
- * config (e.g. number of threads, working folders)
+ * Reads a global configuration file and adds missing default values to the config (e.g. number of threads, working folders)
  * 
  */
 public class GlobalConfigReader {
 
 	private final static String DEFAULT_CONFIG_PATH = "configurations/global-config.json";
-	
+
 	private JsonNode globalConfig;
 	private ObjectMapper mapper;
 
-	public GlobalConfigReader(String path) {
+	public GlobalConfigReader(String path) throws IOException {
 		if (path == null) path = DEFAULT_CONFIG_PATH;
 		mapper = new ObjectMapper();
-		try {
-			globalConfig = mapper.readTree(new File(path));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		globalConfig = mapper.readTree(new File(path));
+
 	}
 
 	public DatabaseConfiguration getDatabaseConfiguration() {
