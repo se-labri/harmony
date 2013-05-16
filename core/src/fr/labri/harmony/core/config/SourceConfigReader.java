@@ -13,7 +13,7 @@ import fr.labri.harmony.core.config.model.SourceConfiguration;
 
 public class SourceConfigReader {
 
-	private final static String DEFAULT_CONFIG_PATH = "configurations/source-config.json";
+	private final static String DEFAULT_CONFIG_PATH = "configuration/fr.labri.harmony/default-source-config.json";
 
 	
 	private ArrayNode sourceConfig;
