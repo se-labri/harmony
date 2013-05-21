@@ -118,26 +118,26 @@ public class StudyScheduler {
 
 	// TODO Initialization of sources should be done concurrently to the
 	// launches of analyses, a thread must me dedicated to this task.
-	private void launchSortedAnalysisOnSource(final SourceExtractor<?> sourceExtractor, final Collection<Analysis> scheduledAnalyses) {
-
-		// Before launching any analysis on the source we must extract it (clone
-		// repository, build and store of the Harmony model)
-
-		// If at least one analysis requires the actions, we have to extract them
-		boolean extractActions = false;
-		for (Analysis a : scheduledAnalyses) {
-			extractActions = (a.getConfig().requireActions()) || extractActions;
-		}
-		// FIXME : move extraction in the thread?
-		sourceExtractor.initializeSource(extractActions);
+	private void launchSortedAnalysisOnSource(final SourceExtractor<?> sourceExtractor, final Collection<Analysis> scheduledAnalyses) {	
 
 		// We create a thread dedicated to this source. It will be in charge of
-		// launching the set of analyses on it
+		// extracting it and launching the set of analyses on it
 		threadsPool.execute(new Thread() {
 
 			@Override
 			public void run() {
 				try {
+					// Before launching any analysis on the source we must extract it (clone
+					// repository, build and store of the Harmony model)
+
+					// If at least one analysis requires the actions, we have to extract them
+					boolean extractActions = false;
+					for (Analysis a : scheduledAnalyses) {
+						extractActions = (a.getConfig().requireActions()) || extractActions;
+					}
+			
+					sourceExtractor.initializeSource(extractActions);	
+					
 					// We perform the analysis one after the other and between
 					// each of them we check that an interruption
 					// of the thread wasn't requested due to the timeout limit.
