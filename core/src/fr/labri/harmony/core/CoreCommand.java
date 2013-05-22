@@ -11,17 +11,18 @@ public class CoreCommand implements CommandProvider {
 
 	public CoreCommand() {
 	}
-	
+
 	public void _harmony(CommandInterpreter ci) {
+			harmony(ci.nextArgument(), ci.nextArgument());
+	}
+
+	public void harmony(String globalConfigPath, String sourceConfigPath) {
 		try {
-			String globalConfigPath = ci.nextArgument();
-			String sourceConfigPath = ci.nextArgument();
-			
 			GlobalConfigReader global = new GlobalConfigReader(globalConfigPath);
 			SourceConfigReader sources = new SourceConfigReader(sourceConfigPath, global);
 			new StudyScheduler(global.getSchedulerConfiguration()).run(global, sources);
-			
-		} catch(Exception ex) {
+
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}

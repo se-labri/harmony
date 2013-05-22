@@ -7,13 +7,15 @@ import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 
 /**
- * Class to inherit to develop an analysis.
+ * Class to inherit to develop an analysis. <br>
+ * Any subclass <strong>must</strong> implement both the default constructor {@link #AbstractAnalysis()} and
+ * {@link #AbstractAnalysis(AnalysisConfiguration, Dao, Properties)}
  * 
  */
 public abstract class AbstractAnalysis extends AbstractHarmonyService implements Analysis {
 
 	protected AnalysisConfiguration config;
-	
+
 	public AbstractAnalysis() {
 		super();
 	}
