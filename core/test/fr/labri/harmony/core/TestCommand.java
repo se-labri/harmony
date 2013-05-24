@@ -52,7 +52,6 @@ public class TestCommand implements CommandProvider {
 
 		Dao dao = getDao("data/harmony/db/test");
 		dao.saveSource(s);
-		dao.disconnect();
 	}
 
 	public Dao getDao(String path) {

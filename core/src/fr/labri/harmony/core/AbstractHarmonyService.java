@@ -52,6 +52,8 @@ public abstract class AbstractHarmonyService {
 	public static String getFilter(String name) {
 		return "(" + PROPERTY_NAME + "=" + name + ")";
 	}
+	
+	public abstract String getPersitenceUnitName();
 
 
 }

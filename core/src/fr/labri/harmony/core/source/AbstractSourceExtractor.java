@@ -78,6 +78,11 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 	public SourceConfiguration getConfig() {
 		return config;
 	}
+	
+	@Override
+	public String getPersitenceUnitName() {
+		return Dao.HARMONY_PERSISTENCE_UNIT;
+	}
 
 	@Override
 	public void initializeSource(boolean extractActions) {
