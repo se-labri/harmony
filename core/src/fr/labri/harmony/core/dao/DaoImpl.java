@@ -16,6 +16,7 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.jpa.EntityManagerFactoryBuilder;
 
+import fr.labri.harmony.core.AbstractHarmonyService;
 import fr.labri.harmony.core.analysis.Analysis;
 import fr.labri.harmony.core.config.model.DatabaseConfiguration;
 import fr.labri.harmony.core.model.Action;
@@ -65,13 +66,7 @@ public class DaoImpl implements Dao {
 	private EntityManager getEntityManager() {
 		return getEntityManager(HARMONY_PERSISTENCE_UNIT);
 	}
-
-	@Override
-	public void disconnect() {
-	//	for (EntityManager f : entityManagers.values())
-		//	f.close();
-	}
-
+	
 	@Override
 	public void saveSource(Source s) {
 		save(s);
@@ -268,6 +263,11 @@ public class DaoImpl implements Dao {
 	@Override
 	public void saveActions(List<Action> actions) {
 		save(actions);
+	}
+
+	@Override
+	public HarmonyEntityManagerFactory getEntityManagerFactory(AbstractHarmonyService harmonyService) {
+		return entityManagerFactories.get(harmonyService.getPersitenceUnitName());
 	}
 
 }

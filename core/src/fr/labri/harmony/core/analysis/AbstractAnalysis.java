@@ -31,5 +31,10 @@ public abstract class AbstractAnalysis extends AbstractHarmonyService implements
 	public AnalysisConfiguration getConfig() {
 		return config;
 	}
+	
+	@Override
+	public String getPersitenceUnitName() {
+		return config.getPersistenceUnit();
+	}
 
 }
