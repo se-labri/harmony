@@ -26,7 +26,6 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 	// FIXME: there is a bug when EVENT_CACHE_SIZE > 1
 	private final static int EVENT_CACHE_SIZE = 1;
 	private final static int ACTION_CACHE_SIZE = 1000;
-	
 
 	protected W workspace;
 
@@ -34,10 +33,10 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 
 	protected List<Analysis> analyses;
 
-	private List<Event> eventsCache;
+	private HashMap<String, Event> eventsCache;
 	private HashMap<String, Author> authors;
 	private List<Author> authorsCache;
-	
+
 	private HashMap<String, Item> items;
 	private List<Item> itemsCache;
 	private List<Action> actionsCache;
@@ -48,7 +47,7 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 		super(dao, properties);
 		this.config = config;
 		analyses = new ArrayList<>();
-		eventsCache = new ArrayList<>();
+		eventsCache = new HashMap<>();
 		authors = new HashMap<>();
 		authorsCache = new ArrayList<>();
 		items = new HashMap<>();
@@ -78,7 +77,7 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 	public SourceConfiguration getConfig() {
 		return config;
 	}
-	
+
 	@Override
 	public String getPersitenceUnitName() {
 		return Dao.HARMONY_PERSISTENCE_UNIT;
@@ -99,21 +98,38 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 
 		// Save the remaining events
 		saveAuthorsAndEvents();
-		
+
 		if (extractActions) {
 			HarmonyLogger.info("Extracting Actions for source " + getUrl());
 
 			for (Event e : dao.getEvents(source))
 				extractActions(e);
-			
+
 			saveItemsAndActions();
 		}
 
 		source = dao.refreshSource(source);
+
+		onExtractionFinished();
 	}
 
-	protected void addEvent(Event e) {
-		eventsCache.add(e);
+	/**
+	 * Called at the end of the {@link #initializeSource(boolean)} method, when all extraction is finished. Does nothing by default
+	 */
+	protected void onExtractionFinished() {
+	}
+
+	protected Event getEvent(String nativeId) {
+		Event e = eventsCache.get(nativeId);
+		if (e == null) {
+			e = dao.getEvent(source, nativeId);
+		}
+
+		return e;
+	}
+
+	protected void saveEvent(Event e) {
+		eventsCache.put(e.getNativeId(), e);
 
 		if (eventsCache.size() >= EVENT_CACHE_SIZE) {
 			saveAuthorsAndEvents();
@@ -124,30 +140,30 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 		return authors.get(name);
 	}
 
-	protected void addAuthor(Author a) {
+	protected void saveAuthor(Author a) {
 		authors.put(a.getName(), a);
 		authorsCache.add(a);
 	}
-	
+
 	private void saveAuthorsAndEvents() {
 		dao.saveAuthors(authorsCache);
 		authorsCache.clear();
-		dao.saveEvents(eventsCache);
+		dao.saveEvents(eventsCache.values());
 		eventsCache.clear();
 	}
-	
+
 	protected Item getItem(String path) {
 		return items.get(path);
 	}
-	
+
 	protected void saveItem(Item i) {
 		items.put(i.getNativeId(), i);
 		itemsCache.add(i);
 	}
-	
-	protected void saveAction( Action a) {
+
+	protected void saveAction(Action a) {
 		actionsCache.add(a);
-		
+
 		if (actionsCache.size() >= ACTION_CACHE_SIZE) {
 			saveItemsAndActions();
 		}

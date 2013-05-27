@@ -235,16 +235,16 @@ public class DaoImpl implements Dao {
 	}
 
 	@Override
-	public void saveEvents(List<Event> events) {
+	public void saveEvents(Collection<Event> events) {
 		save(events);
 	}
 
 	@Override
-	public void saveAuthors(List<Author> authors) {
+	public void saveAuthors(Collection<Author> authors) {
 		save(authors);
 	}
 
-	private <E> void save(List<E> elements) {
+	private <E> void save(Collection<E> elements) {
 		EntityManager m = getEntityManager();
 		if (!m.getTransaction().isActive())
 		m.getTransaction().begin();
@@ -256,12 +256,12 @@ public class DaoImpl implements Dao {
 	}
 
 	@Override
-	public void saveItems(List<Item> items) {
+	public void saveItems(Collection<Item> items) {
 		save(items);
 	}
 
 	@Override
-	public void saveActions(List<Action> actions) {
+	public void saveActions(Collection<Action> actions) {
 		save(actions);
 	}
 

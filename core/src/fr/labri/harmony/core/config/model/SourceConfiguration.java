@@ -1,5 +1,7 @@
 package fr.labri.harmony.core.config.model;
 
+import java.util.HashMap;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import fr.labri.harmony.core.source.SourceExtractor;
@@ -9,11 +11,15 @@ public class SourceConfiguration {
 	private String sourceExtractorName;
 	private FoldersConfiguration foldersConfiguration;
 
+	private HashMap<String, Object> options;
+
+	
 	public SourceConfiguration() {
+		options = new HashMap<>();
 	}
 
 	public SourceConfiguration(String repositoryURL, SourceExtractor<?> srcConnector) {
-		super();
+		this();
 		this.repositoryURL = repositoryURL;
 	}
 
@@ -41,6 +47,15 @@ public class SourceConfiguration {
 	
 	public FoldersConfiguration getFoldersConfiguration() {
 		return foldersConfiguration;
+	}
+
+	@JsonProperty("options")
+	public HashMap<String, Object> getOptions() {
+		return options;
+	}
+
+	public void setOptions(HashMap<String, Object> options) {
+		this.options = options;
 	}
 
 }
