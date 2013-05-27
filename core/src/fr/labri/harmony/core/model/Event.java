@@ -42,6 +42,15 @@ public class Event extends SourceElement {
 		actions = new ArrayList<Action>();
 	}
 
+	/**
+	 * 
+	 * @param source
+	 * @param nativeId
+	 * @param timestamp
+	 *            The timestamp of the commit, in milliseconds
+	 * @param parents
+	 * @param authors
+	 */
 	public Event(Source source, String nativeId, long timestamp, List<Event> parents, List<Author> authors) {
 		this.source = source;
 		this.nativeId = nativeId;
@@ -54,6 +63,11 @@ public class Event extends SourceElement {
 		return timestamp;
 	}
 
+	/**
+	 * 
+	 * @param timestamp
+	 *            The timestamp in milliseconds
+	 */
 	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
 	}
@@ -108,9 +122,5 @@ public class Event extends SourceElement {
 		DateFormat f = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
 		return f.format(new Date(timestamp));
 	}
-
-	/*
-	 * public String getTimestampAsString() { DateFormat f = new UTCSimpleDateFormat("y M d H"); return f.format(new Date(timestamp)); }
-	 */
 
 }

@@ -65,12 +65,12 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 				Author author = getAuthor(user);
 				if (author == null) {
 					author = new Author(source, user, user);
-					addAuthor(author);
+					saveAuthor(author);
 				}
 				List<Author> authors = new ArrayList<>(Arrays.asList(new Author[] { author }));
 
 				Event e = new Event(source, c.getName(), c.getAuthorIdent().getWhen().getTime(), parents, authors);
-				addEvent(e); 
+				saveEvent(e); 
 				// TODO : add commit log
 				/*
 				 * Metadata metadata = new Metadata(); metadata.getMetadata().put(VcsProperties.COMMIT_LOG, c.getFullMessage());

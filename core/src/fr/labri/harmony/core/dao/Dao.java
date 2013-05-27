@@ -1,5 +1,6 @@
 package fr.labri.harmony.core.dao;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -65,13 +66,13 @@ public interface Dao {
 
 	Source refreshSource(Source source);
 
-	void saveEvents(List<Event> events);
+	void saveEvents(Collection<Event> events);
 
-	void saveAuthors(List<Author> authors);
+	void saveAuthors(Collection<Author> authors);
 
-	void saveItems(List<Item> items);
+	void saveItems(Collection<Item> items);
 
-	void saveActions(List<Action> actions);
+	void saveActions(Collection<Action> actions);
 
 	/**
 	 * @param service

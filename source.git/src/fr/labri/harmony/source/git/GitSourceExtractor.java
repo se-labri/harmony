@@ -117,12 +117,12 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 				Author a = getAuthor(authorName);
 				if (a == null) {
 					a = new Author(source, authorName, authorName);
-					addAuthor(a);
+					saveAuthor(a);
 				}
 
 				Event e = new Event(source, hash, time, parents, Arrays.asList(new Author[] { a }));
 				
-				addEvent(e);
+				saveEvent(e);
 			}
 		} catch (Exception e) {
 			throw new SourceExtractorException(e);

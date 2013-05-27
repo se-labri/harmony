@@ -7,13 +7,12 @@ import java.util.List;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 
-import fr.labri.harmony.analysis.report.EventComparator;
 import fr.labri.harmony.analysis.report.ChartDrawer;
+import fr.labri.harmony.analysis.report.EventComparator;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.ActionKind;
@@ -26,7 +25,6 @@ public class ItemNumberChart extends ChartDrawer {
 		super(dao);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public JFreeChart createChart(Source src) {
 		TimeSeriesCollection tset = new TimeSeriesCollection();
@@ -35,7 +33,6 @@ public class ItemNumberChart extends ChartDrawer {
 		Collections.sort(events, new EventComparator());
 		int number = 0;
 		for(Event event: events) {
-			dao.refreshElement(event);
 			for(Action ac: event.getActions()) {
 				if (ac.getKind() == ActionKind.Create) number++;
 				else if (ac.getKind() == ActionKind.Delete) number--;
@@ -45,9 +42,7 @@ public class ItemNumberChart extends ChartDrawer {
 		}
 		
 		tset.addSeries(sevents);
-		JFreeChart tchart = ChartFactory.createTimeSeriesChart("Number of items over time","Date","Items",tset,true,true,false);
-		XYLineAndShapeRenderer trend1 = (XYLineAndShapeRenderer) tchart.getXYPlot().getRenderer();
-		trend1.setShapesVisible(true);
+		JFreeChart tchart = ChartFactory.createTimeSeriesChart("Number of items over time - " + src.getUrl(),"Date","Items",tset,true,true,false);
 		return tchart;
 	}
 
