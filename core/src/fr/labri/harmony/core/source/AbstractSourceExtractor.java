@@ -109,7 +109,9 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 		}
 
 		source = dao.refreshSource(source);
-
+		// include the configuration in the source (may be useful in some cases)
+		source.setConfig(getConfig());
+		
 		onExtractionFinished();
 	}
 

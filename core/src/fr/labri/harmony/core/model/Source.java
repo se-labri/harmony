@@ -14,6 +14,7 @@ import javax.persistence.Transient;
 
 import org.eclipse.persistence.annotations.Index;
 
+import fr.labri.harmony.core.config.model.SourceConfiguration;
 import fr.labri.harmony.core.source.Workspace;
 
 @Entity
@@ -39,6 +40,9 @@ public class Source {
 
 	@Transient
 	private Workspace workspace;
+	
+	@Transient
+	private SourceConfiguration config;
 
 	public Source() {
 		super();
@@ -95,6 +99,14 @@ public class Source {
 
 	public void setAuthors(List<Author> authors) {
 		this.authors = authors;
+	}
+
+	public SourceConfiguration getConfig() {
+		return config;
+	}
+
+	public void setConfig(SourceConfiguration config) {
+		this.config = config;
 	}
 
 	public int getId() {
