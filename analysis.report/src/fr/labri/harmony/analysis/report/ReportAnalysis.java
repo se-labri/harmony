@@ -57,16 +57,16 @@ public class ReportAnalysis extends AbstractAnalysis {
 		Path outputPath = Paths.get(baseFolder, urlFolder);
 		File outputFolder = outputPath.toFile();
 		if (!outputFolder.exists()) outputFolder.mkdir();
-		for (ChartDrawer produce : getProduceCharts()) {
+		for (ChartDrawer drawer : getChartDrawers()) {
 			try {
-				saveChartToPDF(produce.createChart(src), outputFolder.getAbsolutePath() + File.separator + produce.getChartName() + ".pdf", 1680, 1050);
+				saveChartToPDF(drawer.createChart(src), outputFolder.getAbsolutePath() + File.separator + drawer.getChartName() + ".pdf", 1680, 1050);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public List<ChartDrawer> getProduceCharts() {
+	public List<ChartDrawer> getChartDrawers() {
 		List<ChartDrawer> produces = new ArrayList<>();
 		produces.add(new DevelopersActionsChart(getDao()));
 		produces.add(new ItemNumberChart(dao));

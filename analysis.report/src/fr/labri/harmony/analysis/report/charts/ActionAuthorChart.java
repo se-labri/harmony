@@ -28,31 +28,33 @@ public class ActionAuthorChart extends ChartDrawer {
 
 	@Override
 	public JFreeChart createChart(Source src) {
-		TimeTableXYDataset tset = new TimeTableXYDataset();
-		Map<Day, Map<Author,Integer>> authorEvents = new HashMap<>();
-		for (Event event: src.getEvents()) {
-			Date devent = new Date(event.getTimestamp());
-			Day day = new Day(devent);
-			if (!authorEvents.containsKey(day)) authorEvents.put(day,new HashMap<Author,Integer>());
-			for (Author author: event.getAuthors()) {
+		Map<Day, Map<Author, Integer>> authorEvents = new HashMap<>();
+		for (Event event : src.getEvents()) {
+			Date eventDate = new Date(event.getTimestamp());
+			Day day = new Day(eventDate);
+			if (!authorEvents.containsKey(day)) authorEvents.put(day, new HashMap<Author, Integer>());
+			for (Author author : event.getAuthors()) {
 				int last = 0;
 				if (authorEvents.get(day).containsKey(author)) last = authorEvents.get(day).get(author);
 				last += event.getActions().size();
 				authorEvents.get(day).put(author, last);
 			}
 		}
-		for(Day day: authorEvents.keySet()) for(Author author: authorEvents.get(day).keySet()) tset.add(day, authorEvents.get(day).get(author), author.getName());
+		TimeTableXYDataset tset = new TimeTableXYDataset();
+		for (Day day : authorEvents.keySet())
+			for (Author author : authorEvents.get(day).keySet())
+				tset.add(day, authorEvents.get(day).get(author), author.getName());
 		XYBarRenderer renderer = new StackedXYBarRenderer(0.0);
 		renderer.setBarPainter(new StandardXYBarPainter());
 		renderer.setDrawBarOutline(false);
 		renderer.setShadowVisible(false);
-		XYPlot plot = new XYPlot( tset, new DateAxis("Date"),new NumberAxis("Actions"), renderer);
+		XYPlot plot = new XYPlot(tset, new DateAxis("Date"), new NumberAxis("Actions"), renderer);
 		plot.getDomainAxis().setLowerMargin(0.0);
 		plot.getDomainAxis().setUpperMargin(0.0);
-		JFreeChart tchart = new JFreeChart(plot);      
+		JFreeChart tchart = new JFreeChart(plot);
 		tchart.setTitle("Developer actions over time");
-		
-		return tchart;	
+
+		return tchart;
 	}
 
 	@Override
