@@ -26,10 +26,10 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.osgi.service.jpa
 Export-Package: fr.labri.harmony.core,
  fr.labri.harmony.core.analysis,
+ fr.labri.harmony.core.config,
  fr.labri.harmony.core.config.model,
  fr.labri.harmony.core.dao,
  fr.labri.harmony.core.log,
  fr.labri.harmony.core.model,
  fr.labri.harmony.core.source
-Bundle-ClassPath: .,
- bin/
+Bundle-ClassPath: .
