@@ -147,7 +147,7 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 		authorsCache.add(a);
 	}
 
-	private void saveAuthorsAndEvents() {
+	protected void saveAuthorsAndEvents() {
 		dao.saveAuthors(authorsCache);
 		authorsCache.clear();
 		dao.saveEvents(eventsCache.values());
@@ -171,7 +171,7 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 		}
 	}
 
-	private void saveItemsAndActions() {
+	protected void saveItemsAndActions() {
 		dao.saveItems(itemsCache);
 		itemsCache.clear();
 		dao.saveActions(actionsCache);
