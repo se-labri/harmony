@@ -46,5 +46,13 @@ public class Author extends SourceElement {
 	public void setEvents(List<Event> events) {
 		this.events = events;
 	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 	
 }
