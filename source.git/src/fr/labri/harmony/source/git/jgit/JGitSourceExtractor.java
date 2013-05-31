@@ -132,7 +132,6 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 
 			if (e.getParents().size() == 0) {
 				TreeWalk w = new TreeWalk(git.getRepository());
-				// FIXME : there is a NullPointerException here when the repo has just an initial commit
 				w.addTree(revs.get(e.getNativeId()).getTree());
 				List<DiffEntry> entries = df.scan(new EmptyTreeIterator(), w.getTree(0, AbstractTreeIterator.class));
 				for (DiffEntry d : entries)

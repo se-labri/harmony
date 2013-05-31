@@ -9,6 +9,9 @@ import java.util.logging.Level;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -195,13 +198,16 @@ public class DaoImpl implements Dao {
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	private <E extends SourceElement> List<E> getList(Class<E> clazz, Source s) {
 		EntityManager m = getEntityManager();
 		m.getTransaction().begin();
-		String sQuery = "SELECT e FROM " + clazz.getSimpleName() + " e";
-		Query query = m.createQuery(sQuery);
-		List<E> results = (List<E>) query.getResultList();
+		CriteriaBuilder builder = m.getCriteriaBuilder();
+		CriteriaQuery<E> query = builder.createQuery(clazz);
+		Root<E> root = query.from(clazz);
+		query.select(root);
+		query.where(builder.equal(root.get("source"), s));
+		
+		List<E> results = m.createQuery(query).getResultList();
 		m.getTransaction().commit();
 		m.close();
 		return results;
