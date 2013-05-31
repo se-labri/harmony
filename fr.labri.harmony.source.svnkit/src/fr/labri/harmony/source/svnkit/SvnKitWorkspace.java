@@ -31,6 +31,7 @@ public class SvnKitWorkspace extends AbstractLocalWorkspace {
 		// TODO manage login/pwd here
 		svnClientManager = SVNClientManager.newInstance(new DefaultSVNOptions(), "", "");			
 
+		
 		// Initialize factories
 		FSRepositoryFactory.setup();
 		DAVRepositoryFactory.setup();
@@ -54,8 +55,8 @@ public class SvnKitWorkspace extends AbstractLocalWorkspace {
 			
 		
 			surl =  SVNURL.parseURIEncoded(getUrl());
-			
-			svnClientManager.getUpdateClient().doCheckout(surl, new File(getPath()), SVNRevision.HEAD, SVNRevision.create(0), SVNDepth.INFINITY, true);
+			svnClientManager.createRepository(surl, false);
+			svnClientManager.getUpdateClient().doCheckout(surl, new File(getPath()), SVNRevision.HEAD, SVNRevision.HEAD, SVNDepth.INFINITY, true);
 
 		} catch (SVNException e) {
 			throw new WorkspaceException(e);

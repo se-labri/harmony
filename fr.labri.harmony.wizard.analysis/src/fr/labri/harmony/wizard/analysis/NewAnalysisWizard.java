@@ -282,9 +282,23 @@ public class NewAnalysisWizard extends Wizard implements INewWizard,IExecutableE
 		 //Building persistence.xml
 		if(databaseRequired){
 			IFile persitenceTargetFile = metaInfFolder.getFile(PERSISTENCE_DESCRIPTOR);
-			String persistenceFileContent = "test";
+			String persistenceFileContent = "<persistence xmlns=\"http://java.sun.com/xml/ns/persistence\""+nl()+
+					"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""+nl()+
+					"xsi:schemaLocation=\"http://java.sun.com/xml/ns/persistence persistence_1_0.xsd\""+nl()+
+					"version=\"1.0\">"+nl()+
+					"	<persistence-unit name=\""+projectName+"\" transaction-type=\"RESOURCE_LOCAL\">"+nl()+
+					"	 	<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>"+nl()+
+					"	 	<exclude-unlisted-classes>false</exclude-unlisted-classes>"+nl()+
+
+
+					"	</persistence-unit>"+nl()+
+					"</persistence>";
+		
 			InputStream persistenceFileContentIS = new ByteArrayInputStream(persistenceFileContent.getBytes());
 			 persitenceTargetFile.create(persistenceFileContentIS,true, monitor);
+			 
+			 IFile persistencePropFile = getProject("fr.labri.harmony.wizard.analysis").getFile("config/persistence_unit.prop");
+			 System.out.println(persistencePropFile.exists());
 			
 		}
 		 

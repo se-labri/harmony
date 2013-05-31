@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
+Service-Component: OSGI-INF/*.xml
 Bundle-ManifestVersion: 2
 Bundle-Name: fr.labri.harmony.source.svnkit
 Bundle-SymbolicName: fr.labri.harmony.source.svnkit
