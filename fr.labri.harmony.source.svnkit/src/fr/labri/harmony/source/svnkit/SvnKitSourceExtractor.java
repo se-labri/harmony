@@ -3,6 +3,7 @@ package fr.labri.harmony.source.svnkit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 import org.tmatesoft.svn.core.ISVNLogEntryHandler;
 import org.tmatesoft.svn.core.SVNException;
@@ -10,6 +11,8 @@ import org.tmatesoft.svn.core.SVNLogEntry;
 import org.tmatesoft.svn.core.SVNLogEntryPath;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 
+import fr.labri.harmony.core.config.model.SourceConfiguration;
+import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.ActionKind;
@@ -24,6 +27,15 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 	
 	private Event parent;
 	private boolean extractActions;
+	
+	
+	public SvnKitSourceExtractor() {
+		super();
+	}
+
+	public SvnKitSourceExtractor(SourceConfiguration config, Dao dao, Properties properties) {
+		super(config, dao, properties);
+	}
 	
 	@Override
 	public void initializeWorkspace() {
