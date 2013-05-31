@@ -11,7 +11,7 @@ public class AnalysisConfiguration {
 	private String analysisName;
 	private String persistenceUnit;
 
-	private HashMap<String, String> options;
+	private HashMap<String, Object> options;
 
 	// List of analyses required by this analysis and thus they need to be performed before it
 	private Collection<String> dependencies;
@@ -32,7 +32,7 @@ public class AnalysisConfiguration {
 		this.analysisName = analysisName;
 	}
 
-	public AnalysisConfiguration(String analysisName, HashMap<String, String> options) {
+	public AnalysisConfiguration(String analysisName, HashMap<String, Object> options) {
 		this(analysisName);
 		this.options = options;
 	}
@@ -46,13 +46,12 @@ public class AnalysisConfiguration {
 		this.analysisName = analysisName;
 	}
 
-	// TODO options have to be tested
 	@JsonProperty("options")
-	public HashMap<String, String> getOptions() {
+	public HashMap<String, Object> getOptions() {
 		return options;
 	}
 
-	public void setOptions(HashMap<String, String> options) {
+	public void setOptions(HashMap<String, Object> options) {
 		this.options = options;
 	}
 
