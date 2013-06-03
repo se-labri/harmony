@@ -75,13 +75,17 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 	public void handleLogEntry(SVNLogEntry logEntry) throws SVNException {
 		
 		
-		List<Event> parents = new ArrayList<>();
+		List<Event> parents = new ArrayList<Event>();
 		if(parent != null){parents.add(parent); }
 		
 		
 		String user = logEntry.getAuthor();
+		if(user==null){
+			user = "unknown";
+		}
+		
 		Author author = getAuthor(user);
-		if (author == null) {
+		if (author == null) {			
 			author = new Author(source, user, user);
 			saveAuthor(author);
 		}
@@ -89,6 +93,9 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 
 		Event e = new Event(source, String.valueOf( logEntry.getRevision()),logEntry.getDate().getTime(), parents, authors);
 		saveEvent(e);
+		
+		//TODO add metadata management : logEntry.getMessage()
+		
 		
 		if (extractActions) {
 			for(SVNLogEntryPath entry: logEntry.getChangedPaths().values()){
