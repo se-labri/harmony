@@ -2,7 +2,6 @@ package fr.labri.harmony.source.svnkit;
 
 import java.io.File;
 
-import org.tmatesoft.svn.core.ISVNLogEntryHandler;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
@@ -41,6 +40,7 @@ public class SvnKitWorkspace extends AbstractLocalWorkspace {
 	@Override
 	public boolean isInitialized() {
 		try {
+			//TODO check that repo contains the correct revision 
 			svnClientManager.getStatusClient().doStatus(new File(getPath()), false);
 			return true;
 		} catch (SVNException e) {
@@ -55,7 +55,6 @@ public class SvnKitWorkspace extends AbstractLocalWorkspace {
 			
 		
 			surl =  SVNURL.parseURIEncoded(getUrl());
-			svnClientManager.createRepository(surl, false);
 			svnClientManager.getUpdateClient().doCheckout(surl, new File(getPath()), SVNRevision.HEAD, SVNRevision.HEAD, SVNDepth.INFINITY, true);
 
 		} catch (SVNException e) {
