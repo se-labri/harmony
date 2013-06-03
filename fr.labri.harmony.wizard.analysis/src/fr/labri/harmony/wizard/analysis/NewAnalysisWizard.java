@@ -1,10 +1,13 @@
 package fr.labri.harmony.wizard.analysis;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -288,17 +291,29 @@ public class NewAnalysisWizard extends Wizard implements INewWizard,IExecutableE
 					"version=\"1.0\">"+nl()+
 					"	<persistence-unit name=\""+projectName+"\" transaction-type=\"RESOURCE_LOCAL\">"+nl()+
 					"	 	<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>"+nl()+
-					"	 	<exclude-unlisted-classes>false</exclude-unlisted-classes>"+nl()+
+					"	 	<exclude-unlisted-classes>false</exclude-unlisted-classes>"+nl();
 
-
-					"	</persistence-unit>"+nl()+
-					"</persistence>";
+			// We copy the standard persistence settings from a file stored in our plugin
+			URL url;
+			try {
+			        url = new URL("platform:/plugin/fr.labri.harmony.wizard.analysis/config/persistence_unit.prop");
+			    InputStream inputStream = url.openConnection().getInputStream();
+			    BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
+			    String cLine;		 
+			    while ((cLine = in.readLine()) != null) {
+			    	persistenceFileContent += "	 		"+cLine+nl();
+			    }
+			    in.close();
+			 
+			} catch (IOException e) {
+			    e.printStackTrace();
+			}
+	
+			persistenceFileContent +="	</persistence-unit>"+nl()+
+									"</persistence>";
 		
 			InputStream persistenceFileContentIS = new ByteArrayInputStream(persistenceFileContent.getBytes());
-			 persitenceTargetFile.create(persistenceFileContentIS,true, monitor);
-			 
-			 IFile persistencePropFile = getProject("fr.labri.harmony.wizard.analysis").getFile("config/persistence_unit.prop");
-			 System.out.println(persistencePropFile.exists());
+			persitenceTargetFile.create(persistenceFileContentIS,true, monitor);
 			
 		}
 		 
