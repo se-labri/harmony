@@ -27,9 +27,15 @@ public class SvnKitWorkspace extends AbstractLocalWorkspace {
 	public SvnKitWorkspace(SourceExtractor<?> sourceExtractor) {
 		super(sourceExtractor);
 		
-		// TODO manage login/pwd here
-		svnClientManager = SVNClientManager.newInstance(new DefaultSVNOptions(), "", "");			
-
+		String username = sourceExtractor.getConfig().getUsername();
+		String password = sourceExtractor.getConfig().getPassword();
+		
+		if(username.equals("")){
+			svnClientManager = SVNClientManager.newInstance(new DefaultSVNOptions());			
+		}else{
+			svnClientManager = SVNClientManager.newInstance(new DefaultSVNOptions(),username, password);			
+		}
+		
 		
 		// Initialize factories
 		FSRepositoryFactory.setup();

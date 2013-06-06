@@ -9,6 +9,8 @@ import fr.labri.harmony.core.source.SourceExtractor;
 public class SourceConfiguration {
 	private String repositoryURL;
 	private String sourceExtractorName;
+	private String username;
+	private String password;
 	private FoldersConfiguration foldersConfiguration;
 
 	private HashMap<String, Object> options;
@@ -57,5 +59,25 @@ public class SourceConfiguration {
 	public void setOptions(HashMap<String, Object> options) {
 		this.options = options;
 	}
+
+	@JsonProperty("user")
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	@JsonProperty("password")
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	
 
 }
