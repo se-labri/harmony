@@ -22,6 +22,12 @@ import fr.labri.harmony.core.model.Item;
 import fr.labri.harmony.core.model.Source;
 import fr.labri.harmony.core.source.AbstractSourceExtractor;
 
+/**
+ * @see http://svnkit.com/javadoc/
+ * @see http://wiki.svnkit.com/Managing_A_Working_Copy
+ * 
+ *
+ */
 
 public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspace> implements ISVNLogEntryHandler {
 	
