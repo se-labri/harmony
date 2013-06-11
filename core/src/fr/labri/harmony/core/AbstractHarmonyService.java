@@ -55,5 +55,6 @@ public abstract class AbstractHarmonyService {
 	
 	public abstract String getPersitenceUnitName();
 
+	
 
 }

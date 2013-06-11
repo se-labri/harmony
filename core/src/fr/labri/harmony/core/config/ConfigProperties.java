@@ -4,7 +4,12 @@ public class ConfigProperties {
 
 	public static final String DATABASE = "database";
 	
+	/**
+	 * The use of manage-create-sources is deprecated, but kept for compatibility
+	 * Use scheduler instead.
+	 */
 	public static final String MANAGE_CREATE_SOURCES = "manage-create-sources";
+	public static final String SCHEDULER = "scheduler";
 	public static final String NUM_THREADS = "threads";
 	public static final String TIMEOUT = "timeout";
 	
@@ -18,16 +23,11 @@ public class ConfigProperties {
 	public static final String OPTIONS = "options";
 	
 	public static final String ANALYSES = "source-analyses";
-	public static final String CLASSPATH = "classpath";
+	public static final String POST_PROCESSING_ANALYSES = "post-processing-analyses";
 	
 	public static final String DEFAULT_TMP_FOLDER = "tmp";
 	public static final String DEFAULT_OUT_FOLDER = "out";
-	public static final String DEFAULT_DB_NAME = "harmony";
-	public static final String DEFAULT_DB_SERVER = "localhost";
-	public static final String DEFAULT_DB_USER = "";
-	public static final String DEFAULT_DB_PASSWORD = "";
-	public static final Boolean DEFAULT_DB_RESET = true;
-	
+
 	public static final int DEFAULT_NUM_THREADS = 1;
 	public static final int DEFAULT_TIMEOUT = 100000;
 	

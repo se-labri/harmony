@@ -11,7 +11,8 @@
 		<class>fr.labri.harmony.core.model.Author</class>
 		<class>fr.labri.harmony.core.model.Item</class>
 		<class>fr.labri.harmony.core.model.Action</class>
-
+		<class>fr.labri.harmony.core.execution.ExecutionReport</class>
+		<class>fr.labri.harmony.core.execution.SourceExecutionReport</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 
 		<properties>

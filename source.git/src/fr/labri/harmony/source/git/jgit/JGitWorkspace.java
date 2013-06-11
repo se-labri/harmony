@@ -1,7 +1,9 @@
 package fr.labri.harmony.source.git.jgit;
 
 import java.io.File;
+import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
 
@@ -10,19 +12,18 @@ import fr.labri.harmony.core.source.AbstractLocalWorkspace;
 import fr.labri.harmony.core.source.SourceExtractor;
 import fr.labri.harmony.core.source.WorkspaceException;
 
-
 public class JGitWorkspace extends AbstractLocalWorkspace {
 
 	private Git git;
-	
+
 	public JGitWorkspace(SourceExtractor<?> sourceExtractor) {
 		super(sourceExtractor);
 	}
-	
+
 	public Git getGit() {
 		return git;
 	}
-	
+
 	@Override
 	public void init() {
 		super.init();
@@ -37,12 +38,17 @@ public class JGitWorkspace extends AbstractLocalWorkspace {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public void initNewWorkspace() {
 		try {
-			git = Git.cloneRepository().setURI(getUrl()).setDirectory(new File((getPath()))).setTimeout(600).call();
+			git = Git.cloneRepository().setURI(getUrl()).setDirectory(new File((getPath()))).call();
 		} catch (Exception e) {
+			try {
+				FileUtils.deleteDirectory(new File(getPath()));
+			} catch (IOException e1) {
+				throw new WorkspaceException(e1);
+			}
 			throw new WorkspaceException(e);
 		}
 	}
@@ -51,6 +57,7 @@ public class JGitWorkspace extends AbstractLocalWorkspace {
 	public void initExistingWorkspace() {
 		try {
 			git = Git.open(new File(getPath()));
+			git.pull().call();
 		} catch (Exception e) {
 			throw new WorkspaceException(e);
 		}
@@ -65,5 +72,5 @@ public class JGitWorkspace extends AbstractLocalWorkspace {
 			throw new WorkspaceException(ex);
 		}
 	}
-	
+
 }
