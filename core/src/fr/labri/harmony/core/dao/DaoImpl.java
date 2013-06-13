@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -20,7 +21,6 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.jpa.EntityManagerFactoryBuilder;
 
 import fr.labri.harmony.core.AbstractHarmonyService;
-import fr.labri.harmony.core.analysis.Analysis;
 import fr.labri.harmony.core.config.model.DatabaseConfiguration;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.Author;
@@ -79,20 +79,31 @@ public class DaoImpl implements Dao {
 	public Source getSource(int id) {
 		EntityManager m = getEntityManager();
 		m.getTransaction().begin();
-		Query query = m.createNamedQuery("getSourceById");
-		query.setParameter("id", id);
-		Source result = (Source) query.getSingleResult();
+		Source result = m.find(Source.class, id);
 		m.getTransaction().commit();
 		return result;
 	}
+	
+	@Override
+	public Source getSourceByUrl(String url) {
+		EntityManager m = getEntityManager();
+		m.getTransaction().begin();
+
+		CriteriaBuilder cb = m.getCriteriaBuilder();
+		CriteriaQuery<Source> cq = cb.createQuery(Source.class);
+		Root<Source> src = cq.from(Source.class);
+		cq.select(src);
+		cq.where(cb.equal(src.get("url"), url));
+		TypedQuery<Source> q = m.createQuery(cq);
+		
+		Source source = q.getSingleResult();
+		
+		m.getTransaction().commit();
+		
+		return source;
+	}
 
 	@Override
-		try {
-		TypedQuery<Source> q = m.createQuery(cq).setMaxResults(1);
-		
-		} catch (NoResultException e) {
-			return null;
-		}
 	public Event getEvent(Source s, String nativeId) {
 		return get(Event.class, s, nativeId);
 	}
@@ -166,10 +177,10 @@ public class DaoImpl implements Dao {
 	}
 
 	@Override
-	public void saveData(Analysis a, Data d, int elementKind, int elementId) {
+	public void saveData(AbstractHarmonyService service, Data d, int elementKind, int elementId) {
 		d.setElementId(elementId);
 		d.setElementKind(elementKind);
-		EntityManager m = getEntityManager(a.getConfig().getPersistenceUnit());
+		EntityManager m = getEntityManager(service.getPersitenceUnitName());
 		m.getTransaction().begin();
 		m.persist(d);
 		m.getTransaction().commit();
@@ -278,8 +289,13 @@ public class DaoImpl implements Dao {
 	}
 
 	@Override
-	public HarmonyEntityManagerFactory getEntityManagerFactory(AbstractHarmonyService harmonyService) {
-		return entityManagerFactories.get(harmonyService.getPersitenceUnitName());
+	public synchronized HarmonyEntityManagerFactory getEntityManagerFactory(AbstractHarmonyService harmonyService) {
+		String puName;
+		if (harmonyService == null)
+			puName = HARMONY_PERSISTENCE_UNIT;
+		else
+			puName = harmonyService.getPersitenceUnitName();
+		return entityManagerFactories.get(puName);
 	}
 
 }

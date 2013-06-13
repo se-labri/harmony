@@ -4,6 +4,7 @@ import static fr.labri.harmony.core.config.ConfigProperties.ANALYSES;
 import static fr.labri.harmony.core.config.ConfigProperties.DATABASE;
 import static fr.labri.harmony.core.config.ConfigProperties.FOLDERS;
 import static fr.labri.harmony.core.config.ConfigProperties.MANAGE_CREATE_SOURCES;
+import static fr.labri.harmony.core.config.ConfigProperties.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +22,8 @@ import fr.labri.harmony.core.config.model.SchedulerConfiguration;
 
 /**
  * 
- * Reads a global configuration file and adds missing default values to the config (e.g. number of threads, working folders)
+ * Reads a global configuration file and adds missing default values to the
+ * config (e.g. number of threads, working folders)
  * 
  */
 public class GlobalConfigReader {
@@ -51,23 +53,35 @@ public class GlobalConfigReader {
 	}
 
 	public List<AnalysisConfiguration> getAnalysisConfigurations() {
+		return getAnalysisConfigurations(ANALYSES);
+
+	}
+
+	public List<AnalysisConfiguration> getPostProcessingAnalysisConfigurations() {
+		return getAnalysisConfigurations(POST_PROCESSING_ANALYSES);
+
+	}
+
+	private List<AnalysisConfiguration> getAnalysisConfigurations(String jsonKey) {
 		ArrayList<AnalysisConfiguration> configs = new ArrayList<>();
-		ArrayNode n = (ArrayNode) globalConfig.get(ANALYSES);
-		for (JsonNode c : n) {
-			try {
-				AnalysisConfiguration config = mapper.readValue(c.toString(), AnalysisConfiguration.class);
-				config.setFoldersConfiguration(getFoldersConfig());
-				configs.add(config);
-			} catch (IOException e) {
-				System.out.println("analysis config error");
+		ArrayNode n = (ArrayNode) globalConfig.get(jsonKey);
+		if (n != null) {
+			for (JsonNode c : n) {
+				try {
+					AnalysisConfiguration config = mapper.readValue(c.toString(), AnalysisConfiguration.class);
+					config.setFoldersConfiguration(getFoldersConfig());
+					configs.add(config);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		return configs;
-
 	}
 
 	public SchedulerConfiguration getSchedulerConfiguration() {
 		JsonNode n = globalConfig.get(MANAGE_CREATE_SOURCES);
+		if (n == null) n = globalConfig.get(SCHEDULER);
 		try {
 			return mapper.readValue(n.toString(), SchedulerConfiguration.class);
 		} catch (Exception e) {

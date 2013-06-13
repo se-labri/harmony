@@ -25,33 +25,45 @@ public class AnalysisFactory {
 	}
 
 	public Analysis createAnalysis(AnalysisConfiguration analysisConfig) {
-		Collection<ServiceReference<Analysis>> serviceReferences;
+		return createAnalysis(analysisConfig, Analysis.class);
+	}
+	
+	public PostProcessingAnalysis createPostProcessingAnalysis(AnalysisConfiguration analysisConfig) {
+		return createAnalysis(analysisConfig, PostProcessingAnalysis.class);
+	} 
+	
+	private <T extends HasAnalysisConfiguration> T createAnalysis(AnalysisConfiguration analysisConfig, Class<T> clazz) {
+		Collection<ServiceReference<T>> serviceReferences;
 		try {
 			BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
-			serviceReferences = context.getServiceReferences(Analysis.class, AbstractHarmonyService.getFilter(analysisConfig.getAnalysisName()));
-			if (serviceReferences == null || serviceReferences.isEmpty()) return null;
+			serviceReferences = context.getServiceReferences(clazz, AbstractHarmonyService.getFilter(analysisConfig.getAnalysisName()));
+			if (serviceReferences != null && !serviceReferences.isEmpty()) {
 
-			ServiceReference<Analysis> analysisReference = serviceReferences.iterator().next();
+				ServiceReference<T> analysisReference = serviceReferences.iterator().next();
 
-			if (serviceReferences.size() > 1) {
-				HarmonyLogger.info("Multiple implementations of the analysis" + analysisConfig.getAnalysisName() + "have been found. The first one has been selected");
+				if (serviceReferences.size() > 1) {
+					HarmonyLogger.info("Multiple implementations of the analysis" + analysisConfig.getAnalysisName() + "have been found. The first one has been selected");
+				}
+
+				String dependencies = (String) analysisReference.getProperty(PROPERTY_DEPENDENCIES);
+				if (dependencies != null) analysisConfig.setDependencies(Arrays.asList(dependencies.split(":")));
+
+				analysisConfig.setPersistenceUnit((String) analysisReference.getProperty(PROPERTY_PERSISTENCE_UNIT));
+
+				@SuppressWarnings("unchecked")
+				T analysis = (T) context.getService(analysisReference).getClass().getConstructor(AnalysisConfiguration.class, Dao.class, Properties.class)
+						.newInstance(analysisConfig, dao, extractProperties(analysisReference));
+
+				return analysis;
 			}
-
-			String dependencies = (String) analysisReference.getProperty(PROPERTY_DEPENDENCIES);
-			if (dependencies != null) analysisConfig.setDependencies(Arrays.asList(dependencies.split(":")));
-
-			analysisConfig.setPersistenceUnit((String) analysisReference.getProperty(PROPERTY_PERSISTENCE_UNIT));
-
-			Analysis analysis = context.getService(analysisReference).getClass().getConstructor(AnalysisConfiguration.class, Dao.class, Properties.class)
-					.newInstance(analysisConfig, dao, extractProperties(analysisReference));
-
-			return analysis;
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		HarmonyLogger.error("The analysis '" + analysisConfig.getAnalysisName()
+				+ "' could not be found. \n Either the associated bundle is not loaded or there is a typo in your configuration");
 		return null;
-	}
+	} 
 
 	private Properties extractProperties(ServiceReference<?> ref) {
 		Properties properties = new Properties();
