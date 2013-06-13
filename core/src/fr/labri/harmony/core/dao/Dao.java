@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import fr.labri.harmony.core.AbstractHarmonyService;
-import fr.labri.harmony.core.analysis.Analysis;
 import fr.labri.harmony.core.config.model.DatabaseConfiguration;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.Author;
@@ -25,6 +24,13 @@ public interface Dao {
 	void saveSource(Source s);
 
 	Source getSource(int id);
+	
+	/**
+	 * 
+	 * @param url
+	 * @return The source associated to the corresponding URL
+	 */
+	Source getSourceByUrl(String url);
 
 	<T> T refreshElement(T element);
 
@@ -47,18 +53,20 @@ public interface Dao {
 	List<Action> getActions(Source s);
 
 	/**
-	 * Saves in the analysis database an entity attached to an element of the harmony model
+	 * Saves in the analysis database an entity attached to an element of the
+	 * harmony model
 	 * 
 	 * @param analysis
 	 *            The analysis that saves the data
 	 * @param d
 	 *            the data to save
 	 * @param elementKind
-	 *            The kind of the element the data is attached to. See the constants in the {@link Data} interface
+	 *            The kind of the element the data is attached to. See the
+	 *            constants in the {@link Data} interface
 	 * @param elementId
 	 *            The id of the element the data is attached to.
 	 */
-	void saveData(Analysis analysis, Data d, int elementKind, int elementId);
+	void saveData(AbstractHarmonyService service, Data d, int elementKind, int elementId);
 
 	<D extends Data> List<D> getDataList(String analysis, Class<D> d, int elementKind, int elementId);
 
@@ -76,8 +84,12 @@ public interface Dao {
 
 	/**
 	 * @param service
-	 * @return The {@link HarmonyEntityManagerFactory} associated to the given service. 
-	 * This is useful to run queries that are not supported by this dao
+	 *            The Analysis associated to the required EntityManager. If
+	 *            null, the core {@link HarmonyEntityManagerFactory} will be
+	 *            returned
+	 * @return The {@link HarmonyEntityManagerFactory} associated to the given
+	 *         service. This is useful to run queries that are not supported by
+	 *         this dao
 	 */
 	public HarmonyEntityManagerFactory getEntityManagerFactory(AbstractHarmonyService service);
 
