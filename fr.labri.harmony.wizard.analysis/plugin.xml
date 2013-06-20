@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            name="Harmony"
+            id="fr.labri.harmony.wizard.analysis">
+      </category>
+      <wizard
+            category="fr.labri.harmony.wizard.analysis"
+            class="fr.labri.harmony.wizard.analysis.NewAnalysisWizard"
+            finalPerspective="org.eclipse.pde.ui.PDEPerspective"
+            icon="icons/logo.png"
+            id="fr.labri.harmony.wizard.analysis.NewAnalysisWizard"
+            name="Analysis"
+            project="true">
+      </wizard>
+   </extension>
+
+</plugin>
