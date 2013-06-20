@@ -23,6 +23,8 @@ public class AnalysisConfiguration {
 	 */
 	private boolean requireActions;
 
+	private boolean requireHarmonyModel = true;
+	
 	public AnalysisConfiguration() {
 		dependencies = Collections.emptyList();
 	};
@@ -92,6 +94,15 @@ public class AnalysisConfiguration {
 	@JsonProperty("require-actions")
 	public void setRequireActions(boolean requireActions) {
 		this.requireActions = requireActions;
+	}
+	
+	public boolean requireHarmonyModel() {
+		return requireHarmonyModel;
+	}
+
+	@JsonProperty("require-harmony-model")
+	public void setRequireHarmonyModel(boolean requireHarmonyModel) {
+		this.requireHarmonyModel = requireHarmonyModel;
 	}
 
 }

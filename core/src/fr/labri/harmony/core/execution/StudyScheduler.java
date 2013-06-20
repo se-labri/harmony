@@ -63,6 +63,7 @@ public class StudyScheduler {
 		// their dependencies
 		Collection<Analysis> scheduledAnalyses = getScheduledAnalyses(global.getAnalysisConfigurations());
 
+
 		// Initialization of the ExecutorService in order to manage the
 		// concurrent execution of the analyses
 		if (this.schedulerConfiguration.getNumberOfThreads() > NUMBER_OF_EXECUTION_UNIT_AVAILABLE) {
@@ -86,6 +87,15 @@ public class StudyScheduler {
 		// limit is not reached
 		shutdownThreadsPool();
 
+		mainMonitor.stopMonitoring(executionReportId);
+		mainMonitor.printExecutionReport(executionReportId);
+
+		for (SourceConfiguration configuration : sourceConfigurations) {
+			if (source != null) {
+				source.setConfig(configuration);
+				sources.add(source);
+			}
+		}
 	}
 
 	/**
@@ -101,6 +111,7 @@ public class StudyScheduler {
 		for (AnalysisConfiguration analysisConfiguration : analysisConfigurations) {
 
 			Analysis currentAnalysis = factory.createAnalysis(analysisConfiguration);
+
 
 			analysisDAG.addVertex(analysisConfiguration.getAnalysisName(), currentAnalysis);
 			for (String requiredAnalysis : analysisConfiguration.getDependencies()) {
@@ -126,17 +137,21 @@ public class StudyScheduler {
 
 			@Override
 			public void run() {
+
 				try {
 					// Before launching any analysis on the source we must extract it (clone
 					// repository, build and store of the Harmony model)
 
 					// If at least one analysis requires the actions, we have to extract them
 					boolean extractActions = false;
+					boolean extractHarmonyModel = false;
 					for (Analysis a : scheduledAnalyses) {
-						extractActions = (a.getConfig().requireActions()) || extractActions;
+						if (a != null) {
+							extractActions = (a.getConfig().requireActions()) || extractActions;
+							extractHarmonyModel = (a.getConfig().requireHarmonyModel()) || extractHarmonyModel;
+						}
 					}
-			
-					sourceExtractor.initializeSource(extractActions);	
+					sourceExtractor.initializeSource(extractHarmonyModel, extractActions);
 					
 					// We perform the analysis one after the other and between
 					// each of them we check that an interruption
@@ -177,6 +192,7 @@ public class StudyScheduler {
 			} else {
 				HarmonyLogger.info("Finished execution of analyses");
 			}
+
 		} catch (InterruptedException ie) {
 			// (Re-)Cancel if current thread also interrupted
 			threadsPool.shutdownNow();

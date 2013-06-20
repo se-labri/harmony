@@ -18,7 +18,7 @@ public interface SourceExtractor<W extends Workspace> {
 	 * @param extractActions
 	 *            Whether {@link #extractActions(Event)} will be called or not.
 	 */
-	void initializeSource(boolean extractActions);
+	void initializeSource(boolean extractHamonyModel, boolean extractActions);
 
 	/**
 	 * Initialize the workspace by performing the clone operation on the repository

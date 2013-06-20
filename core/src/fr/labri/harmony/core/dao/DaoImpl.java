@@ -87,6 +87,12 @@ public class DaoImpl implements Dao {
 	}
 
 	@Override
+		try {
+		TypedQuery<Source> q = m.createQuery(cq).setMaxResults(1);
+		
+		} catch (NoResultException e) {
+			return null;
+		}
 	public Event getEvent(Source s, String nativeId) {
 		return get(Event.class, s, nativeId);
 	}

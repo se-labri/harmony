@@ -84,7 +84,7 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 	}
 
 	@Override
-	public void initializeSource(boolean extractActions) {
+	public void initializeSource(boolean extractHarmonyModel, boolean extractActions) {
 		HarmonyLogger.info("Initializing Workspace for source " + getUrl());
 		initializeWorkspace();
 
@@ -93,30 +93,32 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 		source.setWorkspace(workspace);
 
 		dao.saveSource(source);
-		HarmonyLogger.info("Extracting Events for source " + getUrl());
-		extractEvents();
+		if (extractHarmonyModel) {
+			HarmonyLogger.info("Extracting Events for source " + getUrl());
+			extractEvents();
 
-		// Save the remaining events
-		saveAuthorsAndEvents();
+			// Save the remaining events
+			saveAuthorsAndEvents();
 
-		if (extractActions) {
-			HarmonyLogger.info("Extracting Actions for source " + getUrl());
+			if (extractActions) {
+				HarmonyLogger.info("Extracting Actions for source " + getUrl());
 
-			for (Event e : dao.getEvents(source))
-				extractActions(e);
+				for (Event e : dao.getEvents(source))
+					extractActions(e);
 
-			saveItemsAndActions();
+				saveItemsAndActions();
+			}
+			source = dao.refreshSource(source);
 		}
-
-		source = dao.refreshSource(source);
-		// include the configuration in the source (may be useful in some cases)
+		// include the configuration in the source (may be useful to get the source's options)
 		source.setConfig(getConfig());
-		
+
 		onExtractionFinished();
 	}
 
 	/**
-	 * Called at the end of the {@link #initializeSource(boolean)} method, when all extraction is finished. Does nothing by default
+	 * Called at the end of the {@link #initializeSource(boolean)} method, when
+	 * all extraction is finished. Does nothing by default
 	 */
 	protected void onExtractionFinished() {
 	}
