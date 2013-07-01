@@ -41,8 +41,6 @@ public class StudyScheduler {
 		this.schedulerConfiguration = schedulerConfiguration;
 	}
 
-	// TODO instrumentation for performance assessment as well as report
-	// creation (analyses failed/done)
 	/**
 	 * Main method of the core. Runs all analyses on all sources according to
 	 * the configuration
@@ -60,29 +58,37 @@ public class StudyScheduler {
 			HarmonyLogger.error("An error occured while creating working folders");
 			e.printStackTrace();
 		}
+		// We retrieve the list of source that need to be analyzed
+		List<SourceConfiguration> sourceConfigurations = sourceConfigReader.getSourcesConfigurations();
+		if (sourceConfigurations.isEmpty()) {
+			HarmonyLogger.error("No source to analyze");
+			return;
+		}
 
-		// We create a global DAO which is in charge of building and managing
+		// We create a global DAO which is in charge of building and
+		// managing
 		// the EntityManagers from all the bundles defining analyses
 		dao = new DaoImpl(global.getDatabaseConfiguration());
 
-		// We grab the list of analyses which have been scheduled according to
+		cleanExistingSources();
+		// We grab the list of analyses which have been scheduled according
+		// to
 		// their dependencies
 		Collection<Analysis> scheduledAnalyses = getScheduledAnalyses(global.getAnalysisConfigurations());
 
 		// We do the same thing for the post-processing analyses
 		Collection<PostProcessingAnalysis> scheduledPostProcessingAnalyses = getScheduledPostProcessingAnalyses(global.getPostProcessingAnalysisConfigurations());
-		
+
 		// Initialization of the ExecutorService in order to manage the
 		// concurrent execution of the analyses
 		if (this.schedulerConfiguration.getNumberOfThreads() > NUMBER_OF_EXECUTION_UNIT_AVAILABLE) {
-			// TODO Use an OSGI compliant logging service / Some profiling to
+			// TODO Use an OSGI compliant logging service / Some profiling
+			// to
 			// determine best ration number of threads per core
 			HarmonyLogger.info("You requested more threads than the number of execution unit (core) available, this choice might lead to lower execution performance");
 		}
 		this.threadsPool = Executors.newFixedThreadPool(this.schedulerConfiguration.getNumberOfThreads());
 
-		// We retrieve the list of source that need to be analyzed
-		List<SourceConfiguration> sourceConfigurations = sourceConfigReader.getSourcesConfigurations();
 		SourceExtractorFactory sourceExtractorFactory = new SourceExtractorFactory(dao);
 
 		// Create the ExecutionReport
@@ -98,25 +104,32 @@ public class StudyScheduler {
 		// We wait for the threads to finish to the extent that the timeout
 		// limit is not reached
 		shutdownThreadsPool();
-		
-		
+
+		mainMonitor.stopMonitoring(executionReportId);
+		mainMonitor.printExecutionReport(executionReportId);
+
 		// We run the post-processing analyses
 		Collection<Source> sources = getSources(sourceConfigurations);
 
 		for (PostProcessingAnalysis analysis : scheduledPostProcessingAnalyses) {
 			analysis.runOn(sources);
 		}
-		
-		mainMonitor.stopMonitoring(executionReportId);
-		mainMonitor.printExecutionReport(executionReportId);
+
+	}
+
+	private void cleanExistingSources() {
+		dao.removeAllSources();
+
 	}
 
 	private Collection<Source> getSources(List<SourceConfiguration> sourceConfigurations) {
 		ArrayList<Source> sources = new ArrayList<>();
-		for(SourceConfiguration configuration : sourceConfigurations) {
+		for (SourceConfiguration configuration : sourceConfigurations) {
 			Source source = dao.getSourceByUrl(configuration.getRepositoryURL());
-			source.setConfig(configuration);
-			sources.add(source);
+			if (source != null) {
+				source.setConfig(configuration);
+				sources.add(source);
+			}
 		}
 		return sources;
 	}
@@ -150,7 +163,7 @@ public class StudyScheduler {
 		return analysisDAG.getTopoOrder();
 
 	}
-	
+
 	private Collection<PostProcessingAnalysis> getScheduledPostProcessingAnalyses(List<AnalysisConfiguration> analysisConfigurations) {
 		AnalysisFactory factory = new AnalysisFactory(dao);
 		Dag<PostProcessingAnalysis> analysisDAG = new Dag<PostProcessingAnalysis>();
@@ -185,7 +198,7 @@ public class StudyScheduler {
 			public void run() {
 				SourceExecutionReport executionReport = new SourceExecutionReport();
 				executionReport.setSourceUrl(sourceExtractor.getConfig().getRepositoryURL());
-				
+
 				try {
 					long startTime = System.currentTimeMillis();
 
@@ -196,10 +209,14 @@ public class StudyScheduler {
 					// If at least one analysis requires the actions, we have to
 					// extract them
 					boolean extractActions = false;
+					boolean extractHarmonyModel = false;
 					for (Analysis a : scheduledAnalyses) {
-						if (a != null) extractActions = (a.getConfig().requireActions()) || extractActions;
+						if (a != null) {
+							extractActions = (a.getConfig().requireActions()) || extractActions;
+							extractHarmonyModel = (a.getConfig().requireHarmonyModel()) || extractHarmonyModel;
+						}
 					}
-					sourceExtractor.initializeSource(extractActions);
+					sourceExtractor.initializeSource(extractHarmonyModel, extractActions);
 
 					// We perform the analysis one after the other and between
 					// each of them we check that an interruption
@@ -246,7 +263,7 @@ public class StudyScheduler {
 			} else {
 				HarmonyLogger.info("Finished execution of analyses");
 			}
-			
+
 		} catch (InterruptedException ie) {
 			// (Re-)Cancel if current thread also interrupted
 			threadsPool.shutdownNow();

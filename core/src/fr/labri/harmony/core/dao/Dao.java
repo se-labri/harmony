@@ -91,6 +91,8 @@ public interface Dao {
 	 *         service. This is useful to run queries that are not supported by
 	 *         this dao
 	 */
-	public HarmonyEntityManagerFactory getEntityManagerFactory(AbstractHarmonyService service);
+	HarmonyEntityManagerFactory getEntityManagerFactory(AbstractHarmonyService service);
+	
+	void removeAllSources();
 
 }

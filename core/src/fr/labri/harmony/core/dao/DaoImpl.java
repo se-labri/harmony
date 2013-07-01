@@ -34,7 +34,8 @@ import fr.labri.harmony.core.source.Workspace;
 public class DaoImpl implements Dao {
 
 	/**
-	 * We keep references on the EntityManagerFactories instead of the entity managers themselves
+	 * We keep references on the EntityManagerFactories instead of the entity
+	 * managers themselves
 	 */
 	private Map<String, HarmonyEntityManagerFactory> entityManagerFactories;
 
@@ -69,7 +70,7 @@ public class DaoImpl implements Dao {
 	private EntityManager getEntityManager() {
 		return getEntityManager(HARMONY_PERSISTENCE_UNIT);
 	}
-	
+
 	@Override
 	public void saveSource(Source s) {
 		save(s);
@@ -83,24 +84,29 @@ public class DaoImpl implements Dao {
 		m.getTransaction().commit();
 		return result;
 	}
-	
+
 	@Override
 	public Source getSourceByUrl(String url) {
+
 		EntityManager m = getEntityManager();
 		m.getTransaction().begin();
+		try {
+			CriteriaBuilder cb = m.getCriteriaBuilder();
+			CriteriaQuery<Source> cq = cb.createQuery(Source.class);
+			Root<Source> src = cq.from(Source.class);
+			cq.select(src);
+			cq.where(cb.equal(src.get("url"), url));
+			TypedQuery<Source> q = m.createQuery(cq).setMaxResults(1);
 
-		CriteriaBuilder cb = m.getCriteriaBuilder();
-		CriteriaQuery<Source> cq = cb.createQuery(Source.class);
-		Root<Source> src = cq.from(Source.class);
-		cq.select(src);
-		cq.where(cb.equal(src.get("url"), url));
-		TypedQuery<Source> q = m.createQuery(cq);
-		
-		Source source = q.getSingleResult();
-		
-		m.getTransaction().commit();
-		
-		return source;
+			Source source = q.getSingleResult();
+
+			m.getTransaction().commit();
+
+			return source;
+		} catch (NoResultException e) {
+			m.getTransaction().rollback();
+			return null;
+		}
 	}
 
 	@Override
@@ -204,7 +210,7 @@ public class DaoImpl implements Dao {
 		String sQuery = "SELECT e FROM " + clazz.getSimpleName() + " e WHERE e.source.id = :sourceId AND e.nativeId = :nativeId";
 		Query query = m.createQuery(sQuery);
 		query.setParameter("sourceId", s.getId());
-		query.setParameter("nativeId", nativeId);
+		query.setParameter("nativeId", nativeId).setMaxResults(1);
 		E result = null;
 		try {
 			result = (E) query.getSingleResult();
@@ -223,7 +229,7 @@ public class DaoImpl implements Dao {
 		Root<E> root = query.from(clazz);
 		query.select(root);
 		query.where(builder.equal(root.get("source"), s));
-		
+
 		List<E> results = m.createQuery(query).getResultList();
 		m.getTransaction().commit();
 		m.close();
@@ -251,7 +257,8 @@ public class DaoImpl implements Dao {
 		m.refresh(source);
 		m.getTransaction().commit();
 
-		// The workspace is transient, so we have to reset it when refreshing the source;
+		// The workspace is transient, so we have to reset it when refreshing
+		// the source;
 		source.setWorkspace(ws);
 
 		return source;
@@ -269,8 +276,7 @@ public class DaoImpl implements Dao {
 
 	private <E> void save(Collection<E> elements) {
 		EntityManager m = getEntityManager();
-		if (!m.getTransaction().isActive())
-		m.getTransaction().begin();
+		if (!m.getTransaction().isActive()) m.getTransaction().begin();
 		for (E e : elements) {
 			m.persist(e);
 		}
@@ -291,11 +297,20 @@ public class DaoImpl implements Dao {
 	@Override
 	public synchronized HarmonyEntityManagerFactory getEntityManagerFactory(AbstractHarmonyService harmonyService) {
 		String puName;
-		if (harmonyService == null)
-			puName = HARMONY_PERSISTENCE_UNIT;
-		else
-			puName = harmonyService.getPersitenceUnitName();
+		if (harmonyService == null) puName = HARMONY_PERSISTENCE_UNIT;
+		else puName = harmonyService.getPersitenceUnitName();
 		return entityManagerFactories.get(puName);
+	}
+
+	@Override
+	public void removeAllSources() {
+		EntityManager m = getEntityManager();
+		m.getTransaction().begin();
+		Query query = m.createQuery("SELECT e FROM Source e", Source.class);
+	     for (Source s : (Collection<Source>)query.getResultList()) {
+	    	 m.remove(s);
+	     }
+		m.getTransaction().commit();
 	}
 
 }

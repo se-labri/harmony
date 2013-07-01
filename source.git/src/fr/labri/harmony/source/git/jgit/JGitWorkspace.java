@@ -59,6 +59,7 @@ public class JGitWorkspace extends AbstractLocalWorkspace {
 			git = Git.open(new File(getPath()));
 			git.pull().call();
 		} catch (Exception e) {
+			//FIXME : allow harmony to work offline
 			throw new WorkspaceException(e);
 		}
 	}

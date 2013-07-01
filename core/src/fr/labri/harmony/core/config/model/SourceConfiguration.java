@@ -2,6 +2,7 @@ package fr.labri.harmony.core.config.model;
 
 import java.util.HashMap;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import fr.labri.harmony.core.source.SourceExtractor;
@@ -12,6 +13,7 @@ public class SourceConfiguration {
 	private String username;
 	private String password;
 	private FoldersConfiguration foldersConfiguration;
+	private String configurationFileName;
 
 	private HashMap<String, Object> options;
 
@@ -43,6 +45,7 @@ public class SourceConfiguration {
 		this.sourceExtractorName = sourceExtractorName;
 	}
 
+	@JsonIgnore
 	public void setFoldersConfiguration(FoldersConfiguration foldersConfiguration) {
 		this.foldersConfiguration = foldersConfiguration;
 	}
@@ -76,6 +79,15 @@ public class SourceConfiguration {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	@JsonIgnore
+	public String getConfigurationFileName() {
+		return configurationFileName;
+	}
+
+	public void setConfigurationFileName(String configurationFileName) {
+		this.configurationFileName = configurationFileName;
 	}
 	
 	

@@ -26,15 +26,14 @@ import fr.labri.harmony.core.source.AbstractSourceExtractor;
  * @see http://svnkit.com/javadoc/
  * @see http://wiki.svnkit.com/Managing_A_Working_Copy
  * 
- *
+ * 
  */
 
 public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspace> implements ISVNLogEntryHandler {
-	
+
 	private Event parent;
 	private boolean extractActions;
-	
-	
+
 	public SvnKitSourceExtractor() {
 		super();
 	}
@@ -42,16 +41,16 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 	public SvnKitSourceExtractor(SourceConfiguration config, Dao dao, Properties properties) {
 		super(config, dao, properties);
 	}
-	
+
 	@Override
 	public void initializeWorkspace() {
 		workspace = new SvnKitWorkspace(this);
 		workspace.init();
-		
+
 	}
-	
+
 	@Override
-	public void initializeSource(boolean extractActions) {
+	public void initializeSource(boolean extractHarmonyModel, boolean extractActions) {
 		HarmonyLogger.info("Initializing Workspace for source " + getUrl());
 		initializeWorkspace();
 
@@ -59,52 +58,52 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 		source.setUrl(getUrl());
 		source.setWorkspace(workspace);
 		dao.saveSource(source);
-		
-		
-		HarmonyLogger.info("Extracting Events for source " + getUrl());
-		parent = null;
-		this.extractActions=extractActions;
-		
 
-		extractEvents();
+		if (extractHarmonyModel) {
+			HarmonyLogger.info("Extracting Events for source " + getUrl());
+			parent = null;
+			this.extractActions = extractActions;
 
-		// Save the remaining events
-		saveAuthorsAndEvents();
-		saveItemsAndActions();
+			extractEvents();
 
-		source = dao.refreshSource(source);
+			// Save the remaining events
+			saveAuthorsAndEvents();
+			saveItemsAndActions();
+
+			source = dao.refreshSource(source);
+		}
+		source.setConfig(getConfig());
 
 		onExtractionFinished();
 	}
-	
+
 	@Override
 	public void handleLogEntry(SVNLogEntry logEntry) throws SVNException {
-		
-		
+
 		List<Event> parents = new ArrayList<Event>();
-		if(parent != null){parents.add(parent); }
-		
-		
+		if (parent != null) {
+			parents.add(parent);
+		}
+
 		String user = logEntry.getAuthor();
-		if(user==null){
+		if (user == null) {
 			user = "unknown";
 		}
-		
+
 		Author author = getAuthor(user);
-		if (author == null) {			
+		if (author == null) {
 			author = new Author(source, user, user);
 			saveAuthor(author);
 		}
 		List<Author> authors = new ArrayList<>(Arrays.asList(new Author[] { author }));
 
-		Event e = new Event(source, String.valueOf( logEntry.getRevision()),logEntry.getDate().getTime(), parents, authors);
+		Event e = new Event(source, String.valueOf(logEntry.getRevision()), logEntry.getDate().getTime(), parents, authors);
 		saveEvent(e);
-		
-		//TODO add metadata management : logEntry.getMessage()
-		
-		
+
+		// TODO add metadata management : logEntry.getMessage()
+
 		if (extractActions) {
-			for(SVNLogEntryPath entry: logEntry.getChangedPaths().values()){
+			for (SVNLogEntryPath entry : logEntry.getChangedPaths().values()) {
 				ActionKind kind = null;
 				switch (entry.getType()) {
 				case 'M':
@@ -119,7 +118,7 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 				case 'R':
 					kind = ActionKind.Delete;
 				}
-				
+
 				Item i = getItem(entry.getPath());
 				if (i == null) {
 					i = new Item(source, entry.getPath());
@@ -129,23 +128,24 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 				saveAction(a);
 			}
 		}
-		
-		this.parent =e;
-		
+
+		this.parent = e;
+
 	}
-	
+
 	@Override
-	public void extractEvents(){
+	public void extractEvents() {
 		try {
-			getWorkspace().getSvnClientManager().getLogClient().doLog(workspace.getSurl(), new String[] {}, SVNRevision.HEAD, SVNRevision.create(0), SVNRevision.HEAD, true, true, false, -1L, new String[]{}, this);
+			getWorkspace().getSvnClientManager().getLogClient()
+					.doLog(workspace.getSurl(), new String[] {}, SVNRevision.HEAD, SVNRevision.create(0), SVNRevision.HEAD, true, true, false, -1L, new String[] {}, this);
 		} catch (SVNException e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public void extractActions(Event e)  {
-		// TODO 
+	public void extractActions(Event e) {
+		// TODO
 	}
 
 }
