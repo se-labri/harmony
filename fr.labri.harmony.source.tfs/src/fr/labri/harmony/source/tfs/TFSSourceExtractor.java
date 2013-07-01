@@ -1,8 +1,9 @@
 package fr.labri.harmony.source.tfs;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 import com.microsoft.tfs.core.clients.versioncontrol.soapextensions.Change;
 import com.microsoft.tfs.core.clients.versioncontrol.soapextensions.ChangeType;
@@ -16,16 +17,16 @@ import fr.labri.harmony.core.model.ActionKind;
 import fr.labri.harmony.core.model.Author;
 import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.Item;
-import fr.labri.harmony.core.model.Metadata;
 import fr.labri.harmony.core.source.AbstractSourceExtractor;
-import fr.labri.harmony.core.source.WorkspaceException;
-import fr.labri.harmony.source.svnkit.SvnKitWorkspace;
+
+
 
 
 
 public class TFSSourceExtractor extends AbstractSourceExtractor<TFSWorkspace> {
 
 	private static final String COMMIT_LOG = "commit_log";
+
 	
 	public TFSSourceExtractor() {
 		super();
@@ -37,7 +38,7 @@ public class TFSSourceExtractor extends AbstractSourceExtractor<TFSWorkspace> {
 	
 	@Override
 	public void initializeWorkspace() {
-		workspace = new TFSWorkspace(config);
+		workspace = new TFSWorkspace(this);
 		workspace.init();
 
 	}
@@ -50,37 +51,41 @@ public class TFSSourceExtractor extends AbstractSourceExtractor<TFSWorkspace> {
 
 		for (int i = 0; i < changesets.length; ++i) {
 			Changeset changeset = changesets[i];
+			
 			int eventId = changeset.getChangesetID();
-			long eventTime = changeset.getDate().getTimeInMillis() / 10;
+			long eventTime = changeset.getDate().getTimeInMillis() / 10;		
+			
+			// Author Identification
+			String userName = changeset.getOwner();
+			String displayName = changeset.getOwnerDisplayName();			
+			Author author = getAuthor(userName);
+            if (author == null) {
+                    author = new Author(source,userName, displayName);
+                    saveAuthor(author);
+            }
+            List<Author> authors = new ArrayList<>(Arrays.asList(new Author[] { author }));
 
-			Event e = sourceFactories.events.create(Integer.toString(eventId), source, eventTime);
+            // Parent identification
+            // TODO check this definition of parent
+            List<Event> parents = new ArrayList<>();
+			if (i != 0) parents.add(events[i - 1]);
+
+			Event e = new Event(source, String.valueOf(eventId), eventTime, parents, authors);
+			dao.saveEvent(e);
+			
 			events[i] = e;
 
-			Metadata metadata = new Metadata();
+			// TODO Add management metadata
+			/*Metadata metadata = new Metadata();
 			metadata.getMetadata().put(COMMIT_LOG, changeset.getComment());
 			metadata.getMetadata().put("committer", changeset.getCommitter());
 			metadata.getMetadata().put("committer-display-name", changeset.getCommitterDisplayName());
 			e.getData().add(metadata);
-			metadata.setHarmonyElement(e);
+			metadata.setHarmonyElement(e);*/
 
-			Set<Author> authors = new HashSet<Author>();
-			Author author = null;
-			String userName = changeset.getOwner();
-			String displayName = changeset.getOwnerDisplayName();
-			try {
-				author = sourceFactories.authors.tryGet(userName);
-			} catch (NativeElementNotFound ne) {
-				author = sourceFactories.authors.create(userName, source, displayName);
-			}
-			authors.add(author);
-			e.setAuthors(authors);
-			author.getEvents().add(e);
-			Set<Event> parents = new HashSet<>();
-			if (i != 0) parents.add(events[i - 1]);
-			e.setParents(parents);
+	
 		}
 
-		return events;
 	}
 
 	@Override
@@ -89,34 +94,34 @@ public class TFSSourceExtractor extends AbstractSourceExtractor<TFSWorkspace> {
 			Changeset changeset = workspace.getTFSClient().getChangeset(Integer.parseInt(e.getNativeId()));
 			Change[] changes = changeset.getChanges();
 			for (Change change : changes) {
-				Action a = new Action();
-				Item i = null;
+				
+	
 				// We do not track folders
 				if (change.getItem().getItemType().equals(ItemType.FILE)) {
 					String itemId = Integer.toString(change.getItem().getItemID());
-					try {
-						i = sourceFactories.items.tryGet(itemId);
-					} catch (NativeElementNotFound ne) {
-						i = sourceFactories.items.create(itemId, source);
-					}
-					a.setEvent(e);
-					e.getActions().add(a);
-					a.setItem(i);
-					i.getActions().add(a);
+					
+					 Item i = getItem(itemId);
+                     if (i == null) {
+                             i = new Item(source, itemId);
+                             saveItem(i);
+                     }
+	
 					ActionKind kind = null;
-
 					ChangeType changeType = change.getChangeType();
 					if (changeType.contains(ChangeType.ADD)) kind = ActionKind.Create;
 					else if (changeType.contains(ChangeType.EDIT)) kind = ActionKind.Edit;
 					else if (changeType.contains(ChangeType.DELETE)) kind = ActionKind.Delete;
-					a.setKind(kind);
-
-					String serverPath = change.getItem().getServerItem();
+					
+					Action a = new Action(i, kind, e, e.getParents().get(0), source);
+                    saveAction(a);
+					
+					// TODO Add metadata management
+					/*String serverPath = change.getItem().getServerItem();
 					Metadata metadata = new Metadata();
 					metadata.getMetadata().put("server-path", serverPath);
 
 					i.getData().add(metadata);
-					metadata.setHarmonyElement(i);
+					metadata.setHarmonyElement(i);*/
 				}
 			}
 	}
