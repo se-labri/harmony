@@ -5,7 +5,7 @@
 		"password":"",
 		"driver":"org.h2.Driver"
 	},
-	"manage-create-sources":{
+	"scheduler":{
 		"threads":1,
 		"timeout":100000
 	},
