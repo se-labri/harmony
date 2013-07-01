@@ -10,6 +10,7 @@ import org.osgi.framework.ServiceReference;
 import fr.labri.harmony.core.AbstractHarmonyService;
 import fr.labri.harmony.core.config.model.SourceConfiguration;
 import fr.labri.harmony.core.dao.Dao;
+import fr.labri.harmony.core.log.HarmonyLogger;
 
 public class SourceExtractorFactory {
 
@@ -28,7 +29,7 @@ public class SourceExtractorFactory {
 				ServiceReference<SourceExtractor> ref = refs.iterator().next();
 				
 				if(refs.size()>1){
-					// TODO LOG : Multiple implementations of the source extractor +config.getSourceExtractorName()+ have been found. The first one found has been selected
+					HarmonyLogger.info("Multiple implementations of the source extractor +config.getSourceExtractorName()+ have been found. The first one found has been selected");
 				}
 				
 				Properties properties = extractProperties(ref);

@@ -19,12 +19,15 @@ public class SourceConfigReader {
 	private ArrayNode sourceConfig;
 	private GlobalConfigReader global;
 	private ObjectMapper mapper;
+	private String configurationFileName;
 
 	public SourceConfigReader(String path, GlobalConfigReader global) throws IOException {
 		if (path == null) path = DEFAULT_CONFIG_PATH;
 		this.global = global;
 		mapper = new ObjectMapper();
-		sourceConfig = (ArrayNode) mapper.readTree(new File(path));
+		File configFile = new File(path);
+		configurationFileName = configFile.getName();
+		sourceConfig = (ArrayNode) mapper.readTree(configFile);
 	}
 
 	public List<SourceConfiguration> getSourcesConfigurations() {
@@ -33,7 +36,9 @@ public class SourceConfigReader {
 			try {
 				SourceConfiguration config = mapper.readValue(c.toString(), SourceConfiguration.class);
 				config.setFoldersConfiguration(global.getFoldersConfig());
+				config.setConfigurationFileName(configurationFileName);
 				configs.add(config);
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

@@ -35,12 +35,12 @@ public class ExecutionMonitor {
 		em.persist(report);
 		em.getTransaction().commit();
 		em.close();
-		
+
 		tt.start();
 		return report.getId();
 
 	}
-	
+
 	public void stopMonitoring(int executionReportId) {
 		tt.interrupt();
 		EntityManager em = emf.createEntityManager();
@@ -85,13 +85,13 @@ public class ExecutionMonitor {
 			try {
 				FileWriter writer = new FileWriter(new File("ErrorLog.txt"));
 				for (Map.Entry<String, String> error : executionErrors.entrySet()) {
-					writer.write("Source Url: " + error.getKey()  + "\n\n" + error.getValue() + "\n\n\n");
+					writer.write("Source Url: " + error.getKey() + "\n\n" + error.getValue() + "\n\n\n");
 				}
 				writer.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 		} else {
 			HarmonyLogger.info("All analyses finished without error");
 		}
