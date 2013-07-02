@@ -4,6 +4,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: fr.labri.harmony.source.svnkit
 Bundle-SymbolicName: fr.labri.harmony.source.svnkit
 Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: SE@Labri
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: javax.persistence;version="2.0.4",
