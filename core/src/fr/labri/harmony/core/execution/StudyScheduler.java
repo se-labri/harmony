@@ -164,7 +164,6 @@ public class StudyScheduler {
 					// dependency -> dependent
 					analysisDAG.addEdge(requiredAnalysis, analysisConfiguration.getAnalysisName());
 				}
-				}
 			}
 
 		}
