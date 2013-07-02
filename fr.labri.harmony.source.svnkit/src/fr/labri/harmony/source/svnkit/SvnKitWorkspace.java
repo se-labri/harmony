@@ -30,9 +30,10 @@ public class SvnKitWorkspace extends AbstractLocalWorkspace {
 		String username = sourceExtractor.getConfig().getUsername();
 		String password = sourceExtractor.getConfig().getPassword();
 		
-		if(username == null || username.equals("")){
+                if(username==null || username.equals("")){
 			svnClientManager = SVNClientManager.newInstance(new DefaultSVNOptions());			
 		}else{
+			if(password==null){password = "";}
 			svnClientManager = SVNClientManager.newInstance(new DefaultSVNOptions(),username, password);			
 		}
 		
