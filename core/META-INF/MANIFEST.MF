@@ -33,3 +33,4 @@ Export-Package: fr.labri.harmony.core,
  fr.labri.harmony.core.model,
  fr.labri.harmony.core.source
 Bundle-ClassPath: .
+Bundle-Vendor: SE@LaBRI
