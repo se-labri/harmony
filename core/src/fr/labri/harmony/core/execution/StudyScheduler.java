@@ -148,13 +148,22 @@ public class StudyScheduler {
 		for (AnalysisConfiguration analysisConfiguration : analysisConfigurations) {
 
 			Analysis currentAnalysis = factory.createAnalysis(analysisConfiguration);
-			if (currentAnalysis != null) {
+			
+			// We check that requested analysis was located with success
+			if (currentAnalysis==null){
+				HarmonyLogger.error("Harmony was not able to locate the analysis named:"+analysisConfiguration.getAnalysisName()+", hence this analysis will be ignored.");
+				HarmonyLogger.error("In order to solve this problem check that:");
+				HarmonyLogger.error("- the analysis name is correctly spelled in the configuration file");
+				HarmonyLogger.error("- the analysis project is loaded. Take a look at your Run Configurations. Is the analysis bundle selected ? Are the dependencies of your bundle satisfied (see validate plugins) ?");
+				
+			}else{
 				analysisDAG.addVertex(analysisConfiguration.getAnalysisName(), currentAnalysis);
 				for (String requiredAnalysis : analysisConfiguration.getDependencies()) {
 					// To have a Topological Sorting that returns the execution
 					// order, the edges have to be oriented as
 					// dependency -> dependent
 					analysisDAG.addEdge(requiredAnalysis, analysisConfiguration.getAnalysisName());
+				}
 				}
 			}
 
