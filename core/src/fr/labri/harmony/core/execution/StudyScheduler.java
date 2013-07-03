@@ -71,6 +71,7 @@ public class StudyScheduler {
 		dao = new DaoImpl(global.getDatabaseConfiguration());
 
 		cleanExistingSources();
+		
 		// We grab the list of analyses which have been scheduled according
 		// to
 		// their dependencies
@@ -98,7 +99,15 @@ public class StudyScheduler {
 		// We iterate on each sources and for each one we run the set of
 		// analysis in the right order
 		for (SourceConfiguration sourceConfiguration : sourceConfigurations) {
-			launchSortedAnalysisOnSource(sourceExtractorFactory.createSourceExtractor(sourceConfiguration), scheduledAnalyses);
+			
+			SourceExtractor<?> currentSource = sourceExtractorFactory.createSourceExtractor(sourceConfiguration);
+			if(currentSource!=null){
+				launchSortedAnalysisOnSource(currentSource, scheduledAnalyses);
+			}
+			else {
+				HarmonyLogger.error("Could not load the source:"+sourceConfiguration.getRepositoryURL());
+			}
+			
 		}
 
 		// We wait for the threads to finish to the extent that the timeout

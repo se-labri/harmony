@@ -9,6 +9,7 @@ import com.microsoft.tfs.core.clients.versioncontrol.soapextensions.Change;
 import com.microsoft.tfs.core.clients.versioncontrol.soapextensions.ChangeType;
 import com.microsoft.tfs.core.clients.versioncontrol.soapextensions.Changeset;
 import com.microsoft.tfs.core.clients.versioncontrol.soapextensions.ItemType;
+import com.microsoft.tfs.core.clients.workitem.WorkItem;
 
 import fr.labri.harmony.core.config.model.SourceConfiguration;
 import fr.labri.harmony.core.dao.Dao;
@@ -53,7 +54,8 @@ public class TFSSourceExtractor extends AbstractSourceExtractor<TFSWorkspace> {
 			Changeset changeset = changesets[i];
 			
 			int eventId = changeset.getChangesetID();
-			long eventTime = changeset.getDate().getTimeInMillis() / 10;		
+			long eventTime = changeset.getDate().getTimeInMillis() / 10;	
+			
 			
 			// Author Identification
 			String userName = changeset.getOwner();
@@ -66,12 +68,12 @@ public class TFSSourceExtractor extends AbstractSourceExtractor<TFSWorkspace> {
             List<Author> authors = new ArrayList<>(Arrays.asList(new Author[] { author }));
 
             // Parent identification
-            // TODO check this definition of parent
+            // TODO check this definition of parent        
             List<Event> parents = new ArrayList<>();
 			if (i != 0) parents.add(events[i - 1]);
 
 			Event e = new Event(source, String.valueOf(eventId), eventTime, parents, authors);
-			dao.saveEvent(e);
+			saveEvent(e);
 			
 			events[i] = e;
 
@@ -82,6 +84,9 @@ public class TFSSourceExtractor extends AbstractSourceExtractor<TFSWorkspace> {
 			metadata.getMetadata().put("committer-display-name", changeset.getCommitterDisplayName());
 			e.getData().add(metadata);
 			metadata.setHarmonyElement(e);*/
+			
+			// TODO Requirements
+			//WorkItem wi[] = changeset.getWorkItems();
 
 	
 		}
@@ -112,7 +117,14 @@ public class TFSSourceExtractor extends AbstractSourceExtractor<TFSWorkspace> {
 					else if (changeType.contains(ChangeType.EDIT)) kind = ActionKind.Edit;
 					else if (changeType.contains(ChangeType.DELETE)) kind = ActionKind.Delete;
 					
-					Action a = new Action(i, kind, e, e.getParents().get(0), source);
+					//We check if the related event has parents, if it the case we select arbitrarily the first one as parent of the action.
+					Event parentOfA = null;
+					if(e.getParents().isEmpty()){
+						parentOfA = e;
+					} else{
+						parentOfA= e.getParents().get(0);
+					}
+					Action a = new Action(i, kind, e, parentOfA, source);
                     saveAction(a);
 					
 					// TODO Add metadata management
