@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
+Service-Component: OSGI-INF/*.xml
 Bundle-ManifestVersion: 2
 Bundle-Name: fr.labri.harmony.source.tfs
 Bundle-SymbolicName: fr.labri.harmony.source.tfs
@@ -7,11 +8,11 @@ Bundle-Vendor: LaBRI Software Engineering Group
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.microsoft.tfs.core.httpclient,
  javax.persistence,
- org.osgi.framework;version="1.3.0"
+ org.osgi.framework;version="1.3.0";resolution:=optional
 Bundle-ActivationPolicy: lazy
 Require-Bundle: fr.labri.harmony.core;bundle-version="1.0.0",
  com.microsoft.tfs.core,
  com.microsoft.tfs.util
 Export-Package: fr.labri.harmony.source.tfs
-Bundle-ClassPath: OSGI-INF/,
- .
+Bundle-ClassPath: .,
+ src/

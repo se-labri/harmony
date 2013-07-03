@@ -28,13 +28,13 @@ import fr.labri.harmony.core.source.WorkspaceException;
 
 public class TFSWorkspace extends AbstractLocalWorkspace {
 
-	public static final String CREDENTIALS_NODE_NAME = "credentials";
 	public static final String TFS_WORKSPACE_NAME = "HarmonyTmpTFSWorkspace";
-
-	protected String serverPath;
 	protected VersionControlClient tfsClient;
 	protected Credentials credentials;
 	protected Workspace tfsWorkspace;
+	protected String serverPath;
+	private String username;
+	private String password;
 	
 	/**
 	 * 
@@ -45,18 +45,19 @@ public class TFSWorkspace extends AbstractLocalWorkspace {
 		super(sourceExtractor);
 
      
-        String USERNAME = sourceExtractor.getConfig().getUsername();
-		String PASSWORD = sourceExtractor.getConfig().getPassword();
+        username = sourceExtractor.getConfig().getUsername();
+		password = sourceExtractor.getConfig().getPassword();
+		serverPath = sourceExtractor.getConfig().getPathOnServer();	
 
         // In case no username is provided and the current platform supports
         // default credentials, use default credentials
-        if ((USERNAME == null || USERNAME.length() == 0) && CredentialsUtils.supportsDefaultCredentials())
+        if ((username == null || username.length() == 0) && CredentialsUtils.supportsDefaultCredentials())
         {
             credentials = new DefaultNTCredentials();
         }
         else
         {
-            credentials = new UsernamePasswordCredentials(USERNAME, PASSWORD);
+            credentials = new UsernamePasswordCredentials(username, password);
         }
 
         URI httpProxyURI = null;

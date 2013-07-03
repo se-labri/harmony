@@ -12,6 +12,7 @@ public class SourceConfiguration {
 	private String sourceExtractorName;
 	private String username;
 	private String password;
+	private String pathOnServer;
 	private FoldersConfiguration foldersConfiguration;
 	private String configurationFileName;
 
@@ -89,6 +90,17 @@ public class SourceConfiguration {
 	public void setConfigurationFileName(String configurationFileName) {
 		this.configurationFileName = configurationFileName;
 	}
+
+	@JsonProperty("path")
+	public String getPathOnServer() {
+		return pathOnServer;
+	}
+
+	public void setPathOnServer(String pathOnServer) {
+		this.pathOnServer = pathOnServer;
+	}
+	
+	
 	
 	
 

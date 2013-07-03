@@ -37,6 +37,8 @@ public class SourceExtractorFactory {
 				SourceExtractor<?> service = serviceDef.getClass().getConstructor(SourceConfiguration.class, Dao.class, Properties.class).newInstance(config, dao, properties);
 
 				return service;
+			}else {
+				HarmonyLogger.error("The source extractor: "+config.getSourceExtractorName()+" required for: "+config.getRepositoryURL()+" could not be found");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
