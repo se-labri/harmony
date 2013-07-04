@@ -53,7 +53,12 @@ public class ReportAnalysis extends AbstractAnalysis {
 	public void runOn(Source src) {
 		HarmonyLogger.info("Starting reporting analysis on " + src.getUrl() + ".");
 		String baseFolder = config.getFoldersConfiguration().getOutFolder();
-		String urlFolder = convertToFolderName(src.getUrl());
+		
+		//Specific to TFS
+		String pathOnServer= "";
+		if (src.getConfig().getPathOnServer()!= null){pathOnServer=src.getConfig().getPathOnServer();}
+		
+		String urlFolder = convertToFolderName(src.getUrl()+pathOnServer);
 		Path outputPath = Paths.get(baseFolder, urlFolder);
 		File outputFolder = outputPath.toFile();
 		if (!outputFolder.exists()) outputFolder.mkdir();
@@ -86,7 +91,7 @@ public class ReportAnalysis extends AbstractAnalysis {
 	}
 
 	private static String convertToFolderName(String src) {
-		return src.replaceAll("http://", "").replaceAll("https://", "").replaceAll("/", "-").replaceAll(":", "");
+		return src.replaceAll("http://", "").replaceAll("https://", "").replaceAll("/", "-").replaceAll(":", "").replaceAll("$", "");
 	}
 	
 	public void saveChartToPDF(JFreeChart chart, String fileName, int width, int height) throws Exception {
