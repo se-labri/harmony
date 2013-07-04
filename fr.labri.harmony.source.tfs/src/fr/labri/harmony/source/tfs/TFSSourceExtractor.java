@@ -48,45 +48,53 @@ public class TFSSourceExtractor extends AbstractSourceExtractor<TFSWorkspace> {
 	public void extractEvents() {
 		Changeset[] changesets = workspace.getChangeset();
 
-		Event[] events = new Event[changesets.length];
+		Event last = null;
 
+		
 		for (int i = 0; i < changesets.length; ++i) {
+			
 			Changeset changeset = changesets[i];
 			
-			int eventId = changeset.getChangesetID();
-			long eventTime = changeset.getDate().getTimeInMillis() / 10;	
-			
-			
-			// Author Identification
-			String userName = changeset.getOwner();
-			String displayName = changeset.getOwnerDisplayName();			
-			Author author = getAuthor(userName);
-            if (author == null) {
-                    author = new Author(source,userName, displayName);
-                    saveAuthor(author);
-            }
-            List<Author> authors = new ArrayList<>(Arrays.asList(new Author[] { author }));
+			Change[] changes = changeset.getChanges();
+			if(changes.length!=0 && !changes[0].getChangeType().contains(ChangeType.BRANCH)){
 
-            // Parent identification
-            // TODO check this definition of parent        
-            List<Event> parents = new ArrayList<>();
-			if (i != 0) parents.add(events[i - 1]);
-
-			Event e = new Event(source, String.valueOf(eventId), eventTime, parents, authors);
-			saveEvent(e);
+				int eventId = changeset.getChangesetID();
+				
+				long eventTime = changeset.getDate().getTimeInMillis() / 10;	
+				
+				
+				// Author Identification
+				String userName = changeset.getOwner();
+				String displayName = changeset.getOwnerDisplayName();			
+				Author author = getAuthor(userName);
+	            if (author == null) {
+	                    author = new Author(source,userName, displayName);
+	                    saveAuthor(author);
+	            }
+	            List<Author> authors = new ArrayList<>(Arrays.asList(new Author[] { author }));
+	
+	            // Parent identification
+	            // TODO check this definition of parent        
+	            List<Event> parents = new ArrayList<>();
+				if (last != null) parents.add(last);
+	
+				Event e = new Event(source, String.valueOf(eventId), eventTime, parents, authors);
+				saveEvent(e);
+				
+				last = e;
+	
+				// TODO Add management metadata
+				/*Metadata metadata = new Metadata();
+				metadata.getMetadata().put(COMMIT_LOG, changeset.getComment());
+				metadata.getMetadata().put("committer", changeset.getCommitter());
+				metadata.getMetadata().put("committer-display-name", changeset.getCommitterDisplayName());
+				e.getData().add(metadata);
+				metadata.setHarmonyElement(e);*/
+				
+				// TODO Requirements
+				//WorkItem wi[] = changeset.getWorkItems();
 			
-			events[i] = e;
-
-			// TODO Add management metadata
-			/*Metadata metadata = new Metadata();
-			metadata.getMetadata().put(COMMIT_LOG, changeset.getComment());
-			metadata.getMetadata().put("committer", changeset.getCommitter());
-			metadata.getMetadata().put("committer-display-name", changeset.getCommitterDisplayName());
-			e.getData().add(metadata);
-			metadata.setHarmonyElement(e);*/
-			
-			// TODO Requirements
-			//WorkItem wi[] = changeset.getWorkItems();
+			}
 
 	
 		}
@@ -103,7 +111,8 @@ public class TFSSourceExtractor extends AbstractSourceExtractor<TFSWorkspace> {
 	
 				// We do not track folders
 				if (change.getItem().getItemType().equals(ItemType.FILE)) {
-					String itemId = Integer.toString(change.getItem().getItemID());
+					//String itemId = Integer.toString(change.getItem().getItemID());
+					String itemId = change.getItem().getServerItem();
 					
 					 Item i = getItem(itemId);
                      if (i == null) {
@@ -120,7 +129,7 @@ public class TFSSourceExtractor extends AbstractSourceExtractor<TFSWorkspace> {
 					//We check if the related event has parents, if it the case we select arbitrarily the first one as parent of the action.
 					Event parentOfA = null;
 					if(e.getParents().isEmpty()){
-						parentOfA = e;
+						parentOfA = null;
 					} else{
 						parentOfA= e.getParents().get(0);
 					}
