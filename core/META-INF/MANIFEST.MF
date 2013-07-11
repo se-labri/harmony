@@ -5,7 +5,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Harmony Core
 Bundle-SymbolicName: fr.labri.harmony.core;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: fr.labri.harmony.core.CoreActivator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.fasterxml.jackson.annotation,
@@ -31,6 +30,7 @@ Export-Package: fr.labri.harmony.core,
  fr.labri.harmony.core.dao,
  fr.labri.harmony.core.log,
  fr.labri.harmony.core.model,
+ fr.labri.harmony.core.output,
  fr.labri.harmony.core.source
 Bundle-ClassPath: .
 Bundle-Vendor: SE@LaBRI

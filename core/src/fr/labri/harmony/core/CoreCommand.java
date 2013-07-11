@@ -6,6 +6,7 @@ import org.eclipse.osgi.framework.console.CommandProvider;
 import fr.labri.harmony.core.config.GlobalConfigReader;
 import fr.labri.harmony.core.config.SourceConfigReader;
 import fr.labri.harmony.core.execution.StudyScheduler;
+import fr.labri.harmony.core.log.HarmonyLogger;
 
 public class CoreCommand implements CommandProvider {
 
@@ -23,6 +24,7 @@ public class CoreCommand implements CommandProvider {
 			new StudyScheduler(global.getSchedulerConfiguration()).run(global, sources);
 
 		} catch (Exception ex) {
+			HarmonyLogger.error("Harmony was not able to parse your configuration files");
 			ex.printStackTrace();
 		}
 	}

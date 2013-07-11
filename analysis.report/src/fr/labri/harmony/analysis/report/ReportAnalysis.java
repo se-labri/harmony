@@ -3,10 +3,7 @@ package fr.labri.harmony.analysis.report;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.FileOutputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -38,6 +35,7 @@ import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Source;
+import fr.labri.harmony.core.output.OutputUtils;
 
 public class ReportAnalysis extends AbstractAnalysis {
 
@@ -52,19 +50,10 @@ public class ReportAnalysis extends AbstractAnalysis {
 	@Override
 	public void runOn(Source src) {
 		HarmonyLogger.info("Starting reporting analysis on " + src.getUrl() + ".");
-		String baseFolder = config.getFoldersConfiguration().getOutFolder();
 		
-		//Specific to TFS
-		String pathOnServer= "";
-		if (src.getConfig().getPathOnServer()!= null){pathOnServer=src.getConfig().getPathOnServer();}
-		
-		String urlFolder = convertToFolderName(src.getUrl()+pathOnServer);
-		Path outputPath = Paths.get(baseFolder, urlFolder);
-		File outputFolder = outputPath.toFile();
-		if (!outputFolder.exists()) outputFolder.mkdir();
 		for (ChartDrawer drawer : getChartDrawers()) {
 			try {
-				saveChartToPDF(drawer.createChart(src), outputFolder.getAbsolutePath() + File.separator + drawer.getChartName() + ".pdf", 1680, 1050);
+				saveChartToPDF(drawer.createChart(src), OutputUtils.buildOutputPath(src, this, drawer.getChartName() + ".pdf").toString() , 1680, 1050);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -88,10 +77,6 @@ public class ReportAnalysis extends AbstractAnalysis {
 		 produces.add(new AuthorDeletedRatioChart(dao));
 		 produces.add(new AuthorActionChart(dao));
 		return produces;
-	}
-
-	private static String convertToFolderName(String src) {
-		return src.replaceAll("http://", "").replaceAll("https://", "").replaceAll("/", "-").replaceAll(":", "").replaceAll("$", "");
 	}
 	
 	public void saveChartToPDF(JFreeChart chart, String fileName, int width, int height) throws Exception {

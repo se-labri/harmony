@@ -3,8 +3,6 @@ package fr.labri.harmony.analysis.ownership;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -17,7 +15,21 @@ import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.Author;
 import fr.labri.harmony.core.model.Item;
 import fr.labri.harmony.core.model.Source;
+import fr.labri.harmony.core.output.OutputUtils;
 
+/**
+ * This analysis compute for each item of a source the number of actions that an author performed. 
+ * 
+ * In the article 'Don’t Touch My Code! Examining the Effects of Ownership on Software Quality' from Bird et al. they state
+ * that an author is a major contributor of an item if he performed at least 5% of the actions on the files. Otherwise he is a
+ * minor contributor. In their case study they found that high levels of ownership, specifically operationalized as high values
+ * of Ownership and Major, and low values of Minor, are associated with less defects.
+ * 
+ * The results are saved as a CSV file
+ * 
+ * @author SE@LaBRI
+ *
+ */
 public class OwnershipAnalysis extends AbstractAnalysis {
 	
 	public OwnershipAnalysis() {
@@ -28,7 +40,6 @@ public class OwnershipAnalysis extends AbstractAnalysis {
 	public OwnershipAnalysis(AnalysisConfiguration config, Dao dao, Properties properties) {
 		super(config, dao, properties);
 	}
-
 	
 
 	@Override
@@ -53,19 +64,10 @@ public class OwnershipAnalysis extends AbstractAnalysis {
 		}
 		
 		// Output of the results	
+		FileWriter writer;
 		try {
-			String baseFolder = config.getFoldersConfiguration().getOutFolder();
-			
-			//Specific to TFS
-			String pathOnServer= "";
-			if (src.getConfig().getPathOnServer()!= null){pathOnServer=src.getConfig().getPathOnServer();}
-			
-			String urlFolder = convertToFolderName(src.getUrl()+pathOnServer);
-			Path outputPath = Paths.get(baseFolder, urlFolder);
-			File outputFolder = outputPath.toFile();
-			if (!outputFolder.exists()) outputFolder.mkdir();
-			
-			FileWriter writer = new FileWriter(new File(outputPath+"\\OwnershipResults.csv"));
+			writer = new FileWriter(new File(OutputUtils.buildOutputPath(src, this, "OwnershipResults.csv").toString()));
+		
 			for (Map.Entry<Item , HashMap<Author, Integer>> e : ownership.entrySet()) {
 				for (Map.Entry<Author, Integer> a : e.getValue().entrySet()) {
 					writer.write(e.getKey().getNativeId()+";");
@@ -73,15 +75,12 @@ public class OwnershipAnalysis extends AbstractAnalysis {
 				}
 			}
 			writer.close();
+			
 		} catch (IOException e) {
+			HarmonyLogger.error("Something went wrong when saving the results from the ownership analysis :(");
 			e.printStackTrace();
-		}
-
+		}		
 		HarmonyLogger.info("Finished ownership analysis.");
-	}
-	
-	private static String convertToFolderName(String src) {
-		return src.replaceAll("http://", "").replaceAll("https://", "").replaceAll("/", "-").replaceAll(":", "").replaceAll("$", "");
 	}
 
 }
