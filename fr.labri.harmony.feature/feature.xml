@@ -18,22 +18,26 @@
    </license>
 
    <requires>
+      <import plugin="fr.labri.harmony.core" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="jfreechart" version="1.0.14" match="greaterOrEqual"/>
+      <import plugin="fr.labri.harmony.analysis.cloc" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="com.lowagie.text" version="2.1.7" match="greaterOrEqual"/>
       <import plugin="javax.persistence"/>
       <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.apache.commons.io"/>
+      <import plugin="org.eclipse.persistence.core"/>
+      <import plugin="org.junit"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.jdt.core"/>
       <import feature="org.eclipse.persistence.jpa" version="2.4.1.v20121003-ad44345"/>
-      <import plugin="org.eclipse.jgit"/>
       <import feature="org.eclipse.gemini.dbaccess.feature" version="1.1.0.RELEASE"/>
       <import feature="org.eclipse.gemini.dbaccess.h2.feature" version="1.1.0.RELEASE"/>
       <import feature="org.eclipse.gemini.dbaccess.mysql.feature" version="1.1.0.RELEASE"/>
       <import feature="org.eclipse.gemini.jpa.feature" version="1.1.0.RELEASE"/>
-      <import feature="org.eclipse.persistence.jpa" version="2.4.1.v20121003-ad44345"/>
-      <import plugin="fr.labri.harmony.core" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="jfreechart" version="1.0.14" match="greaterOrEqual"/>
-      <import plugin="fr.labri.harmony.analysis.cloc" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.commons.io"/>
-      <import plugin="org.eclipse.persistence.core"/>
-      <import plugin="jackson" version="2.1.4" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -72,13 +76,6 @@
          unpack="false"/>
 
    <plugin
-         id="jackson"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="fr.labri.harmony.analysis.cloc"
          download-size="0"
          install-size="0"
@@ -86,7 +83,21 @@
          unpack="false"/>
 
    <plugin
-         id="fr.labri.harmony.source.git"
+         id="fr.labri.harmony.analysis.ownership"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="fr.labri.harmony.wizard.analysis"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="jackson"
          download-size="0"
          install-size="0"
          version="0.0.0"

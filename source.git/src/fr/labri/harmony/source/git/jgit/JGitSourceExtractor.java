@@ -59,7 +59,7 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 
 				List<Event> parents = new ArrayList<>();
 				for (RevCommit parent : c.getParents())
-					parents.add(dao.getEvent(source, parent.getName()));
+					parents.add(getEvent(parent.getName()));
 
 				String user = c.getAuthorIdent().getName();
 				Author author = getAuthor(user);

@@ -72,7 +72,7 @@ public interface Dao {
 
 	<D extends Data> D getData(String analysis, Class<D> d, int elementKind, int elementId);
 
-	Source refreshSource(Source source);
+	Source reloadSource(Source source);
 
 	void saveEvents(Collection<Event> events);
 

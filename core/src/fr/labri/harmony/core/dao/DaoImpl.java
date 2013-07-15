@@ -248,16 +248,15 @@ public class DaoImpl implements Dao {
 	}
 
 	@Override
-	public Source refreshSource(Source source) {
+	public Source reloadSource(Source source) {
 		Workspace ws = source.getWorkspace();
 
 		EntityManager m = getEntityManager();
 		m.getTransaction().begin();
-		source = m.merge(source);
-		m.refresh(source);
+		source = m.find(Source.class, source.getId());
 		m.getTransaction().commit();
 
-		// The workspace is transient, so we have to reset it when refreshing
+		// The workspace is transient, so we have to reset it when reloading
 		// the source;
 		source.setWorkspace(ws);
 

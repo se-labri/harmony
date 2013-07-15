@@ -17,22 +17,25 @@ import fr.labri.harmony.core.config.model.DatabaseConfiguration;
 
 public class HarmonyEntityManagerFactory {
 
+
 	private DatabaseConfiguration config;
 	private String databaseName;
 	private String databaseUrl;
 	private EntityManagerFactory factory;
 
-	public HarmonyEntityManagerFactory(DatabaseConfiguration configuration, ServiceReference<EntityManagerFactoryBuilder> ref, BundleContext context) {
+	public HarmonyEntityManagerFactory(DatabaseConfiguration configuration,
+			ServiceReference<EntityManagerFactoryBuilder> ref,
+			BundleContext context) {
 		// We will modify the config according to the database name, so we have
 		// to make a copy of it
 		this.config = new DatabaseConfiguration(configuration);
-		
+
 		// We save the original Url
 		databaseUrl = configuration.getUrl();
-		
-		
+
 		// and modify our url according to the service name
-		databaseName = (String) ref.getProperty(EntityManagerFactoryBuilder.JPA_UNIT_NAME);
+		databaseName = (String) ref
+				.getProperty(EntityManagerFactoryBuilder.JPA_UNIT_NAME);
 		this.config.setUrl(databaseUrl + databaseName);
 
 		EntityManagerFactoryBuilder b = context.getService(ref);
@@ -57,14 +60,16 @@ public class HarmonyEntityManagerFactory {
 
 	private void createDatabase() {
 		try {
-			Connection conn = DriverManager.getConnection(databaseUrl + "?user=" + config.getUser() + "&password=" + config.getPassword());
+			Connection conn = DriverManager.getConnection(databaseUrl
+					+ "?user=" + config.getUser() + "&password="
+					+ config.getPassword());
 			Statement s = conn.createStatement();
 			s.executeUpdate("CREATE DATABASE " + databaseName);
 		} catch (SQLException e) {
 			Dao.LOGGER.severe(e.getMessage());
 			e.printStackTrace();
 		}
-		
+
 	}
 
 }

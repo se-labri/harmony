@@ -26,16 +26,16 @@ public class Source {
 	@Basic @Index
 	private String url;
 
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="source")
+	@OneToMany(cascade=CascadeType.REMOVE,fetch=FetchType.LAZY,mappedBy="source")
 	private List<Item> items;
 
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="source")
+	@OneToMany(cascade=CascadeType.REMOVE,fetch=FetchType.LAZY,mappedBy="source")
 	private List<Event> events;
 
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="source")
+	@OneToMany(cascade=CascadeType.REMOVE,fetch=FetchType.LAZY,mappedBy="source")
 	private List<Author> authors;
 
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="source")
+	@OneToMany(cascade=CascadeType.REMOVE,fetch=FetchType.LAZY,mappedBy="source")
 	private List<Action> actions;
 
 	@Transient
