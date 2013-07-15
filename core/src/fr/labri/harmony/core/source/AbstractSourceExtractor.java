@@ -23,8 +23,7 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 	public final static String COMMITTER = "committer";
 	public final static String BRANCH = "branch";
 
-	// FIXME: there is a bug when EVENT_CACHE_SIZE > 1
-	private final static int EVENT_CACHE_SIZE = 1;
+	private final static int EVENT_CACHE_SIZE = 1000;
 	private final static int ACTION_CACHE_SIZE = 1000;
 
 	protected W workspace;
@@ -108,7 +107,7 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 
 				saveItemsAndActions();
 			}
-			source = dao.refreshSource(source);
+			source = dao.reloadSource(source);
 		}
 		// include the configuration in the source (may be useful to get the source's options)
 		source.setConfig(getConfig());

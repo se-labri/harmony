@@ -70,7 +70,7 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 			saveAuthorsAndEvents();
 			saveItemsAndActions();
 
-			source = dao.refreshSource(source);
+			source = dao.reloadSource(source);
 		}
 		source.setConfig(getConfig());
 
