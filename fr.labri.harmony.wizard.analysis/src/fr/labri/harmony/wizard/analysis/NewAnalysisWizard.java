@@ -2,18 +2,21 @@ package fr.labri.harmony.wizard.analysis;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
-import org.osgi.framework.Constants;
+
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -22,15 +25,19 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -39,9 +46,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
-import org.eclipse.jdt.core.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.Constants;
 
 
 
@@ -86,16 +95,18 @@ public class NewAnalysisWizard extends Wizard implements INewWizard,IExecutableE
 	public boolean performFinish() {
 		// We collect data from the wizard page to pass it to the working thread
 		final String analysisProjectName = harmonyPage.getProjectName();
+		final IPath projectLocation = harmonyPage.getProjectLocation();
 		final String analysisClassName = harmonyPage.getAnalysisClassName();
 		final boolean databaseRequired = harmonyPage.isStorageFacilitiesRequired();
 		final Set<String> tailoredDataTypes = harmonyPage.getTailoredDataTypes();
+		
 		
 		// We create the task
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
 					
-					doFinish(analysisProjectName, analysisClassName,databaseRequired,tailoredDataTypes, monitor);
+					doFinish(analysisProjectName,projectLocation, analysisClassName,databaseRequired,tailoredDataTypes, monitor);
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				} finally {
@@ -119,6 +130,7 @@ public class NewAnalysisWizard extends Wizard implements INewWizard,IExecutableE
 	 * This method is in charge of creating a new Harmony analysis project
 	 * 
 	 * @param projectName Name and ID of the Harmony analysis Project (it is also the name of the root Java package)
+	 * @param projectLocation Path of the project location, null if the default location is selected by the user.
 	 * @param analysisClassName Name of the class that contains the analysis code.
 	 * @param databaseRequired Indicate if the analysis uses the database functionalities (whiteboard) provided by the Harmony framework 
 	 * @param tailoredDataTypes List of custom data types to be saved in the database
@@ -126,13 +138,13 @@ public class NewAnalysisWizard extends Wizard implements INewWizard,IExecutableE
 	 * @return
 	 * @throws CoreException
 	 */
-	private boolean doFinish(String projectName, String analysisClassName, boolean databaseRequired, Set<String> tailoredDataTypes,IProgressMonitor monitor) throws CoreException {
+	private boolean doFinish(String projectName, IPath projectLocation, String analysisClassName, boolean databaseRequired, Set<String> tailoredDataTypes,IProgressMonitor monitor) throws CoreException {
 		 try {
 			 
 			 // Project creation
              IJavaProject harmonyProject = JavaCore.create(getProject(projectName));
              final IProjectDescription projectDescription = ResourcesPlugin.getWorkspace().newProjectDescription(projectName);
-             projectDescription.setLocation(null);
+             projectDescription.setLocation(projectLocation);
              projectDescription.setComment("Project defining an analysis for the Harmony Framework");
              getProject(projectName).create(projectDescription, monitor);
 
@@ -276,7 +288,7 @@ public class NewAnalysisWizard extends Wizard implements INewWizard,IExecutableE
 		   "	<service>"+nl()+
 		   "		<provide interface=\"fr.labri.harmony.core.analysis.Analysis\"/>"+nl()+
 		  "	</service>"+nl();
-		if(databaseRequired){ analysisFileContent +=  "	<property name=\"persistence-unit\" type=\"String\" value=\""+projectName+"\"/>"+nl();}
+		if(databaseRequired){ analysisFileContent +=  "	<property name=\"persistence-unit\" type=\"String\" value=\""+analysisClassName.toLowerCase()+"\"/>"+nl();}
 		analysisFileContent +="</scr:component> ";
 
 		InputStream analysisFileContentIS = new ByteArrayInputStream(analysisFileContent.getBytes());
@@ -289,26 +301,30 @@ public class NewAnalysisWizard extends Wizard implements INewWizard,IExecutableE
 					"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""+nl()+
 					"xsi:schemaLocation=\"http://java.sun.com/xml/ns/persistence persistence_1_0.xsd\""+nl()+
 					"version=\"1.0\">"+nl()+
-					"	<persistence-unit name=\""+projectName+"\" transaction-type=\"RESOURCE_LOCAL\">"+nl()+
+					"	<persistence-unit name=\""+analysisClassName.toLowerCase()+"\" transaction-type=\"RESOURCE_LOCAL\">"+nl()+
 					"	 	<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>"+nl()+
 					"	 	<exclude-unlisted-classes>false</exclude-unlisted-classes>"+nl();
 
-			// We copy the standard persistence settings from a file stored in our plugin
-			URL url;
+			// We copy the standard persistence settings from a file stored in this plugin
+			Bundle bundle = Platform.getBundle("fr.labri.harmony.wizard.analysis");
+			URL fileURL = bundle.getEntry("config/persistence_unit.prop");
+			File file = null;
 			try {
-			        url = new URL("platform:/plugin/fr.labri.harmony.wizard.analysis/config/persistence_unit.prop");
-			    InputStream inputStream = url.openConnection().getInputStream();
+			    file = new File(FileLocator.resolve(fileURL).toURI());
+			    InputStream inputStream = new FileInputStream(file);
 			    BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
 			    String cLine;		 
 			    while ((cLine = in.readLine()) != null) {
 			    	persistenceFileContent += "	 		"+cLine+nl();
 			    }
 			    in.close();
-			 
-			} catch (IOException e) {
-			    e.printStackTrace();
+			    
+			} catch (URISyntaxException e1) {
+			    e1.printStackTrace();
+			} catch (IOException e1) {
+			    e1.printStackTrace();
 			}
-	
+			
 			persistenceFileContent +="	</persistence-unit>"+nl()+
 									"</persistence>";
 		

@@ -4,11 +4,16 @@ package fr.labri.harmony.wizard.analysis;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.jdt.internal.ui.dialogs.StatusUtil;
+import org.eclipse.jface.preference.DirectoryFieldEditor;
+import org.eclipse.jface.preference.StringButtonFieldEditor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -33,7 +38,8 @@ public class NewAnalysisWizardPage extends WizardPage {
 	private Button[] databaseUseButtons;
 	private Composite globalContainer;
 	private GridData gridData;
-	
+	private Button defaultLocation;
+	private StringButtonFieldEditor directoryFieldEditor;
 
 	public NewAnalysisWizardPage() {
 	    super("Create a new Harmony analysis");
@@ -47,32 +53,63 @@ public class NewAnalysisWizardPage extends WizardPage {
 		globalContainer = new Composite(parent, SWT.NULL);
 	    GridLayout layout = new GridLayout();
 	    globalContainer.setLayout(layout);
-	    layout.numColumns = 2;
+	    layout.numColumns = 3;
 	    layout.verticalSpacing = 2;
-	
-	    
+ 
 	    // Name
 	    
 	    Label name = new Label(globalContainer, SWT.NULL);
-	    name.setText("Project name");
+	    name.setText("Project name:");
 	    nameText = new Text(globalContainer, SWT.BORDER | SWT.SINGLE);
 	    nameText.setText("");
 	    nameText.setToolTipText("Your project name should uniquely identify your project and follow the package naming convention"+System.getProperty("line.separator")+
 						"It will become the root Java package of your project, e.g. fr.labri.harmony.analysis.reporting");
-	    nameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+	    gridData = new GridData(GridData.FILL_HORIZONTAL);
+		gridData.horizontalSpan = 2;
+		nameText.setLayoutData(gridData);
 	    nameText.addModifyListener(new ModifyListener() {	
 			@Override
 			public void modifyText(ModifyEvent e) {updatePageComplete();}
 		});
 	    
+	    
+	    // Management of the project location
+	    defaultLocation = new Button(globalContainer, SWT.CHECK);
+	    defaultLocation.setText("Use default location");
+	    defaultLocation.setSelection(true);
+	    gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+	    gridData.horizontalSpan = 3;
+	    defaultLocation.setLayoutData(gridData);
+	    defaultLocation.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {updateDefaultLocationChoice();}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {}
+		});
+	    
+	    directoryFieldEditor =  new DirectoryFieldEditor("hum", "Location:", globalContainer);
+	    directoryFieldEditor.setEnabled(false, globalContainer);
+	    directoryFieldEditor.setStringValue(ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString());
+
+	    
+	    Label vSpace2 = new Label(globalContainer, SWT.NULL);
+	    vSpace2.setText("");
+	    gridData = new GridData();
+		gridData.horizontalSpan = 3;
+		vSpace2.setLayoutData(gridData);
+	    
 	    // Name of the main class of the analysis
 	    
 	    Label analysisClassName = new Label(globalContainer, SWT.NULL);
-	    analysisClassName.setText("Analysis class name ");
+	    analysisClassName.setText("Analysis class name: ");
 	    analysisClassNameText = new Text(globalContainer, SWT.BORDER | SWT.SINGLE);
 	    analysisClassNameText.setText("");
 	    analysisClassNameText.setToolTipText("The name of the Java class that will contains your analysis code");
-	    analysisClassNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+	    gridData = new GridData(GridData.FILL_HORIZONTAL);
+		gridData.horizontalSpan = 2;
+		analysisClassNameText.setLayoutData(gridData);
 	    analysisClassNameText.addModifyListener(new ModifyListener() {	
 			@Override
 			public void modifyText(ModifyEvent e) {updatePageComplete();}
@@ -80,21 +117,21 @@ public class NewAnalysisWizardPage extends WizardPage {
 	    
 	    // Database facilities 
 	    
-	    Label vSpace = new Label(globalContainer, SWT.NULL);
-	    vSpace.setText("");
+	    Label vSpace3 = new Label(globalContainer, SWT.NULL);
+	    vSpace3.setText("");
 	    gridData = new GridData();
-		gridData.horizontalSpan = 2;
-		vSpace.setLayoutData(gridData);
+		gridData.horizontalSpan = 3;
+		vSpace3.setLayoutData(gridData);
 		
 	    Label databaseUseQuestion = new Label(globalContainer, SWT.NULL);
 	    databaseUseQuestion.setText("Will your analysis require the database facilities provided by the Harmony framework ?"); 
 	    gridData = new GridData();
-		gridData.horizontalSpan = 2;
+		gridData.horizontalSpan = 3;
 		databaseUseQuestion.setLayoutData(gridData);
 	    
 		Composite radioButtonsContainer = new Composite(globalContainer, SWT.NULL);
 		gridData = new GridData();
-		gridData.horizontalSpan = 2;
+		gridData.horizontalSpan = 3;
 		radioButtonsContainer.setLayoutData(gridData);
 		radioButtonsContainer.setLayout(new GridLayout(2,false));
 		
@@ -120,6 +157,17 @@ public class NewAnalysisWizardPage extends WizardPage {
 
 	}
 	
+	protected void updateDefaultLocationChoice() {
+
+        if (defaultLocation.getSelection()){
+        	  directoryFieldEditor.setEnabled(false, globalContainer);
+        }else{
+        	  directoryFieldEditor.setEnabled(true, globalContainer);
+        }
+		
+	}
+
+
 	/**
 	 * This method checks that the data entered by the user is correct and also update the form according to the selection
 	 */
@@ -150,9 +198,15 @@ public class NewAnalysisWizardPage extends WizardPage {
 		}
 	}
 	
-	
 	public String getProjectName() {
 		return nameText.getText();
+	}
+	
+	public IPath getProjectLocation(){
+		if (!defaultLocation.getSelection()){
+			return new Path(directoryFieldEditor.getStringValue());
+		}	
+		return null;
 	}
 
 	public String getAnalysisClassName() {
