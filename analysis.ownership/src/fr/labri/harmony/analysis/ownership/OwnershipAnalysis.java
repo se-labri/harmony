@@ -55,9 +55,9 @@ public class OwnershipAnalysis extends AbstractAnalysis {
 			for (Action a : it.getActions()){
 				for (Author at : a.getEvent().getAuthors()) {
 					Integer own = new Integer(1);
-					if (authors.containsKey(at)) own = authors.get(at)+1;
-					//+1
-					authors.remove(at);
+					if (authors.containsKey(at)){
+						own = authors.get(at)+1;
+					}
 					authors.put(at, own);				
 				}			
 			}		
