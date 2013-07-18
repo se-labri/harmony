@@ -16,6 +16,7 @@ import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.Item;
 import fr.labri.harmony.core.model.Source;
 
+//FIXME Transform AbstractHarmonyService Inheritance into composition, so that the dao is invisible below 
 public abstract class AbstractSourceExtractor<W extends Workspace> extends AbstractHarmonyService implements SourceExtractor<W> {
 
 	// Vcs properties
