@@ -1,5 +1,6 @@
 package fr.labri.harmony.core.model;
 
+//FIXME : Change this into a class
 public interface Data {
 	
 	public static int SOURCE = 0;
