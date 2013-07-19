@@ -250,7 +250,7 @@ public class NewAnalysisWizard extends Wizard implements INewWizard,IExecutableE
 		Attributes manifestAttributes = manifest.getMainAttributes();
 		manifestAttributes.putValue(Attributes.Name.MANIFEST_VERSION.toString(), "1.0");							
 		if(databaseRequired){
-			manifestAttributes.putValue("Meta-Persistence", "META-INF/"+ANALYSIS_DESCRIPTOR);
+			manifestAttributes.putValue("Meta-Persistence", "META-INF/"+PERSISTENCE_DESCRIPTOR);
 		}
 		manifestAttributes.putValue("Service-Component", OSGI_INF+"/*.xml");		
 		manifestAttributes.putValue(Constants.BUNDLE_MANIFESTVERSION, "2");
