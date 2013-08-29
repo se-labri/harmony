@@ -11,18 +11,13 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 @Entity
 public class Event extends SourceElement {
 
-	@Id
-	@GeneratedValue
-	private int id;
-
+	
 	@ManyToMany
 	private List<Author> authors;
 
@@ -96,13 +91,7 @@ public class Event extends SourceElement {
 		this.actions = actions;
 	}
 
-	public int getId() {
-		return id;
-	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	/**
 	 * 

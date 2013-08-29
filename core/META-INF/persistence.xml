@@ -4,9 +4,9 @@
 	version="1.0">
 	<persistence-unit name="harmony" transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<class>fr.labri.harmony.core.model.SourceElement</class>
 		<class>fr.labri.harmony.core.model.Source</class>
 		<class>fr.labri.harmony.core.model.Author</class>
-		<class>fr.labri.harmony.core.model.MetaData</class>
 		<class>fr.labri.harmony.core.model.Event</class>
 		<class>fr.labri.harmony.core.model.Author</class>
 		<class>fr.labri.harmony.core.model.Item</class>

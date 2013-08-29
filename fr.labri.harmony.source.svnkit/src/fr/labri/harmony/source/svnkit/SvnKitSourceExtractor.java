@@ -2,7 +2,9 @@ package fr.labri.harmony.source.svnkit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.tmatesoft.svn.core.ISVNLogEntryHandler;
@@ -98,9 +100,14 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 		List<Author> authors = new ArrayList<>(Arrays.asList(new Author[] { author }));
 
 		Event e = new Event(source, String.valueOf(logEntry.getRevision()), logEntry.getDate().getTime(), parents, authors);
+		
+		// TODO handle more metadata
+		Map<String,String> metadata = new HashMap<String,String>();
+		metadata.put(COMMIT_MESSAGE, logEntry.getMessage());
+		e.setMetadata(metadata);
+		
 		saveEvent(e);
 
-		// TODO add metadata management : logEntry.getMessage()
 
 		if (extractActions) {
 			for (SVNLogEntryPath entry : logEntry.getChangedPaths().values()) {
