@@ -8,15 +8,11 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 @Entity
 public class Item extends SourceElement {
 
-	@Id @GeneratedValue
-	private int id;
 	
 	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="item")
 	private List<Action> actions;
@@ -32,13 +28,6 @@ public class Item extends SourceElement {
 		setNativeId(path);
 	}
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	public List<Action> getActions() {
 		return actions;

@@ -2,16 +2,12 @@ package fr.labri.harmony.core.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
 public class Action extends SourceElement {
 
-	@Id @GeneratedValue
-	private int id;
 	
 	@Enumerated
     private ActionKind kind;
@@ -41,13 +37,6 @@ public class Action extends SourceElement {
         setSource(source);
     }
     
-    public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
     public ActionKind getKind() {
         return kind;

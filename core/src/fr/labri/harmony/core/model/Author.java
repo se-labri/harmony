@@ -5,15 +5,10 @@ import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
 @Entity
 public class Author extends SourceElement {
-	
-	@Id @GeneratedValue
-	private int id;
 	
 	@Basic
 	private String name;
@@ -47,12 +42,5 @@ public class Author extends SourceElement {
 		this.events = events;
 	}
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 	
 }

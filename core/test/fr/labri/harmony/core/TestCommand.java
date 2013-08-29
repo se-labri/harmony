@@ -14,7 +14,6 @@ import fr.labri.harmony.core.model.ActionKind;
 import fr.labri.harmony.core.model.Author;
 import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.Item;
-import fr.labri.harmony.core.model.Metadata;
 import fr.labri.harmony.core.model.Source;
 
 public class TestCommand implements CommandProvider {
@@ -46,9 +45,9 @@ public class TestCommand implements CommandProvider {
 		s.getActions().add(ac);
 		e.getActions().add(ac);
 		i.getActions().add(ac);
-		Metadata d = new Metadata();
+		/*Metadata d = new Metadata();
 		d.setName("test");
-		d.setValue("testValue");
+		d.setValue("testValue");*/
 
 		Dao dao = getDao("data/harmony/db/test");
 		dao.saveSource(s);

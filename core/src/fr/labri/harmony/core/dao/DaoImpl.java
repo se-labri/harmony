@@ -153,6 +153,7 @@ public class DaoImpl implements Dao {
 	public List<Action> getActions(Source s) {
 		return getList(Action.class, s);
 	}
+	
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -292,6 +293,7 @@ public class DaoImpl implements Dao {
 	public void saveActions(Collection<Action> actions) {
 		save(actions);
 	}
+	
 
 	@Override
 	public synchronized HarmonyEntityManagerFactory getEntityManagerFactory(AbstractHarmonyService harmonyService) {
@@ -311,5 +313,8 @@ public class DaoImpl implements Dao {
 	     }
 		m.getTransaction().commit();
 	}
+
+
+	
 
 }

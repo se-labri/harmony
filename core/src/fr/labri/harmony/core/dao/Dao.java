@@ -51,6 +51,7 @@ public interface Dao {
 	void saveAction(Action a);
 
 	List<Action> getActions(Source s);
+	
 
 	/**
 	 * Saves in the analysis database an entity attached to an element of the
@@ -81,6 +82,7 @@ public interface Dao {
 	void saveItems(Collection<Item> items);
 
 	void saveActions(Collection<Action> actions);
+
 
 	/**
 	 * @param service
