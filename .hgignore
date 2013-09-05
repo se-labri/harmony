@@ -1,0 +1,18 @@
+^.*/target/.*$
+^.*\.DS_Store.*$
+^.*\.settings.*$
+^\.metadata.*$
+^.*\.h2\.db$
+^.*\.trace\.db$
+^.*\.jdbc$
+^.*\.log$
+^.*\.class$
+.buildpath
+^.*.orig$
+syntax: glob
+core/HarmonyEquinoxPerso.launch
+update-site/artifacts.*
+update-site/content.*
+update-site/features/
+update-site/logs.zip
+update-site/plugins/

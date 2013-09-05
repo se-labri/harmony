@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="fr.labri.harmony.source.feature"
+      label="Harmony Source Extractors"
+      version="1.0.0.qualifier"
+      provider-name="se.labri.fr">
+
+   <description url="http://www.example.com/description">
+      This feature contains source extractors for the harmony framework. Currently supported VCSs are Git, Subversion and TFS.
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import plugin="fr.labri.harmony.core" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="jackson" version="2.1.4" match="greaterOrEqual"/>
+      <import plugin="javax.persistence"/>
+      <import plugin="org.apache.commons.io"/>
+      <import plugin="org.eclipse.jgit"/>
+      <import plugin="org.tmatesoft.svnkit" version="1.7.8" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="com.microsoft.tfs.core"/>
+      <import plugin="com.microsoft.tfs.util"/>
+      <import plugin="com.microsoft.tfs.core.httpclient"/>
+      <import plugin="org.tmatesoft.sqljet" version="1.0.5" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.0.0" match="compatible"/>
+      <import plugin="com.trilead.ssh2" version="1.0.0" match="compatible"/>
+   </requires>
+
+   <plugin
+         id="fr.labri.harmony.source.git"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="fr.labri.harmony.source.svnkit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="fr.labri.harmony.source.tfs"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.tmatesoft.svnkit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.trilead.ssh2"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="jackson"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

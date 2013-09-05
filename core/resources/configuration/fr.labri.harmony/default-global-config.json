@@ -1,0 +1,18 @@
+{
+	"database":{
+		"url":"jdbc:h2:test",
+		"user":"sa",
+		"password":"",
+		"driver":"org.h2.Driver"
+	},
+	"scheduler":{
+		"threads":1,
+		"timeout":100000
+	},
+	"source-analyses":[
+		{
+			"class":"ReportAnalysis",
+			"require-actions":true
+		}
+	]
+}
