@@ -116,6 +116,14 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 
 		onExtractionFinished();
 	}
+	
+	@Override
+	public void initializeExistingSource(Source src) {
+		this.source = src;
+		initializeWorkspace();
+		source.setWorkspace(workspace);
+		source.setConfig(getConfig());
+	}
 
 	/**
 	 * Called at the end of the {@link #initializeSource(boolean)} method, when
