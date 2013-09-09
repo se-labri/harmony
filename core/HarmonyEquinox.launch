@@ -10,7 +10,6 @@
 <booleanAttribute key="default" value="true"/>
 <booleanAttribute key="default_auto_start" value="true"/>
 <intAttribute key="default_start_level" value="4"/>
-<stringAttribute key="deselected_workspace_plugins" value="fr.labri.harmony.wizard.analysis"/>
 <booleanAttribute key="includeOptional" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -console -debug -consoleLog"/>
@@ -24,5 +23,5 @@
 <booleanAttribute key="tracing" value="false"/>
 <booleanAttribute key="useCustomFeatures" value="false"/>
 <booleanAttribute key="useDefaultConfigArea" value="true"/>
-<stringAttribute key="workspace_bundles" value="fr.labri.harmony.analysis.cloc@default:default,fr.labri.harmony.analysis.ownership@default:default,fr.labri.harmony.analysis.report@default:default,fr.labri.harmony.core@default:default,fr.labri.harmony.source.git@default:default,fr.labri.harmony.source.svnkit@default:default,fr.labri.harmony.source.tfs@default:default"/>
+<stringAttribute key="workspace_bundles" value="fr.labri.harmony.analysis.cloc@default:default,fr.labri.harmony.analysis.ownership@default:default,fr.labri.harmony.analysis.report@default:default,fr.labri.harmony.core@default:default,fr.labri.harmony.source.git@default:default,fr.labri.harmony.source.hg4j@default:default,fr.labri.harmony.source.svnkit@default:default,fr.labri.harmony.source.tfs@default:default,fr.labri.harmony.wizard.analysis@default:default,org.tmatesoft.hg4j@default:default"/>
 </launchConfiguration>
