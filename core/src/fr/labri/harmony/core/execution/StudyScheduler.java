@@ -238,6 +238,8 @@ public class StudyScheduler {
 					// We perform the analysis one after the other and between
 					// each of them we check that an interruption
 					// of the thread wasn't requested due to the timeout limit.
+					//TODO catch exception in the loop.
+					//TODO create multiple instance of analyses in order to be thread safe
 					for (Iterator<Analysis> analyses = scheduledAnalyses.iterator(); analyses.hasNext() && !this.isInterrupted();) {
 						Analysis currentAnalysis = analyses.next();
 						currentAnalysis.runOn(sourceExtractor.getSource());
