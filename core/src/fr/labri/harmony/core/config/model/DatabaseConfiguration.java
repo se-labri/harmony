@@ -15,12 +15,14 @@ public class DatabaseConfiguration {
 	private static final String DEFAULT_PASSWORD = "";
 	private static final String DEFAULT_DRIVER = "org.h2.Driver";
 
-
 	private HashMap<String, String> properties;
+	private boolean cleanDatabase;
+	
 
 	public DatabaseConfiguration() {
 		super();
 		properties = new HashMap<>();
+		this.cleanDatabase = true;
 		setUrl(DEFAULT_URL);
 		setDriver(DEFAULT_DRIVER);
 		setUser(DEFAULT_USER);
@@ -86,6 +88,16 @@ public class DatabaseConfiguration {
 	@JsonIgnore
 	public Map<String, String> getProperties() {
 		return properties;
+	}
+	
+
+	@JsonProperty("clean-database")
+	public boolean cleanDatabase() {
+		return cleanDatabase;
+	}
+
+	public void setCleanDatabase(boolean cleanDatabase) {
+		this.cleanDatabase = cleanDatabase;
 	}
 
 

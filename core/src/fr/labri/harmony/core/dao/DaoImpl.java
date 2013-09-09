@@ -22,6 +22,7 @@ import org.osgi.service.jpa.EntityManagerFactoryBuilder;
 
 import fr.labri.harmony.core.AbstractHarmonyService;
 import fr.labri.harmony.core.config.model.DatabaseConfiguration;
+import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.Author;
 import fr.labri.harmony.core.model.Data;
@@ -51,6 +52,12 @@ public class DaoImpl implements Dao {
 				entityManagerFactories.put(name, factory);
 
 			}
+
+			if (config.cleanDatabase()) {
+				HarmonyLogger.info("Cleaning database...");
+				removeAllSources();
+			}
+
 		} catch (InvalidSyntaxException e) {
 			e.printStackTrace();
 		}
@@ -153,7 +160,6 @@ public class DaoImpl implements Dao {
 	public List<Action> getActions(Source s) {
 		return getList(Action.class, s);
 	}
-	
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -293,7 +299,6 @@ public class DaoImpl implements Dao {
 	public void saveActions(Collection<Action> actions) {
 		save(actions);
 	}
-	
 
 	@Override
 	public synchronized HarmonyEntityManagerFactory getEntityManagerFactory(AbstractHarmonyService harmonyService) {
@@ -307,14 +312,11 @@ public class DaoImpl implements Dao {
 	public void removeAllSources() {
 		EntityManager m = getEntityManager();
 		m.getTransaction().begin();
-		Query query = m.createQuery("SELECT e FROM Source e", Source.class);
-	     for (Source s : (Collection<Source>)query.getResultList()) {
-	    	 m.remove(s);
-	     }
+		TypedQuery<Source> query = m.createQuery("SELECT e FROM Source e", Source.class);
+		for (Source s : (Collection<Source>) query.getResultList()) {
+			m.remove(s);
+		}
 		m.getTransaction().commit();
 	}
-
-
-	
 
 }
