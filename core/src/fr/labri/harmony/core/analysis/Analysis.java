@@ -9,6 +9,6 @@ public interface Analysis extends HasAnalysisConfiguration{
 	 * 
 	 * @param src
 	 */
-	void runOn(Source src);
+	void runOn(Source src) throws Exception;
 
 }
