@@ -12,7 +12,9 @@
 	"source-analyses":[
 		{
 			"class":"ReportAnalysis",
+			"require-harmony-model":true,
 			"require-actions":true
+			
 		}
 	]
 }
