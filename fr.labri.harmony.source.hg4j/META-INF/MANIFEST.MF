@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Service-Component: OSGI-INF/*.xml
+Bundle-ManifestVersion: 2
+Bundle-Name: fr.labri.harmony.source.hg4j
+Bundle-SymbolicName: fr.labri.harmony.source.hg4j
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: SE@Labri
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: javax.persistence;version="2.0.4",
+ org.apache.commons.io;version="2.0.1",
+ org.osgi.framework;version="1.3.0"
+Bundle-ActivationPolicy: lazy
+Require-Bundle: fr.labri.harmony.core;bundle-version="1.0.0",
+ org.tmatesoft.hg4j;bundle-version="1.0.0"
+Export-Package: fr.labri.harmony.source.hg4j
