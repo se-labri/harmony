@@ -6,10 +6,21 @@ Bundle-SymbolicName: fr.labri.harmony.analysis.report
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: fr.labri.harmony.core;bundle-version="1.0.0",
- jfreechart;bundle-version="1.0.14",
- fr.labri.harmony.analysis.cloc;bundle-version="1.0.0",
- com.lowagie.text;bundle-version="2.1.7"
-Import-Package: javax.persistence;version="2.0.4",
+ fr.labri.harmony.analysis.cloc;bundle-version="1.0.0"
+Import-Package: com.lowagie.text,
+ com.lowagie.text.pdf,
+ javax.persistence;version="2.0.4",
+ org.jfree,
+ org.jfree.chart,
+ org.jfree.chart.axis,
+ org.jfree.chart.plot,
+ org.jfree.chart.renderer,
+ org.jfree.chart.renderer.xy,
+ org.jfree.data.category,
+ org.jfree.data.general,
+ org.jfree.data.time,
+ org.jfree.data.xy,
+ org.jfree.util,
  org.osgi.framework;version="1.7.0"
 Export-Package: fr.labri.harmony.analysis.report,
  fr.labri.harmony.analysis.report.charts
