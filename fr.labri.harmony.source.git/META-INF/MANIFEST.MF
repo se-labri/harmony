@@ -5,10 +5,11 @@ Bundle-Name: GitSourceExtractor
 Bundle-SymbolicName: fr.labri.harmony.source.git
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: fr.labri.harmony.core;bundle-version="1.0.0",
- jackson;bundle-version="2.1.4"
+Require-Bundle: fr.labri.harmony.core;bundle-version="1.0.0"
 Export-Package: fr.labri.harmony.source.git
-Import-Package: javax.persistence;version="2.0.4",
+Import-Package: com.fasterxml.jackson.databind,
+ com.fasterxml.jackson.databind.node,
+ javax.persistence;version="2.0.4",
  org.apache.commons.io,
  org.eclipse.jgit.api,
  org.eclipse.jgit.diff,
