@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="fr.labri.harmony.analysis.report"
-      label="Harmony Core"
+      label="Harmony Reporting Analysis"
       version="1.0.0.qualifier"
       provider-name="SE@LaBRI">
 

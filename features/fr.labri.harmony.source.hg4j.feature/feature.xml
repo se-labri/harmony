@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="fr.labri.harmony.source.hg4j"
-      label="Harmony Core"
+      label="Harmony Mercurial source extractor"
       version="1.0.0.qualifier"
       provider-name="SE@LaBRI">
 
