@@ -130,6 +130,7 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 	 * all extraction is finished. Does nothing by default
 	 */
 	protected void onExtractionFinished() {
+		HarmonyLogger.info("Extraction finished for source " + source.getUrl());
 	}
 
 	protected Event getEvent(String nativeId) {
