@@ -88,4 +88,11 @@ If the Library as you received it specifies that a proxy can decide whether futu
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="com.trilead.ssh2"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>

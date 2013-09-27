@@ -1,5 +1,6 @@
 package fr.labri.harmony.core.dao;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +9,6 @@ import java.util.logging.Level;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -35,8 +35,7 @@ import fr.labri.harmony.core.source.Workspace;
 public class DaoImpl implements Dao {
 
 	/**
-	 * We keep references on the EntityManagerFactories instead of the entity
-	 * managers themselves
+	 * We keep references on the EntityManagerFactories instead of the entity managers themselves
 	 */
 	private Map<String, HarmonyEntityManagerFactory> entityManagerFactories;
 
@@ -161,13 +160,12 @@ public class DaoImpl implements Dao {
 		return getList(Action.class, s);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <D extends Data> List<D> getDataList(String a, Class<D> d, int elementKind, int elementId) {
 		EntityManager m = getEntityManager(a);
 		m.getTransaction().begin();
 		String sQuery = "SELECT d FROM " + d.getSimpleName() + " d WHERE d.elementKind = :elementKind AND d.elementId = :elementId";
-		Query query = m.createQuery(sQuery);
+		TypedQuery<D> query = m.createQuery(sQuery, d);
 		query.setParameter("elementKind", elementKind);
 		query.setParameter("elementId", elementId);
 		List<D> results = query.getResultList();
@@ -175,16 +173,15 @@ public class DaoImpl implements Dao {
 		return results;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <D extends Data> D getData(String a, Class<D> d, int elementKind, int elementId) {
 		EntityManager m = getEntityManager(a);
 		m.getTransaction().begin();
 		String sQuery = "SELECT d FROM " + d.getSimpleName() + " d WHERE d.elementKind = :elementKind AND d.elementId = :elementId";
-		Query query = m.createQuery(sQuery);
+		TypedQuery<D> query = m.createQuery(sQuery, d);
 		query.setParameter("elementKind", elementKind);
 		query.setParameter("elementId", elementId);
-		D result = (D) query.getSingleResult();
+		D result = query.getSingleResult();
 		m.getTransaction().commit();
 		return result;
 	}
@@ -210,17 +207,16 @@ public class DaoImpl implements Dao {
 		if (LOGGER.isLoggable(Level.FINEST)) LOGGER.finest("Persisted element " + e + ".");
 	}
 
-	@SuppressWarnings("unchecked")
 	private <E extends SourceElement> E get(Class<E> clazz, Source s, String nativeId) {
 		EntityManager m = getEntityManager();
 		m.getTransaction().begin();
 		String sQuery = "SELECT e FROM " + clazz.getSimpleName() + " e WHERE e.source.id = :sourceId AND e.nativeId = :nativeId";
-		Query query = m.createQuery(sQuery);
+		TypedQuery<E> query = m.createQuery(sQuery, clazz);
 		query.setParameter("sourceId", s.getId());
 		query.setParameter("nativeId", nativeId).setMaxResults(1);
 		E result = null;
 		try {
-			result = (E) query.getSingleResult();
+			result = query.getSingleResult();
 		} catch (NoResultException ex) {
 
 		}
@@ -303,8 +299,10 @@ public class DaoImpl implements Dao {
 	@Override
 	public synchronized HarmonyEntityManagerFactory getEntityManagerFactory(AbstractHarmonyService harmonyService) {
 		String puName;
-		if (harmonyService == null) puName = HARMONY_PERSISTENCE_UNIT;
-		else puName = harmonyService.getPersitenceUnitName();
+		if (harmonyService == null)
+			puName = HARMONY_PERSISTENCE_UNIT;
+		else
+			puName = harmonyService.getPersitenceUnitName();
 		return entityManagerFactories.get(puName);
 	}
 
@@ -317,6 +315,28 @@ public class DaoImpl implements Dao {
 			m.remove(s);
 		}
 		m.getTransaction().commit();
+	}
+
+	@Override
+	public List<Action> getActions(Item item) {
+		List<Action> actions = new ArrayList<>();
+		EntityManager m = getEntityManager();
+		m.getTransaction().begin();
+
+		try {
+			String stringQuery = "SELECT a FROM Action a JOIN a.event e WHERE a.item = :item ORDER BY e.timestamp";
+
+			TypedQuery<Action> q = m.createQuery(stringQuery, Action.class);
+			q.setParameter("item", item);
+			actions = q.getResultList();
+		} catch (Exception e) {
+			HarmonyLogger.error(e.getMessage());
+		} finally {
+			m.getTransaction().commit();
+			m.close();
+		}
+		return actions;
+
 	}
 
 }

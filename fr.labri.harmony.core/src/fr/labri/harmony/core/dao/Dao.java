@@ -24,7 +24,7 @@ public interface Dao {
 	void saveSource(Source s);
 
 	Source getSource(int id);
-	
+
 	/**
 	 * 
 	 * @param url
@@ -51,19 +51,16 @@ public interface Dao {
 	void saveAction(Action a);
 
 	List<Action> getActions(Source s);
-	
 
 	/**
-	 * Saves in the analysis database an entity attached to an element of the
-	 * harmony model
+	 * Saves in the analysis database an entity attached to an element of the harmony model
 	 * 
 	 * @param analysis
 	 *            The analysis that saves the data
 	 * @param d
 	 *            the data to save
 	 * @param elementKind
-	 *            The kind of the element the data is attached to. See the
-	 *            constants in the {@link Data} interface
+	 *            The kind of the element the data is attached to. See the constants in the {@link Data} interface
 	 * @param elementId
 	 *            The id of the element the data is attached to.
 	 */
@@ -83,18 +80,21 @@ public interface Dao {
 
 	void saveActions(Collection<Action> actions);
 
-
 	/**
 	 * @param service
-	 *            The Analysis associated to the required EntityManager. If
-	 *            null, the core {@link HarmonyEntityManagerFactory} will be
-	 *            returned
-	 * @return The {@link HarmonyEntityManagerFactory} associated to the given
-	 *         service. This is useful to run queries that are not supported by
-	 *         this dao
+	 *            The Analysis associated to the required EntityManager. If null, the core {@link HarmonyEntityManagerFactory} will be returned
+	 * @return The {@link HarmonyEntityManagerFactory} associated to the given service. This is useful to run queries that are not supported by this dao
 	 */
 	HarmonyEntityManagerFactory getEntityManagerFactory(AbstractHarmonyService service);
-	
+
 	void removeAllSources();
+
+	/**
+	 * 
+	 * @param item
+	 * @return The ordered list of action which affected the item, from the older to the most recent one. Actions are ordered with a time sort
+	 */
+	// FIXME: A topo sort would be more accurate
+	List<Action> getActions(Item item);
 
 }
