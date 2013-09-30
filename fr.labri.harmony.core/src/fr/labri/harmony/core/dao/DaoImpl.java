@@ -185,6 +185,18 @@ public class DaoImpl implements Dao {
 		m.getTransaction().commit();
 		return result;
 	}
+	
+
+	@Override
+	public <D extends Data> List<D> getDataList(String database, Class<D> d) {
+		EntityManager m = getEntityManager(database);
+		m.getTransaction().begin();
+		String sQuery = "SELECT d FROM " + d.getSimpleName() + " d";
+		TypedQuery<D> query = m.createQuery(sQuery, d);
+		List<D> results = query.getResultList();
+		m.getTransaction().commit();
+		return results;
+	}
 
 	@Override
 	public void saveData(AbstractHarmonyService service, Data d, int elementKind, int elementId) {
