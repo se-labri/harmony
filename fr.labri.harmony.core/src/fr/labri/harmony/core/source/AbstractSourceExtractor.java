@@ -120,7 +120,11 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 	@Override
 	public void initializeExistingSource(Source src) {
 		this.source = src;
-		initializeWorkspace();
+		try {
+			initializeWorkspace();
+		} catch (Exception e) {
+			HarmonyLogger.info("Workspace couldn't be initialized for source: " + src.getUrl());
+		}
 		source.setWorkspace(workspace);
 		source.setConfig(getConfig());
 	}
