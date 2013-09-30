@@ -69,6 +69,8 @@ public interface Dao {
 	<D extends Data> List<D> getDataList(String analysis, Class<D> d, int elementKind, int elementId);
 
 	<D extends Data> D getData(String analysis, Class<D> d, int elementKind, int elementId);
+	
+	<D extends Data> List<D> getDataList(String database, Class<D> d);
 
 	Source reloadSource(Source source);
 
