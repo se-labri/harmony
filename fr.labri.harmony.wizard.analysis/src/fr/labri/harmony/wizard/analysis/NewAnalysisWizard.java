@@ -1,16 +1,10 @@
 package fr.labri.harmony.wizard.analysis;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -25,14 +19,12 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -49,8 +41,9 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
+
+import fr.labri.harmony.wizard.workdir.WizardFileUtils;
 
 
 
@@ -306,7 +299,9 @@ public class NewAnalysisWizard extends Wizard implements INewWizard,IExecutableE
 					"	 	<exclude-unlisted-classes>false</exclude-unlisted-classes>"+nl();
 
 			// We copy the standard persistence settings from a file stored in this plugin
-			Bundle bundle = Platform.getBundle("fr.labri.harmony.wizard.analysis");
+			
+			persistenceFileContent += WizardFileUtils.getFileContent("fr.labri.harmony.wizard.analysis","config/persistence_unit.prop",monitor);
+			/*Bundle bundle = Platform.getBundle("fr.labri.harmony.wizard.analysis");
 			URL fileURL = bundle.getEntry("config/persistence_unit.prop");
 			File file = null;
 			try {
@@ -323,7 +318,7 @@ public class NewAnalysisWizard extends Wizard implements INewWizard,IExecutableE
 			    e1.printStackTrace();
 			} catch (IOException e1) {
 			    e1.printStackTrace();
-			}
+			}*/
 			
 			persistenceFileContent +="	</persistence-unit>"+nl()+
 									"</persistence>";
