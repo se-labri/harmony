@@ -74,31 +74,15 @@ If the Library as you received it specifies that a proxy can decide whether futu
    </url>
 
    <requires>
-      <import plugin="fr.labri.harmony.core" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="javax.persistence"/>
-      <import plugin="org.apache.commons.io"/>
       <import plugin="org.eclipse.osgi"/>
-      <import plugin="com.trilead.ssh2"/>
-      <import feature="fr.labri.harmony.core" version="1.0.0.qualifier"/>
-      <import plugin="org.tmatesoft.hg4j" version="1.0.0" match="greaterOrEqual"/>
+      <import feature="fr.labri.harmony.core" version="1.0.0" match="greaterOrEqual"/>
+      <import feature="org.tmatesoft.hg4j" version="1.2" match="greaterOrEqual"/>
+      <import plugin="javax.persistence"/>
+      <import feature="org.apache.commons.io" version="2.4"/>
    </requires>
 
    <plugin
          id="fr.labri.harmony.source.hg4j"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.tmatesoft.hg4j"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.trilead.ssh2"
          download-size="0"
          install-size="0"
          version="0.0.0"

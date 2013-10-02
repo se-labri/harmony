@@ -67,13 +67,14 @@ public class DaoImpl implements Dao {
 		return new DaoImpl(config);
 	}
 
-	private EntityManager getEntityManager(String a) {
+	@Override
+	public EntityManager getEntityManager(String a) {
 		HarmonyEntityManagerFactory f = entityManagerFactories.get(a);
 		if (f == null) return null;
 		return f.createEntityManager();
 	}
 
-	private EntityManager getEntityManager() {
+	public EntityManager getEntityManager() {
 		return getEntityManager(HARMONY_PERSISTENCE_UNIT);
 	}
 
