@@ -74,12 +74,11 @@ If the Library as you received it specifies that a proxy can decide whether futu
    </url>
 
    <requires>
-      <import plugin="fr.labri.harmony.core" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="javax.persistence"/>
-      <import plugin="org.apache.commons.io"/>
-      <import plugin="org.eclipse.jgit"/>
-      <import feature="fr.labri.harmony.core" version="1.0.0.qualifier"/>
-      <import plugin="com.fasterxml.jackson"/>
+      <import feature="fr.labri.harmony.core" version="1.0.0" match="greaterOrEqual"/>
+      <import feature="com.fasterxml.jackson" version="2.2.3" match="greaterOrEqual"/>
+      <import feature="org.apache.commons.io" version="2.4" match="greaterOrEqual"/>
+      <import feature="org.eclipse.jgit" version="3.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

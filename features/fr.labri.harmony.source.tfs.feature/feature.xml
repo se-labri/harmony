@@ -74,13 +74,10 @@ If the Library as you received it specifies that a proxy can decide whether futu
    </url>
 
    <requires>
-      <import plugin="fr.labri.harmony.core" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="javax.persistence"/>
       <import plugin="org.eclipse.osgi"/>
       <import feature="fr.labri.harmony.core" version="1.0.0.qualifier"/>
-      <import plugin="com.microsoft.tfs.core"/>
-      <import plugin="com.microsoft.tfs.util"/>
-      <import plugin="com.microsoft.tfs.core.httpclient"/>
+      <import feature="com.microsoft.tfs.client.eclipse.feature" version="11.0.0.201306181529"/>
    </requires>
 
    <plugin

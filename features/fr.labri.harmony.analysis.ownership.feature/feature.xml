@@ -75,7 +75,6 @@ If the Library as you received it specifies that a proxy can decide whether futu
 
    <requires>
       <import feature="fr.labri.harmony.core" version="1.0.0.qualifier"/>
-      <import plugin="fr.labri.harmony.core" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

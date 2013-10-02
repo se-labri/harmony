@@ -74,12 +74,10 @@ If the Library as you received it specifies that a proxy can decide whether futu
    </url>
 
    <requires>
-      <import plugin="fr.labri.harmony.core" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="fr.labri.harmony.analysis.cloc" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.jfree.chart"/>
       <import plugin="javax.persistence"/>
       <import plugin="org.eclipse.osgi"/>
       <import feature="fr.labri.harmony.core" version="1.0.0.qualifier"/>
+      <import feature="org.jfree.chart" version="1.0.15"/>
    </requires>
 
    <plugin

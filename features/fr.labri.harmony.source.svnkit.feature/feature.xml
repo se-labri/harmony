@@ -73,23 +73,19 @@ If the Library as you received it specifies that a proxy can decide whether futu
       <update label="Harmony Update Site" url="http://se.labri.fr/data/harmony/update-site"/>
    </url>
 
+   <includes
+         id="org.tmatesoft.svnkit"
+         version="0.0.0"/>
+
    <requires>
-      <import plugin="org.tmatesoft.svnkit" version="1.7.8" match="greaterOrEqual"/>
-      <import plugin="fr.labri.harmony.core" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="javax.persistence"/>
       <import plugin="org.eclipse.osgi"/>
-      <import feature="fr.labri.harmony.core" version="1.0.0.qualifier"/>
+      <import feature="fr.labri.harmony.core" version="1.0.0" match="greaterOrEqual"/>
+      <import feature="org.tmatesoft.svnkit" version="1.7.11" match="greaterOrEqual"/>
    </requires>
 
    <plugin
          id="fr.labri.harmony.source.svnkit"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.trilead.ssh2"
          download-size="0"
          install-size="0"
          version="0.0.0"

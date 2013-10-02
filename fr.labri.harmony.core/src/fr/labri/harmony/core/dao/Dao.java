@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.persistence.EntityManager;
+
 import fr.labri.harmony.core.AbstractHarmonyService;
 import fr.labri.harmony.core.config.model.DatabaseConfiguration;
 import fr.labri.harmony.core.model.Action;
@@ -98,5 +100,7 @@ public interface Dao {
 	 */
 	// FIXME: A topo sort would be more accurate
 	List<Action> getActions(Item item);
+	
+	EntityManager getEntityManager(String database);
 
 }
