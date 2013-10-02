@@ -10,12 +10,17 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.statushandlers.StatusManager;
 
 public class WorkingDirectoryWizard extends Wizard implements INewWizard {
@@ -30,7 +35,10 @@ public class WorkingDirectoryWizard extends Wizard implements INewWizard {
 	}
 
 	@Override
-	public void init(IWorkbench workbench, IStructuredSelection selection) {}
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
+
+		
+	}
 	
 
 	public void addPages() {
@@ -40,6 +48,15 @@ public class WorkingDirectoryWizard extends Wizard implements INewWizard {
 
 	@Override
 	public boolean performFinish() {
+		
+		// We switch to PDE perspective to make sure that the link to the launch configuration will be automatically added
+		String perspectiveID = "org.eclipse.pde.ui.PDEPerspective";
+		try {
+			PlatformUI.getWorkbench().showPerspective( perspectiveID, PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+		} catch (WorkbenchException e1) {
+			// Mandatory feature, it doesn't matter if it fails
+		}
+	
 		
 		// We create a task to perform the finish operation
 		IRunnableWithProgress op = new IRunnableWithProgress() {
@@ -71,6 +88,9 @@ public class WorkingDirectoryWizard extends Wizard implements INewWizard {
 	private void doFinish(IProgressMonitor monitor) {
 
 		try {
+			
+			
+			
 			// Project creation
 			final IProjectDescription projectDescription = ResourcesPlugin.getWorkspace().newProjectDescription(PROJECT_NAME);
 			projectDescription.setComment("Project acting as the working directory for the Harmony framework");
@@ -96,6 +116,21 @@ public class WorkingDirectoryWizard extends Wizard implements INewWizard {
 			}
 			
 			getProject(PROJECT_NAME).refreshLocal(3, monitor);
+			
+			
+			// We launch the Harmony launch configuration we've just extracted  in order to add it to the launch menu
+			// and to ease the first try of Harmony
+			ILaunchConfiguration harmonyLaunchConfig = null;
+			ILaunchConfiguration[] tab = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurations();
+			 for (int i = 0; i < tab.length && harmonyLaunchConfig==null; i++) {
+				System.out.println("- "+tab[i].getFile().getName()+" -");
+				 if(tab[i].getFile().getName().equals("Harmony.launch")){
+					harmonyLaunchConfig= tab[i];
+					
+				}
+			}
+			harmonyLaunchConfig.launch(ILaunchManager.RUN_MODE, null);
+
 
 
 		} catch (Exception exception) {
