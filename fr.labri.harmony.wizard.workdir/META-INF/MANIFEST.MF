@@ -19,4 +19,5 @@ Import-Package: org.apache.commons.io,
  org.eclipse.ui.statushandlers,
  org.osgi.framework;version="1.7.0"
 Export-Package: fr.labri.harmony.wizard.workdir
-Require-Bundle: org.eclipse.ui
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.debug.core;bundle-version="3.8.0"
