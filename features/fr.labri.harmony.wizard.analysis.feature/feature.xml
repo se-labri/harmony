@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="fr.labri.harmony.wizard.analysis"
-      label="Harmony Analysis Wizard"
+      label="Harmony Wizards"
       version="1.0.0.qualifier"
       provider-name="SE@LaBRI">
 
    <description url="http://code.google.com/p/harmony">
-      Harmony Analysis Wizard
+      Harmony Analysis &amp; Workdir Wizards
    </description>
 
    <license url="http://www.gnu.org/licenses/lgpl.html">
@@ -85,6 +85,13 @@ If the Library as you received it specifies that a proxy can decide whether futu
 
    <plugin
          id="fr.labri.harmony.wizard.analysis"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="fr.labri.harmony.wizard.workdir"
          download-size="0"
          install-size="0"
          version="0.0.0"

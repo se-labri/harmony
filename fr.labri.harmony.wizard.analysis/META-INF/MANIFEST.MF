@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Analysis
 Bundle-SymbolicName: fr.labri.harmony.wizard.analysis; singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: LaBRI Software Engineering Team
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -12,7 +12,6 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Import-Package: fr.labri.harmony.wizard.workdir,
- org.apache.commons.io;version="2.0.1",
  org.eclipse.jdt.core,
  org.eclipse.jdt.internal.ui.dialogs,
  org.eclipse.jdt.ui
