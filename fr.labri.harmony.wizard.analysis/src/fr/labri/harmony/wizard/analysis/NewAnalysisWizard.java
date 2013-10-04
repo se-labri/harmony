@@ -251,7 +251,7 @@ public class NewAnalysisWizard extends Wizard implements INewWizard,IExecutableE
 		manifestAttributes.putValue(Constants.BUNDLE_SYMBOLICNAME, projectName);
 		manifestAttributes.putValue(Constants.BUNDLE_VERSION, "1.0.0.qualifier");
 		manifestAttributes.putValue(Constants.BUNDLE_REQUIREDEXECUTIONENVIRONMENT, "JavaSE-1.7");
-		manifestAttributes.putValue("Require-Bundle", "fr.labri.harmony.core");
+		manifestAttributes.putValue("Require-Bundle", "fr.labri.harmony.core, org.h2, com.mysql.jdbc");
 		manifestAttributes.putValue("Import-Package", "javax.persistence;version=\"2.0.4\", org.osgi.framework;version=\"1.7.0\"");
 		manifestAttributes.putValue("Export-Package", projectName);
 
