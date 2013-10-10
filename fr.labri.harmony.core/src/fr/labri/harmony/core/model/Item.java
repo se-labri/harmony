@@ -10,6 +10,9 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
+/**
+ * An Item is an element that can be modified over time, such as a file, or a bug report.
+ */
 @Entity
 public class Item extends SourceElement {
 
