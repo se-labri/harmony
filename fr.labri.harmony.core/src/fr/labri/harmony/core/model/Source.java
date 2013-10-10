@@ -22,7 +22,7 @@ import fr.labri.harmony.core.source.Workspace;
  * It is associated to an URL and usually corresponds to a source code repository. (e.g. a Git repository) 
  */
 @Entity
-public class Source {
+public class Source implements HarmonyModelElement {
 
 	@Id @GeneratedValue
 	private int id;
