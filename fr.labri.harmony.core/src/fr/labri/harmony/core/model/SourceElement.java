@@ -25,7 +25,7 @@ import org.eclipse.persistence.annotations.Index;
  */
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class SourceElement {
+public abstract class SourceElement implements HarmonyModelElement {
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.TABLE)
