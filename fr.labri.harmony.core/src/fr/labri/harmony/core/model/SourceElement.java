@@ -18,7 +18,11 @@ import javax.persistence.MappedSuperclass;
 
 import org.eclipse.persistence.annotations.Index;
 
-
+/**
+ * Superclass of the elements contained in a {@link Source}. <br>
+ * It mainly provides the common fields of these elements, such as the native id of the element and tne metadata associated to it.
+ *
+ */
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class SourceElement {
