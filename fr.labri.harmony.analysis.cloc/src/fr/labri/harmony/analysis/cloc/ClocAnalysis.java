@@ -19,7 +19,6 @@ import fr.labri.harmony.core.analysis.AbstractAnalysis;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.log.HarmonyLogger;
-import fr.labri.harmony.core.model.Data;
 import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.Source;
 import fr.labri.harmony.core.source.WorkspaceException;
@@ -71,7 +70,7 @@ public class ClocAnalysis extends AbstractAnalysis {
 					entries.getEntries().add(e);
 				}
 
-				dao.saveData(this, entries, Data.EVENT, ev.getId());
+				dao.saveData(this.getPersitenceUnitName(), entries, ev);
 				p.waitFor();
 			} catch (Exception ex) {
 				throw new WorkspaceException(ex);

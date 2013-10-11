@@ -21,7 +21,6 @@ import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.config.model.SchedulerConfiguration;
 import fr.labri.harmony.core.config.model.SourceConfiguration;
 import fr.labri.harmony.core.dao.Dao;
-import fr.labri.harmony.core.dao.DaoImpl;
 import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Source;
 import fr.labri.harmony.core.source.SourceExtractor;
@@ -67,7 +66,7 @@ public class StudyScheduler {
 		// We create a global DAO which is in charge of building and
 		// managing
 		// the EntityManagers from all the bundles defining analyses
-		dao = new DaoImpl(global.getDatabaseConfiguration());
+		dao = new Dao(global.getDatabaseConfiguration());
 
 		// We grab the list of analyses which have been scheduled according
 		// to
