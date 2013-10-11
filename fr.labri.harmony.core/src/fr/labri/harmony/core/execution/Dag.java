@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 
+ * Simple Directed Acyclic Graph. Used for analysis scheduling
  *
  * @param <N> The Node Type
  */

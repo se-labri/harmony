@@ -37,16 +37,17 @@ public class DatabaseConfiguration {
 		setDriver(driver);
 	}
 
-	public DatabaseConfiguration(String url, String driver, String user, String password) {
+	public DatabaseConfiguration(String url, String driver, String user, String password, boolean cleanDatabase) {
 		this(url, driver, user);
 		setPassword(password);
+		setCleanDatabase(cleanDatabase);
 	}
 	
 	/**
 	 * Copy constructor.
 	 */
 	public DatabaseConfiguration(DatabaseConfiguration other) {
-		this(other.getUrl(), other.getDriver(), other.getUser(), other.getPassword());
+		this(other.getUrl(), other.getDriver(), other.getUser(), other.getPassword(), other.cleanDatabase());
 	}
 
 	public String getUrl() {
@@ -98,6 +99,8 @@ public class DatabaseConfiguration {
 
 	public void setCleanDatabase(boolean cleanDatabase) {
 		this.cleanDatabase = cleanDatabase;
+		if (cleanDatabase) properties.put(PersistenceUnitProperties.DDL_GENERATION, "drop-and-create-tables");
+		else properties.put(PersistenceUnitProperties.DDL_GENERATION, "create-tables");
 	}
 
 
