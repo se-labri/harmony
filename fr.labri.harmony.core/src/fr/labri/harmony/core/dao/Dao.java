@@ -2,7 +2,6 @@ package fr.labri.harmony.core.dao;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,14 +13,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.jpa.EntityManagerFactoryBuilder;
-
 import fr.labri.harmony.core.AbstractHarmonyService;
-import fr.labri.harmony.core.config.model.DatabaseConfiguration;
 import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.Author;
@@ -32,41 +24,11 @@ import fr.labri.harmony.core.model.Source;
 import fr.labri.harmony.core.model.SourceElement;
 import fr.labri.harmony.core.source.Workspace;
 
-public class Dao {
+public class Dao extends AbstractDao {
 
-	public static final String HARMONY_PERSISTENCE_UNIT = "harmony";
 
-	/**
-	 * We keep references on the EntityManagerFactories instead of the entity managers themselves
-	 */
-	private Map<String, HarmonyEntityManagerFactory> entityManagerFactories;
-
-	public Dao(DatabaseConfiguration config) {
-		BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
-		try {
-			Collection<ServiceReference<EntityManagerFactoryBuilder>> refs = context.getServiceReferences(EntityManagerFactoryBuilder.class, null);
-			entityManagerFactories = new HashMap<>();
-			for (ServiceReference<EntityManagerFactoryBuilder> ref : refs) {
-				String name = (String) ref.getProperty(EntityManagerFactoryBuilder.JPA_UNIT_NAME);
-				HarmonyEntityManagerFactory factory = new HarmonyEntityManagerFactory(config, ref, context);
-
-				entityManagerFactories.put(name, factory);
-
-			}
-
-		} catch (InvalidSyntaxException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public EntityManager getEntityManager(String a) {
-		HarmonyEntityManagerFactory f = entityManagerFactories.get(a);
-		if (f == null) return null;
-		return f.createEntityManager();
-	}
-
-	public EntityManager getEntityManager() {
-		return getEntityManager(HARMONY_PERSISTENCE_UNIT);
+	Dao(Map<String, HarmonyEntityManagerFactory> entityManagerFactories) {
+		super(entityManagerFactories);
 	}
 
 	public void saveSource(Source s) {
@@ -138,81 +100,6 @@ public class Dao {
 
 	public List<Action> getActions(Source s) {
 		return getList(Action.class, s);
-	}
-
-	/**
-	 * 
-	 * @param database
-	 * @param dataClass
-	 * @param harmonyModelElement
-	 * @return All data objects associated to the given {@link HarmonyModelElement}, in the provided database, and of the provided type.
-	 */
-	public <D> List<D> getData(String database, Class<D> dataClass, HarmonyModelElement harmonyModelElement) {
-		// Retrieve the data ids in the core mapping table
-		EntityManager coreEntityManager = getEntityManager();
-
-		String queryString = "SELECT dmo.dataId FROM" + DataMappingObject.class.getSimpleName() + "dmo WHERE dmo.elementId = :elementId "
-				+ "AND dmo.elementKind = :elementKind AND dmo.databaseName = :databaseName AND dmo.dataClassSimpleName = :dataClass";
-
-		TypedQuery<Integer> query = coreEntityManager.createQuery(queryString, Integer.class);
-		query.setParameter("elementId", harmonyModelElement.getId());
-		query.setParameter("elementKind", harmonyModelElement.getClass().getSimpleName());
-		query.setParameter("databaseName", database);
-		query.setParameter("dataClass", dataClass.getSimpleName());
-
-		List<Integer> dataIds = query.getResultList();
-
-		// Retrieve the data objects in the analysis database
-		EntityManager dataEntityManager = getEntityManager(database);
-		ArrayList<D> dataList = new ArrayList<>();
-		for (Integer dataId : dataIds) {
-			dataList.add(dataEntityManager.find(dataClass, dataId));
-		}
-		return dataList;
-	}
-
-	/**
-	 * 
-	 * @param database
-	 * @param dataClass
-	 * @return All the data of the given class stored in the given database.
-	 */
-	public <D> List<D> getData(String database, Class<D> dataClass) {
-		EntityManager m = getEntityManager(database);
-		String sQuery = "SELECT d FROM " + dataClass.getSimpleName() + " d";
-		TypedQuery<D> query = m.createQuery(sQuery, dataClass);
-		List<D> results = query.getResultList();
-		return results;
-	}
-
-	/**
-	 * Saves a data Object associated to an harmony element. 
-	 * @param database The name of the database in which the data Object will be saved (which corresponds to the persistence unit name of your analysis) 
-	 * @param data The data to be saved. It has to be annotated with JPA annotations (c.f. {@link Entity})
-	 * @param harmonyModelElement The element of the model the data is associated to.
-	 */
-	public void saveData(String database, Object data, HarmonyModelElement harmonyModelElement) {
-
-		EntityManager dataEntityManager = getEntityManager(database);
-		dataEntityManager.getTransaction().begin();
-		dataEntityManager.persist(data);
-		dataEntityManager.getTransaction().commit();
-		
-		int dataId = (int) entityManagerFactories.get(database).getPersistenceUnitUtil().getIdentifier(data);
-		DataMappingObject dmo = new DataMappingObject(database, data.getClass().getSimpleName(), dataId, harmonyModelElement.getId(), harmonyModelElement.getClass().getSimpleName());
-		save(dmo);
-	}
-
-	/**
-	 * Saves an entity in the core database, in a single transaction (inefficient for multiple save)
-	 * @param e The entity
-	 */
-	private <E> void save(E e) {
-		EntityManager m = getEntityManager();
-		m.getTransaction().begin();
-		m.persist(e);
-		m.getTransaction().commit();
-		m.close();
 	}
 
 	private <E extends SourceElement> E get(Class<E> clazz, Source s, String nativeId) {
@@ -336,6 +223,71 @@ public class Dao {
 		}
 		return actions;
 
+	}
+	
+	/************************************
+	 *	Access methods for data Objects *  
+	 ************************************/
+	
+	/** 
+	 * @param database
+	 * @param dataClass
+	 * @param harmonyModelElement
+	 * @return All data objects associated to the given {@link HarmonyModelElement}, in the provided database, and of the provided type.
+	 */
+	public <D> List<D> getData(String database, Class<D> dataClass, HarmonyModelElement harmonyModelElement) {
+		// Retrieve the data ids in the core mapping table
+		EntityManager coreEntityManager = getEntityManager();
+
+		String queryString = "SELECT dmo.dataId FROM" + DataMappingObject.class.getSimpleName() + "dmo WHERE dmo.elementId = :elementId "
+				+ "AND dmo.elementKind = :elementKind AND dmo.databaseName = :databaseName AND dmo.dataClassSimpleName = :dataClass";
+
+		TypedQuery<Integer> query = coreEntityManager.createQuery(queryString, Integer.class);
+		query.setParameter("elementId", harmonyModelElement.getId());
+		query.setParameter("elementKind", harmonyModelElement.getClass().getSimpleName());
+		query.setParameter("databaseName", database);
+		query.setParameter("dataClass", dataClass.getSimpleName());
+
+		List<Integer> dataIds = query.getResultList();
+
+		// Retrieve the data objects in the analysis database
+		EntityManager dataEntityManager = getEntityManager(database);
+		ArrayList<D> dataList = new ArrayList<>();
+		for (Integer dataId : dataIds) {
+			dataList.add(dataEntityManager.find(dataClass, dataId));
+		}
+		return dataList;
+	}
+
+	/**
+	 * @param database
+	 * @param dataClass
+	 * @return All the data of the given class stored in the given database.
+	 */
+	public <D> List<D> getData(String database, Class<D> dataClass) {
+		EntityManager m = getEntityManager(database);
+		String sQuery = "SELECT d FROM " + dataClass.getSimpleName() + " d";
+		TypedQuery<D> query = m.createQuery(sQuery, dataClass);
+		List<D> results = query.getResultList();
+		return results;
+	}
+
+	/**
+	 * Saves a data Object associated to an harmony element. 
+	 * @param database The name of the database in which the data Object will be saved (which corresponds to the persistence unit name of your analysis) 
+	 * @param data The data to be saved. It has to be annotated with JPA annotations (c.f. {@link Entity})
+	 * @param harmonyModelElement The element of the model the data is associated to.
+	 */
+	public void saveData(String database, Object data, HarmonyModelElement harmonyModelElement) {
+
+		EntityManager dataEntityManager = getEntityManager(database);
+		dataEntityManager.getTransaction().begin();
+		dataEntityManager.persist(data);
+		dataEntityManager.getTransaction().commit();
+		
+		int dataId = (int) entityManagerFactories.get(database).getPersistenceUnitUtil().getIdentifier(data);
+		DataMappingObject dmo = new DataMappingObject(database, data.getClass().getSimpleName(), dataId, harmonyModelElement.getId(), harmonyModelElement.getClass().getSimpleName());
+		save(dmo);
 	}
 
 }
