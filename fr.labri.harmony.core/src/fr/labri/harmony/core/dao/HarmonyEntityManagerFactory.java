@@ -19,7 +19,6 @@ import fr.labri.harmony.core.log.HarmonyLogger;
 
 public class HarmonyEntityManagerFactory {
 
-
 	private DatabaseConfiguration config;
 	private String databaseName;
 	private String databaseUrl;
