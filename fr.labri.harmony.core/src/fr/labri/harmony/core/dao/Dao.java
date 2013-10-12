@@ -70,8 +70,22 @@ public class Dao extends AbstractDao {
 		return get(Event.class, s, nativeId);
 	}
 
-	public List<Event> getEvents(Source s) {
-		return getList(Event.class, s);
+	/**
+	 * @param source
+	 * @return The events of the source, ordered by their timestamp, from the first to the latest event.
+	 */
+	public List<Event> getEvents(Source source) {
+		
+		String queryString = "SELECT e FROM Event e WHERE e.source = :source ORDER BY e.timestamp ASC";
+		
+		EntityManager em = getEntityManager();
+		em.getTransaction().begin();
+		TypedQuery<Event> query = em.createQuery(queryString, Event.class);
+		query.setParameter("source", source);
+		List<Event> events = query.getResultList();
+		em.getTransaction().commit();
+		
+		return events;
 	}
 
 	public void saveEvent(Event e) {
@@ -239,12 +253,12 @@ public class Dao extends AbstractDao {
 		// Retrieve the data ids in the core mapping table
 		EntityManager coreEntityManager = getEntityManager();
 
-		String queryString = "SELECT dmo.dataId FROM" + DataMappingObject.class.getSimpleName() + "dmo WHERE dmo.elementId = :elementId "
-				+ "AND dmo.elementKind = :elementKind AND dmo.databaseName = :databaseName AND dmo.dataClassSimpleName = :dataClass";
+		String queryString = "SELECT dmo.dataId FROM " + DataMappingObject.class.getSimpleName() + " dmo WHERE dmo.elementId = :elementId "
+				+ "AND dmo.elementType = :elementType AND dmo.databaseName = :databaseName AND dmo.dataClassSimpleName = :dataClass";
 
 		TypedQuery<Integer> query = coreEntityManager.createQuery(queryString, Integer.class);
 		query.setParameter("elementId", harmonyModelElement.getId());
-		query.setParameter("elementKind", harmonyModelElement.getClass().getSimpleName());
+		query.setParameter("elementType", harmonyModelElement.getClass().getSimpleName());
 		query.setParameter("databaseName", database);
 		query.setParameter("dataClass", dataClass.getSimpleName());
 
