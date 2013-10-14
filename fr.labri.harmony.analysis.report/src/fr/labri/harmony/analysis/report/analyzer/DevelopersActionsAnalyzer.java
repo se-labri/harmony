@@ -41,6 +41,9 @@ public class DevelopersActionsAnalyzer extends RepositoryAnalyzer {
 			Path csvFilePath = OutputUtils.buildOutputPath(src, rootAnalysis, "developers_actions.csv");
 			CSVWriter writer = new CSVWriter(new FileWriter(csvFilePath.toString()));
 			 
+			//We add column headers to ease reading from d3js
+			writer.writeNext(new String[] {"developer", "actionsnumber"});
+			
 			for (String authorName : actionsPerAuthor.keySet()) {
 				writer.writeNext(new String[] {authorName, actionsPerAuthor.get(authorName).toString()});
 			}	 
