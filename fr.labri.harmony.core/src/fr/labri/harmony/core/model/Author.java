@@ -6,7 +6,10 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
-
+/**
+ * An author performs events.
+ *
+ */
 @Entity
 public class Author extends SourceElement {
 	

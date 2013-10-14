@@ -5,7 +5,6 @@ import java.util.Properties;
 import fr.labri.harmony.core.AbstractHarmonyService;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
-import fr.labri.harmony.core.model.Data;
 
 /**
  * Class to inherit to develop an analysis. <br>
@@ -37,16 +36,6 @@ public abstract class AbstractAnalysis extends AbstractHarmonyService implements
 	@Override
 	public String getPersitenceUnitName() {
 		return config.getPersistenceUnit();
-	}
-
-	/**
-	 * Saves an entity in the database. This entity must have the elementId and
-	 * elementKind set properly to be retrieved later
-	 * 
-	 * @param data the Entity to save
-	 */
-	protected void saveData(Data data) {
-		dao.saveData(this, data, data.getElementKind(), data.getElementId());
 	}
 
 }
