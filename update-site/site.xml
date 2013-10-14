@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description name="Harmony" url="http://se.labri.fr/data/harmony/updateSite/harmony">
+      Harmony Update Site
+   </description>
+   <feature url="features/fr.labri.harmony.analysis.cloc_1.0.0.201310031757.jar" id="fr.labri.harmony.analysis.cloc" version="1.0.0.201310031757">
+      <category name="harmony"/>
+   </feature>
+   <feature url="features/fr.labri.harmony.analysis.ownership_1.0.0.201310031757.jar" id="fr.labri.harmony.analysis.ownership" version="1.0.0.201310031757">
+      <category name="harmony"/>
+   </feature>
+   <feature url="features/fr.labri.harmony.analysis.report_1.0.0.201310031757.jar" id="fr.labri.harmony.analysis.report" version="1.0.0.201310031757">
+      <category name="harmony"/>
+   </feature>
+   <feature url="features/fr.labri.harmony.core_1.0.0.201310031757.jar" id="fr.labri.harmony.core" version="1.0.0.201310031757">
+      <category name="harmony"/>
+   </feature>
+   <feature url="features/fr.labri.harmony.source.git_1.0.0.201310031757.jar" id="fr.labri.harmony.source.git" version="1.0.0.201310031757">
+      <category name="harmony"/>
+   </feature>
+   <feature url="features/fr.labri.harmony.source.hg4j_1.0.0.201310031757.jar" id="fr.labri.harmony.source.hg4j" version="1.0.0.201310031757">
+      <category name="harmony"/>
+   </feature>
+   <feature url="features/fr.labri.harmony.source.svnkit_1.0.0.201310031757.jar" id="fr.labri.harmony.source.svnkit" version="1.0.0.201310031757">
+      <category name="harmony"/>
+   </feature>
+   <feature url="features/fr.labri.harmony.source.tfs_1.0.0.201310031757.jar" id="fr.labri.harmony.source.tfs" version="1.0.0.201310031757">
+      <category name="harmony"/>
+   </feature>
+   <feature url="features/fr.labri.harmony.wizard.analysis_1.0.0.201310031757.jar" id="fr.labri.harmony.wizard.analysis" version="1.0.0.201310031757">
+      <category name="harmony"/>
+   </feature>
+   <category-def name="harmony" label="Harmony"/>
+</site>
