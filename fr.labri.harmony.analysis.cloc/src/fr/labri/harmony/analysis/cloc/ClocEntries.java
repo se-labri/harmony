@@ -9,26 +9,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import fr.labri.harmony.core.model.Data;
-
 @Entity
-public class ClocEntries implements Data {
+public class ClocEntries {
 	
 	@Id @GeneratedValue
 	private int id;
-
-	private int elementId;
-
-	private int elementKind;
 	
-	public int getElementKind() {
-		return elementKind;
-	}
-
-	public void setElementKind(int elementKind) {
-		this.elementKind = elementKind;
-	}
-
 	@OneToMany(cascade=CascadeType.ALL)
 	private List<ClocEntry> entries;
 
@@ -42,14 +28,6 @@ public class ClocEntries implements Data {
 	
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public int getElementId() {
-		return elementId;
-	}
-
-	public void setElementId(int elementId) {
-		this.elementId = elementId;
 	}
 	
 	public List<ClocEntry> getEntries() {

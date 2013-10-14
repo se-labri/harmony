@@ -1,8 +1,8 @@
 package fr.labri.harmony.core.model;
 
-import java.sql.Date;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,6 +14,11 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+/**
+ * An event is performed on a source, by one or several authors (only one in most cases), and is composed by a set of actions. <br>
+ * Typically, in a VCS an event is a commit/changeset.  
+ *
+ */
 @Entity
 public class Event extends SourceElement {
 

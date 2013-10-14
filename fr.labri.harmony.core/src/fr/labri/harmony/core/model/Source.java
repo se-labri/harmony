@@ -17,8 +17,12 @@ import org.eclipse.persistence.annotations.Index;
 import fr.labri.harmony.core.config.model.SourceConfiguration;
 import fr.labri.harmony.core.source.Workspace;
 
+/**
+ * A source is a container for the elements of the harmony model. 
+ * It is associated to an URL and usually corresponds to a source code repository. (e.g. a Git repository) 
+ */
 @Entity
-public class Source {
+public class Source implements HarmonyModelElement {
 
 	@Id @GeneratedValue
 	private int id;
@@ -64,6 +68,9 @@ public class Source {
 		this.workspace = workspace;
 	}
 
+	/**
+	 * @return The initialized workspace for this source. Throws an exception if the workspace is null.
+	 */
 	public Workspace getWorkspace() {
 		if (workspace == null) throw new RuntimeException("No workspace available for this source");
 		return workspace;

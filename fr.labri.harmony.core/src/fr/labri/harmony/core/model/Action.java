@@ -5,6 +5,13 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+/**
+ * An action is a performed on an {@link Item}, during an {@link Event}.
+ * Typically, in a VCS it can be a modification performed on a file.
+ * 
+ * The kind of the action can be any value of the {@link ActionKind} enumeration.
+ *
+ */
 @Entity
 public class Action extends SourceElement {
 

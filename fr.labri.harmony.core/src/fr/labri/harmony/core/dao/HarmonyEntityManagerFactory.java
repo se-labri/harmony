@@ -8,15 +8,16 @@ import java.sql.Statement;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceException;
+import javax.persistence.PersistenceUnitUtil;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.jpa.EntityManagerFactoryBuilder;
 
 import fr.labri.harmony.core.config.model.DatabaseConfiguration;
+import fr.labri.harmony.core.log.HarmonyLogger;
 
 public class HarmonyEntityManagerFactory {
-
 
 	private DatabaseConfiguration config;
 	private String databaseName;
@@ -52,10 +53,14 @@ public class HarmonyEntityManagerFactory {
 		} catch (PersistenceException e) {
 			createDatabase();
 			em = factory.createEntityManager();
-		}
+		}	
 
 		return em;
 
+	}
+	
+	public PersistenceUnitUtil getPersistenceUnitUtil() {
+		return factory.getPersistenceUnitUtil();
 	}
 
 	private void createDatabase() {
@@ -66,7 +71,7 @@ public class HarmonyEntityManagerFactory {
 			Statement s = conn.createStatement();
 			s.executeUpdate("CREATE DATABASE " + databaseName);
 		} catch (SQLException e) {
-			Dao.LOGGER.severe(e.getMessage());
+			HarmonyLogger.error(e.getMessage());
 			e.printStackTrace();
 		}
 
