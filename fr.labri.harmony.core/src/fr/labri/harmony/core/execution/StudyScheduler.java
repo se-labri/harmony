@@ -64,27 +64,20 @@ public class StudyScheduler {
 			return;
 		}
 
-		// We create a global DAO which is in charge of building and
-		// managing
-		// the EntityManagers from all the bundles defining analyses
+		// We create a global DAO which is in charge of building and managing the EntityManagers from all the bundles defining analyses
 		DaoFactory daoFactory = new DaoFactory(global.getDatabaseConfiguration());
 		dao = daoFactory.createDao();
 
-		// We grab the list of analyses which have been scheduled according
-		// to
-		// their dependencies
+		// We grab the list of analyses which have been scheduled according to their dependencies
 		Collection<Analysis> scheduledAnalyses = getScheduledAnalyses(global.getAnalysisConfigurations());
 
 		// We do the same thing for the post-processing analyses
 		Collection<PostProcessingAnalysis> scheduledPostProcessingAnalyses = getScheduledPostProcessingAnalyses(global
 				.getPostProcessingAnalysisConfigurations());
 
-		// Initialization of the ExecutorService in order to manage the
-		// concurrent execution of the analyses
+		// Initialization of the ExecutorService in order to manage the concurrent execution of the analyses
 		if (this.schedulerConfiguration.getNumberOfThreads() > NUMBER_OF_EXECUTION_UNIT_AVAILABLE) {
-			// TODO Use an OSGI compliant logging service / Some profiling
-			// to
-			// determine best ration number of threads per core
+			// TODO Use an OSGI compliant logging service / Some profiling to determine best ration number of threads per core
 			HarmonyLogger
 					.info("You requested more threads than the number of execution unit (core) available, this choice might lead to lower execution performance");
 		}
@@ -96,21 +89,12 @@ public class StudyScheduler {
 		mainMonitor = new ExecutionMonitor(dao);
 		executionReportId = mainMonitor.initMonitoring();
 
-		// We iterate on each sources and for each one we run the set of
-		// analysis in the right order
+		// We iterate on each sources and for each one we run the set of analysis in the right order
 		for (SourceConfiguration sourceConfiguration : sourceConfigurations) {
-
-			SourceExtractor<?> currentSource = sourceExtractorFactory.createSourceExtractor(sourceConfiguration);
-			if (currentSource != null) {
-				launchSortedAnalysisOnSource(currentSource, scheduledAnalyses);
-			} else {
-				HarmonyLogger.error("Could not load the source:" + sourceConfiguration.getRepositoryURL());
-			}
-
+			launchSortedAnalysisOnSource(sourceExtractorFactory, sourceConfiguration, scheduledAnalyses);
 		}
 
-		// We wait for the threads to finish to the extent that the timeout
-		// limit is not reached
+		// We wait for the threads to finish to the extent that the timeout limit is not reached
 		shutdownThreadsPool();
 
 		mainMonitor.stopMonitoring(executionReportId);
@@ -163,9 +147,7 @@ public class StudyScheduler {
 			} else {
 				analysisDAG.addVertex(analysisConfiguration.getAnalysisName(), currentAnalysis);
 				for (String requiredAnalysis : analysisConfiguration.getDependencies()) {
-					// To have a Topological Sorting that returns the execution
-					// order, the edges have to be oriented as
-					// dependency -> dependent
+					// To have a Topological Sorting that returns the execution order, the edges have to be oriented as dependency -> dependent
 					analysisDAG.addEdge(requiredAnalysis, analysisConfiguration.getAnalysisName());
 				}
 			}
@@ -186,9 +168,7 @@ public class StudyScheduler {
 			if (currentAnalysis != null) {
 				analysisDAG.addVertex(analysisConfiguration.getAnalysisName(), currentAnalysis);
 				for (String requiredAnalysis : analysisConfiguration.getDependencies()) {
-					// To have a Topological Sorting that returns the execution
-					// order, the edges have to be oriented as
-					// dependency -> dependent
+					// To have a Topological Sorting that returns the execution order, the edges have to be oriented as dependency -> dependent
 					analysisDAG.addEdge(requiredAnalysis, analysisConfiguration.getAnalysisName());
 				}
 			}
@@ -198,16 +178,21 @@ public class StudyScheduler {
 		return analysisDAG.getTopoOrder();
 	}
 
-	// TODO Initialization of sources should be done concurrently to the
-	// launches of analyses, a thread must be dedicated to this task.
-	private void launchSortedAnalysisOnSource(final SourceExtractor<?> sourceExtractor, final Collection<Analysis> scheduledAnalyses) {
+	// TODO Initialization of sources should be done concurrently to the launches of analyses, a thread must be dedicated to this task.
+	private void launchSortedAnalysisOnSource(final SourceExtractorFactory sourceExtractorFactory, final SourceConfiguration sourceConfiguration,
+			final Collection<Analysis> scheduledAnalyses) {
 
-		// We create a thread dedicated to this source. It will be in charge of
-		// extracting it and launching the set of analyses on it
+		// We create a thread dedicated to this source. It will be in charge of extracting it and launching the set of analyses on it
 		threadsPool.execute(new Thread() {
 
 			@Override
 			public void run() {
+				SourceExtractor<?> sourceExtractor = sourceExtractorFactory.createSourceExtractor(sourceConfiguration);
+				if (sourceExtractor == null) {
+					HarmonyLogger.error("Could not load the source:" + sourceConfiguration.getRepositoryURL());
+					return;
+				}
+
 				String url = sourceExtractor.getConfig().getRepositoryURL();
 				SourceExecutionReport executionReport = new SourceExecutionReport();
 				executionReport.setSourceUrl(url);
@@ -215,9 +200,7 @@ public class StudyScheduler {
 				try {
 					long startTime = System.currentTimeMillis();
 
-					// Before launching any analysis on the source we must extract it (clone repository, build and store
-					// the Harmony model)
-
+					// Before launching any analysis on the source we must extract it (clone repository, build and store the Harmony model)
 					// If a source exists in the DB before the extraction, we reuse it and do not extract the model again.
 					Source src = dao.getSourceByUrl(url);
 					if (src != null) {
@@ -236,11 +219,10 @@ public class StudyScheduler {
 						}
 						sourceExtractor.initializeSource(extractHarmonyModel, extractActions);
 					}
-					// We perform the analysis one after the other and between each of them we check that an
-					// interruption
-					// of the thread wasn't requested due to the timeout limit.
-					//TODO catch exception in the loop.
-					//TODO create multiple instance of analyses in order to be thread safe
+					// We perform the analysis one after the other and between each of them we check
+					// that an interruption of the thread wasn't requested due to the timeout limit.
+					// TODO catch exception in the loop.
+					// TODO create multiple instance of analyses in order to be thread safe
 					for (Iterator<Analysis> analyses = scheduledAnalyses.iterator(); analyses.hasNext() && !this.isInterrupted();) {
 						Analysis currentAnalysis = analyses.next();
 						currentAnalysis.runOn(sourceExtractor.getSource());
@@ -267,8 +249,7 @@ public class StudyScheduler {
 		threadsPool.shutdown();
 
 		try {
-			// Wait until the end of configuration timeout for existing tasks to
-			// terminate
+			// Wait until the end of configuration timeout for existing tasks to terminate
 			if (!threadsPool.awaitTermination(schedulerConfiguration.getGlobalTimeOut(), TimeUnit.MINUTES)) {
 
 				HarmonyLogger
