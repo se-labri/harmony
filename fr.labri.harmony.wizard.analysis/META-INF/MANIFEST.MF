@@ -11,7 +11,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
-Import-Package: fr.labri.harmony.wizard.workdir,
+Import-Package: fr.labri.harmony.core.output,
  org.eclipse.jdt.core,
  org.eclipse.jdt.internal.ui.dialogs,
  org.eclipse.jdt.ui

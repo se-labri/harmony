@@ -43,7 +43,7 @@ import org.eclipse.ui.statushandlers.StatusManager;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 import org.osgi.framework.Constants;
 
-import fr.labri.harmony.wizard.workdir.WizardFileUtils;
+import fr.labri.harmony.core.output.FileUtils;
 
 
 
@@ -300,7 +300,7 @@ public class NewAnalysisWizard extends Wizard implements INewWizard,IExecutableE
 
 			// We copy the standard persistence settings from a file stored in this plugin
 			
-			persistenceFileContent += WizardFileUtils.getFileContent("fr.labri.harmony.wizard.analysis","config/persistence_unit.prop",monitor);
+			persistenceFileContent += FileUtils.getFileContent("fr.labri.harmony.wizard.analysis","config/persistence_unit.prop",monitor);
 			/*Bundle bundle = Platform.getBundle("fr.labri.harmony.wizard.analysis");
 			URL fileURL = bundle.getEntry("config/persistence_unit.prop");
 			File file = null;

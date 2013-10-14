@@ -1,10 +1,12 @@
-package fr.labri.harmony.wizard.workdir;
-
+package fr.labri.harmony.core.output;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.core.resources.IFile;
@@ -15,7 +17,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
-public class WizardFileUtils {
+public class FileUtils {
 	
 	public static void copyFile(String srcPlugin, String srcLocation,IFolder dest,IProgressMonitor monitor){
 		Bundle bundle = Platform.getBundle(srcPlugin);
@@ -26,6 +28,25 @@ public class WizardFileUtils {
 		    InputStream is = FileLocator.resolve(url).openStream();
 		    IFile newFile = dest.getFile(FilenameUtils.getName(url.getPath()));
             newFile.create(is, true, monitor);	 
+            } else {
+            	System.err.println("Could not found file");
+            }
+		} catch (Exception e) {
+			System.err.println("Could not copy the file: "+e.getMessage());
+		}
+	}
+	
+	public static void copyFile(String srcPlugin, String srcLocation,java.nio.file.Path dest){
+		Bundle bundle = Platform.getBundle(srcPlugin);
+		
+		try {
+		    URL url = FileLocator.find(bundle, new Path(srcLocation), null);
+		    if(url != null){
+			    InputStream is = FileLocator.resolve(url).openStream();
+			    CopyOption[] options = new CopyOption[]{ 
+			    		  StandardCopyOption.REPLACE_EXISTING
+			    	    }; 
+			    Files.copy(is,(java.nio.file.Path) dest,options);   
             } else {
             	System.err.println("Could not found file");
             }

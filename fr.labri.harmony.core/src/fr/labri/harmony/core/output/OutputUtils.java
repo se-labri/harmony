@@ -21,7 +21,7 @@ public class OutputUtils {
 	 * @throws IOException
 	 * 
 	 */
-	public static Path buildOutputPath(Source src, AbstractAnalysis analysis, String fileName) throws IOException{
+	public static java.nio.file.Path buildOutputPath(Source src, AbstractAnalysis analysis, String fileName) throws IOException{
 		
 		String baseUrl = analysis.getConfig().getFoldersConfiguration().getOutFolder();
 		

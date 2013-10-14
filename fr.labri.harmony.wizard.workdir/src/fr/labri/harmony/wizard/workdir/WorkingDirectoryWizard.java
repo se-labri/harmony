@@ -23,6 +23,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.statushandlers.StatusManager;
 
+import fr.labri.harmony.core.output.FileUtils;
+
 public class WorkingDirectoryWizard extends Wizard implements INewWizard {
 
 	
@@ -105,14 +107,14 @@ public class WorkingDirectoryWizard extends Wizard implements INewWizard {
 			IFolder harmonyConfFolder = confFolder.getFolder("fr.labri.harmony");
 			harmonyConfFolder.create(true, true, monitor);
 			
-			WizardFileUtils.copyFile("fr.labri.harmony.wizard.workdir","res/configuration/Harmony.launch",confFolder,monitor);
+			FileUtils.copyFile("fr.labri.harmony.wizard.workdir","res/configuration/Harmony.launch",confFolder,monitor);
 			
 			String[] configFiles = {"res/configuration/fr.labri.harmony/default-global-config.json",
 									"res/configuration/fr.labri.harmony/default-source-config.json",
 									"res/configuration/fr.labri.harmony/mysql-global-config.json"};
 			
 			for (int i = 0; i < configFiles.length; i++) {
-				WizardFileUtils.copyFile("fr.labri.harmony.wizard.workdir",configFiles[i],harmonyConfFolder,monitor);
+				FileUtils.copyFile("fr.labri.harmony.wizard.workdir",configFiles[i],harmonyConfFolder,monitor);
 			}
 			
 			getProject(PROJECT_NAME).refreshLocal(3, monitor);
