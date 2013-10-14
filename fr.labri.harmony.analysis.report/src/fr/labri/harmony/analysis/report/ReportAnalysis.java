@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -17,6 +18,8 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
 
+import fr.labri.harmony.analysis.report.analyzer.DevelopersActionsAnalyzer;
+import fr.labri.harmony.analysis.report.analyzer.RepositoryAnalyzer;
 import fr.labri.harmony.analysis.report.charts.ActionAuthorChart;
 import fr.labri.harmony.analysis.report.charts.AuthorActionChart;
 import fr.labri.harmony.analysis.report.charts.AuthorDeletedRatioChart;
@@ -35,6 +38,7 @@ import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Source;
+import fr.labri.harmony.core.output.FileUtils;
 import fr.labri.harmony.core.output.OutputUtils;
 
 public class ReportAnalysis extends AbstractAnalysis {
@@ -51,13 +55,32 @@ public class ReportAnalysis extends AbstractAnalysis {
 	public void runOn(Source src) {
 		HarmonyLogger.info("Starting reporting analysis on " + src.getUrl() + ".");
 		
-		for (ChartDrawer drawer : getChartDrawers()) {
+		for (RepositoryAnalyzer ra : getRepositoryAnalyzers()) {
+			ra.extractData(src);
+		}
+
+		try {
+			FileUtils.copyFile("fr.labri.harmony.analysis.report", "/res/report.html", OutputUtils.buildOutputPath(src,this, "report.html"));
+		} catch (IOException e) {
+			HarmonyLogger.error("Could not produce report for source: "+src.getUrl());
+		}
+		
+		
+		
+		/*for (ChartDrawer drawer : getChartDrawers()) {
 			try {
 				saveChartToPDF(drawer.createChart(src), OutputUtils.buildOutputPath(src, this, drawer.getChartName() + ".pdf").toString() , 1680, 1050);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}
+		}*/
+	}
+	
+	public List<RepositoryAnalyzer> getRepositoryAnalyzers() {
+		List<RepositoryAnalyzer> repAnalyzers = new ArrayList<>();
+		repAnalyzers.add(new DevelopersActionsAnalyzer(getDao(), this));
+		
+		return repAnalyzers;
 	}
 
 	public List<ChartDrawer> getChartDrawers() {
