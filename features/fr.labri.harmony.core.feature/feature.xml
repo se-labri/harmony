@@ -89,10 +89,42 @@ If the Library as you received it specifies that a proxy can decide whether futu
       <import feature="com.mysql.jdbc" version="5.1.26"/>
       <import feature="org.apache.commons.io" version="2.4"/>
       <import feature="org.h2" version="1.3.173"/>
+      <import feature="com.microsoft.tfs.client.eclipse.feature" version="11.0.0" match="greaterOrEqual"/>
+      <import feature="org.tmatesoft.hg4j" version="1.2" match="greaterOrEqual"/>
+      <import feature="org.tmatesoft.svnkit" version="1.7.11"  match="greaterOrEqual"/>
+      <import feature="org.eclipse.jgit" version="3.0.3" match="greaterOrEqual"/>
    </requires>
 
    <plugin
          id="fr.labri.harmony.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+ <plugin
+         id="fr.labri.harmony.source.git"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="fr.labri.harmony.source.hg4j"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="fr.labri.harmony.source.svnkit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="fr.labri.harmony.source.tfs"
          download-size="0"
          install-size="0"
          version="0.0.0"

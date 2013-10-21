@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="fr.labri.harmony.wizard.analysis"
+      id="fr.labri.harmony.wizards"
       label="Harmony Wizards"
       version="1.0.0.qualifier"
       provider-name="SE@LaBRI">
