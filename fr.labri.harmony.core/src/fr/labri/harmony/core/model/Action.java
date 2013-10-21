@@ -81,4 +81,36 @@ public class Action extends SourceElement {
 		return kind + " " + item;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((event == null) ? 0 : event.hashCode());
+		result = prime * result + ((item == null) ? 0 : item.hashCode());
+		result = prime * result + ((kind == null) ? 0 : kind.hashCode());
+		result = prime * result + ((parentEvent == null) ? 0 : parentEvent.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (!super.equals(obj)) return false;
+		if (getClass() != obj.getClass()) return false;
+		Action other = (Action) obj;
+		if (event == null) {
+			if (other.event != null) return false;
+		} else if (!event.equals(other.event)) return false;
+		if (item == null) {
+			if (other.item != null) return false;
+		} else if (!item.equals(other.item)) return false;
+		if (kind != other.kind) return false;
+		if (parentEvent == null) {
+			if (other.parentEvent != null) return false;
+		} else if (!parentEvent.equals(other.parentEvent)) return false;
+		return true;
+	}
+    
+    
+
 }
