@@ -16,6 +16,7 @@ import javax.persistence.criteria.Root;
 import fr.labri.harmony.core.AbstractHarmonyService;
 import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Action;
+import fr.labri.harmony.core.model.ActionKind;
 import fr.labri.harmony.core.model.Author;
 import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.HarmonyModelElement;
@@ -25,7 +26,6 @@ import fr.labri.harmony.core.model.SourceElement;
 import fr.labri.harmony.core.source.Workspace;
 
 public class Dao extends AbstractDao {
-
 
 	Dao(Map<String, HarmonyEntityManagerFactory> entityManagerFactories) {
 		super(entityManagerFactories);
@@ -72,19 +72,20 @@ public class Dao extends AbstractDao {
 
 	/**
 	 * @param source
-	 * @return The events of the source, ordered by their timestamp, from the first to the latest event.
+	 * @return The events of the source, ordered by their timestamp, from the
+	 *         first to the latest event.
 	 */
 	public List<Event> getEvents(Source source) {
-		
+
 		String queryString = "SELECT e FROM Event e WHERE e.source = :source ORDER BY e.timestamp ASC";
-		
+
 		EntityManager em = getEntityManager();
 		em.getTransaction().begin();
 		TypedQuery<Event> query = em.createQuery(queryString, Event.class);
 		query.setParameter("source", source);
 		List<Event> events = query.getResultList();
 		em.getTransaction().commit();
-		
+
 		return events;
 	}
 
@@ -201,10 +202,8 @@ public class Dao extends AbstractDao {
 
 	public synchronized HarmonyEntityManagerFactory getEntityManagerFactory(AbstractHarmonyService harmonyService) {
 		String puName;
-		if (harmonyService == null)
-			puName = HARMONY_PERSISTENCE_UNIT;
-		else
-			puName = harmonyService.getPersitenceUnitName();
+		if (harmonyService == null) puName = HARMONY_PERSISTENCE_UNIT;
+		else puName = harmonyService.getPersitenceUnitName();
 		return entityManagerFactories.get(puName);
 	}
 
@@ -238,16 +237,40 @@ public class Dao extends AbstractDao {
 		return actions;
 
 	}
-	
+
+	/**
+	 * 
+	 * @param item
+	 * @return The action related to the creation of the Item or null if there
+	 *         is no such action
+	 */
+	public Action getCreateAction(Item item) {
+		EntityManager m = getEntityManager();
+
+		String stringQuery = "SELECT a FROM Action a JOIN a.event e WHERE a.item = :item AND a.kind = :createKind";
+
+		TypedQuery<Action> q = m.createQuery(stringQuery, Action.class);
+		q.setParameter("item", item);
+		q.setParameter("createKind", ActionKind.Create);
+		try {
+			return q.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
+
+	}
+
 	/************************************
-	 *	Access methods for data Objects *  
+	 * Access methods for data Objects *
 	 ************************************/
-	
-	/** 
+
+	/**
 	 * @param database
 	 * @param dataClass
 	 * @param harmonyModelElement
-	 * @return All data objects associated to the given {@link HarmonyModelElement}, in the provided database, and of the provided type.
+	 * @return All data objects associated to the given
+	 *         {@link HarmonyModelElement}, in the provided database, and of the
+	 *         provided type.
 	 */
 	public <D> List<D> getData(String database, Class<D> dataClass, HarmonyModelElement harmonyModelElement) {
 		// Retrieve the data ids in the core mapping table
@@ -287,10 +310,17 @@ public class Dao extends AbstractDao {
 	}
 
 	/**
-	 * Saves a data Object associated to an harmony element. 
-	 * @param database The name of the database in which the data Object will be saved (which corresponds to the persistence unit name of your analysis) 
-	 * @param data The data to be saved. It has to be annotated with JPA annotations (c.f. {@link Entity})
-	 * @param harmonyModelElement The element of the model the data is associated to.
+	 * Saves a data Object associated to an harmony element.
+	 * 
+	 * @param database
+	 *            The name of the database in which the data Object will be
+	 *            saved (which corresponds to the persistence unit name of your
+	 *            analysis)
+	 * @param data
+	 *            The data to be saved. It has to be annotated with JPA
+	 *            annotations (c.f. {@link Entity})
+	 * @param harmonyModelElement
+	 *            The element of the model the data is associated to.
 	 */
 	public void saveData(String database, Object data, HarmonyModelElement harmonyModelElement) {
 
@@ -298,9 +328,10 @@ public class Dao extends AbstractDao {
 		dataEntityManager.getTransaction().begin();
 		dataEntityManager.persist(data);
 		dataEntityManager.getTransaction().commit();
-		
+
 		int dataId = (int) entityManagerFactories.get(database).getPersistenceUnitUtil().getIdentifier(data);
-		DataMappingObject dmo = new DataMappingObject(database, data.getClass().getSimpleName(), dataId, harmonyModelElement.getId(), harmonyModelElement.getClass().getSimpleName());
+		DataMappingObject dmo = new DataMappingObject(database, data.getClass().getSimpleName(), dataId, harmonyModelElement.getId(), harmonyModelElement.getClass()
+				.getSimpleName());
 		save(dmo);
 	}
 
