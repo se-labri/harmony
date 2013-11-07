@@ -7,10 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.tigris.subversion.javahl.NodeKind;
 import org.tmatesoft.svn.core.ISVNLogEntryHandler;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNLogEntry;
 import org.tmatesoft.svn.core.SVNLogEntryPath;
+import org.tmatesoft.svn.core.SVNNodeKind;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 
 import fr.labri.harmony.core.config.model.SourceConfiguration;
@@ -80,6 +82,12 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 	}
 
 	@Override
+	protected void saveItemsAndActions() {
+		saveAuthorsAndEvents();
+		super.saveItemsAndActions();
+	}
+
+	@Override
 	public void handleLogEntry(SVNLogEntry logEntry) throws SVNException {
 
 		List<Event> parents = new ArrayList<Event>();
@@ -100,39 +108,40 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 		List<Author> authors = new ArrayList<>(Arrays.asList(new Author[] { author }));
 
 		Event e = new Event(source, String.valueOf(logEntry.getRevision()), logEntry.getDate().getTime(), parents, authors);
-		
+
 		// TODO handle more metadata
-		Map<String,String> metadata = new HashMap<String,String>();
+		Map<String, String> metadata = new HashMap<String, String>();
 		metadata.put(COMMIT_MESSAGE, logEntry.getMessage());
 		e.setMetadata(metadata);
-		
-		saveEvent(e);
 
+		saveEvent(e);
 
 		if (extractActions) {
 			for (SVNLogEntryPath entry : logEntry.getChangedPaths().values()) {
 				ActionKind kind = null;
-				switch (entry.getType()) {
-				case 'M':
-					kind = ActionKind.Edit;
-					break;
-				case 'A':
-					kind = ActionKind.Create;
-					break;
-				case 'D':
-					kind = ActionKind.Delete;
-					break;
-				case 'R':
-					kind = ActionKind.Delete;
-				}
+				if (entry.getKind() == SVNNodeKind.FILE) {
+					switch (entry.getType()) {
+					case SVNLogEntryPath.TYPE_MODIFIED:
+						kind = ActionKind.Edit;
+						break;
+					case SVNLogEntryPath.TYPE_ADDED:
+						kind = ActionKind.Create;
+						break;
+					case SVNLogEntryPath.TYPE_DELETED:
+						kind = ActionKind.Delete;
+						break;
+					case SVNLogEntryPath.TYPE_REPLACED:
+						kind = ActionKind.Delete;
+					}
 
-				Item i = getItem(entry.getPath());
-				if (i == null) {
-					i = new Item(source, entry.getPath());
-					saveItem(i);
+					Item i = getItem(entry.getPath());
+					if (i == null) {
+						i = new Item(source, entry.getPath());
+						saveItem(i);
+					}
+					Action a = new Action(i, kind, e, parent, source);
+					saveAction(a);
 				}
-				Action a = new Action(i, kind, e, parent, source);
-				saveAction(a);
 			}
 		}
 
