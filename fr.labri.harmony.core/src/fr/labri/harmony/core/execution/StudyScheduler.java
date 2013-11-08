@@ -225,6 +225,7 @@ public class StudyScheduler {
 					// TODO create multiple instance of analyses in order to be thread safe
 					for (Iterator<Analysis> analyses = scheduledAnalyses.iterator(); analyses.hasNext() && !this.isInterrupted();) {
 						Analysis currentAnalysis = analyses.next();
+						HarmonyLogger.info("Running analysis " + currentAnalysis.getConfig().getAnalysisName() + " on source " + sourceExtractor.getSource().getUrl());
 						currentAnalysis.runOn(sourceExtractor.getSource());
 					}
 					long endTime = System.currentTimeMillis();
