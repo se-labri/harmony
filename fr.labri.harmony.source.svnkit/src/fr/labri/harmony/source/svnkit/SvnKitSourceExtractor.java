@@ -108,7 +108,7 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 		List<Author> authors = new ArrayList<>(Arrays.asList(new Author[] { author }));
 
 		Event e = new Event(source, String.valueOf(logEntry.getRevision()), logEntry.getDate().getTime(), parents, authors);
-
+	
 		// TODO handle more metadata
 		Map<String, String> metadata = new HashMap<String, String>();
 		metadata.put(COMMIT_MESSAGE, logEntry.getMessage());
@@ -117,6 +117,12 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 		saveEvent(e);
 
 		if (extractActions) {
+			/*
+			 * Needed for the operation below
+			 */
+			String url = this.source.getUrl();
+			if(url.endsWith("/")) url=url.substring(0,url.length()-1);
+			
 			for (SVNLogEntryPath entry : logEntry.getChangedPaths().values()) {
 				ActionKind kind = null;
 				if (entry.getKind() == SVNNodeKind.FILE) {
@@ -133,7 +139,35 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 					case SVNLogEntryPath.TYPE_REPLACED:
 						kind = ActionKind.Delete;
 					}
-
+					/*
+					 * It is possible to launch Harmony on SVN urls that have the following forms :
+					 * "url/trunk/"
+					 * "url/trunk/src"
+					 * "url/trunk/src/test"
+					 * Problem : SVN will return items with a path which is context-independent, for instance :
+					 * "/trunk/src/test/Test.java" 
+					 * whatever the url you mention.
+					 * The code below will produce items with a context-dependent path. Thus, :
+					 * "url/trunk/" -> "src/test/Test.java"
+					 * "url/trunk/src" -> "test/Test.java"
+					 * "url/trunk/src/test" -> "Test.java"
+					 */
+					String path = entry.getPath();
+					if(path.startsWith("/")) path = path.substring(1);
+					String tokens[] = path.split("\\/");
+					String newPath = "";
+					for(String token : tokens) {
+						newPath+="/"+token;
+						if(url.endsWith(newPath) || url.endsWith(newPath+"/")){
+							newPath = newPath.substring(1);
+							if(url.equals(newPath)==false) {
+								path = path.substring(newPath.length());
+							}
+							else
+								path = "/";
+							break;
+						}
+					}
 					Item i = getItem(entry.getPath());
 					if (i == null) {
 						i = new Item(source, entry.getPath());
