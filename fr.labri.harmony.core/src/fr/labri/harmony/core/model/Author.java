@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+
 /**
  * An author performs events.
  *
@@ -15,6 +16,8 @@ public class Author extends SourceElement {
 	
 	@Basic
 	private String name;
+	
+	private String email;
 	
 	@ManyToMany(mappedBy="authors")
 	private List<Event> events;
@@ -43,6 +46,14 @@ public class Author extends SourceElement {
 
 	public void setEvents(List<Event> events) {
 		this.events = events;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	

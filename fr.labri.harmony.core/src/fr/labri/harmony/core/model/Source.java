@@ -50,9 +50,9 @@ public class Source implements HarmonyModelElement {
 
 	public Source() {
 		super();
-		events = new ArrayList<Event>();
-		authors = new ArrayList<Author>();
-		items = new ArrayList<Item>();
+		events = new ArrayList<>();
+		authors = new ArrayList<>();
+		items = new ArrayList<>();
 		actions = new ArrayList<>();
 	}
 

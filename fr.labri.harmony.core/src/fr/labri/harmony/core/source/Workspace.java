@@ -1,13 +1,14 @@
 package fr.labri.harmony.core.source;
 
-import java.util.logging.Logger;
-
 import fr.labri.harmony.core.model.Event;
+import fr.labri.harmony.core.model.Item;
 
+/**
+ * A workspace represents a source's working directory, e.g. the clone destination for a git repository.
+ * It is initialized to the latest event in the repository, and can be updated to a particular version (corresponding to an event)
+ */
 public interface Workspace {
 	
-	static final Logger LOGGER = Logger.getLogger("fr.labri.harmony.source");	
-
 	/**
 	 * Initialize the workspace.
 	 * @throws WorkspaceException
@@ -18,13 +19,20 @@ public interface Workspace {
     /**
      * Updates the workspace to its state after the given {@link Event}
      * @param e
-     * @return The workspace path
      * @throws WorkspaceException
      */
      void update(Event e) throws WorkspaceException;
+     
+     /**
+      * Updates a single item in the workspace to the version it had after the given event
+      * @param e
+      * @param item
+      * @throws WorkspaceException
+      */
+     void update(Event e, Item item) throws WorkspaceException;
     
     /**
-     * Clean the workspace
+     * Cleans the workspace, i.e. deletes the directory in which it is contained.
      * @throws WorkspaceException
      */
     void clean() throws WorkspaceException;

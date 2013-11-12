@@ -8,6 +8,7 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
 
 import fr.labri.harmony.core.model.Event;
+import fr.labri.harmony.core.model.Item;
 import fr.labri.harmony.core.source.AbstractLocalWorkspace;
 import fr.labri.harmony.core.source.SourceExtractor;
 import fr.labri.harmony.core.source.WorkspaceException;
@@ -59,7 +60,6 @@ public class JGitWorkspace extends AbstractLocalWorkspace {
 			git = Git.open(new File(getPath()));
 			git.pull().call();
 		} catch (Exception e) {
-			//FIXME : allow harmony to work offline
 			throw new WorkspaceException(e);
 		}
 	}
@@ -67,9 +67,18 @@ public class JGitWorkspace extends AbstractLocalWorkspace {
 	@Override
 	public void update(Event e) throws WorkspaceException {
 		try {
-			LOGGER.fine("Updating source: " + getUrl() + " to event: " + e + ".");
 			git.reset().setMode(ResetType.HARD).setRef(e.getNativeId()).call();
 		} catch (Exception ex) {
+			throw new WorkspaceException(ex);
+		}
+	}
+	
+	@Override
+	public void update(Event e, Item item) throws WorkspaceException {
+		try {
+			git.checkout().setStartPoint(e.getNativeId()).addPath(item.getNativeId()).setForce(true).call();
+		}
+		catch (Exception ex) {
 			throw new WorkspaceException(ex);
 		}
 	}

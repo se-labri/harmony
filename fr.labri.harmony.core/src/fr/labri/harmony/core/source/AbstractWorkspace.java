@@ -1,5 +1,8 @@
 package fr.labri.harmony.core.source;
 
+import fr.labri.harmony.core.model.Event;
+import fr.labri.harmony.core.model.Item;
+
 
 
 public abstract class AbstractWorkspace implements Workspace {
@@ -9,8 +12,7 @@ public abstract class AbstractWorkspace implements Workspace {
 	public AbstractWorkspace(SourceExtractor<?> sourceExtractor) {
 		this.sourceExtractor = sourceExtractor;
 	}
-	
-	
+
 	public String getTmpPath() {
 		return sourceExtractor.getConfig().getFoldersConfiguration().getTmpFolder();
 	}
@@ -21,6 +23,21 @@ public abstract class AbstractWorkspace implements Workspace {
 	
 	public String getUrl() {
 		return sourceExtractor.getConfig().getRepositoryURL();
+	}
+	
+	@Override
+	public void update(Event e) throws WorkspaceException {
+		throw new WorkspaceException("Not implemented");
+	}
+	
+	@Override
+	public void update(Event e, Item item) throws WorkspaceException {
+		throw new WorkspaceException("Not implemented");
+	}
+	
+	@Override
+	public void clean() throws WorkspaceException {
+		throw new WorkspaceException("Not implemented");
 	}
 	
 }
