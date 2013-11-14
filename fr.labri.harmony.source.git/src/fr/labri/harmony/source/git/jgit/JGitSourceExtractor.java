@@ -70,8 +70,8 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 					saveAuthor(author);
 				}
 				List<Author> authors = new ArrayList<>(Arrays.asList(new Author[] { author }));
-
-				Event e = new Event(source, c.getName(), c.getAuthorIdent().getWhen().getTime(), parents, authors);
+				//Better consistency of the time data is allowed using commit time on the repo instead of time of when the authors commited his changed
+				Event e = new Event(source, c.getName(), c.getCommitterIdent().getWhen().getTime(), parents, authors);
 				
 				// TODO : add additional metadata
 				Map<String,String> metadata = new HashMap<String,String>();
