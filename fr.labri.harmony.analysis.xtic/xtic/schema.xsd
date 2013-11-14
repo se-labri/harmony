@@ -1,0 +1,98 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+	<xsd:simpleType name="direction">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="both" />
+			<xsd:enumeration value="source" />
+			<xsd:enumeration value="target" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="action">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="*" />
+			<xsd:enumeration value="added" />
+			<xsd:enumeration value="modified" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:element name="xtic-aptitudes">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="aptitude" minOccurs="0" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="pattern" minOccurs="0" maxOccurs="unbounded">
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="kind" minOccurs="0" maxOccurs="1">
+											<xsd:complexType>
+												<xsd:attribute name="value" type="action" />
+											</xsd:complexType>
+										</xsd:element>
+										<xsd:element name="file" minOccurs="0" maxOccurs="2">
+											<xsd:complexType>
+												<xsd:attribute name="value" type="xsd:string" />
+												<xsd:attribute name="direction" type="xsd:string" />
+											</xsd:complexType>
+										</xsd:element>
+										<xsd:element name="contents" minOccurs="0"
+											maxOccurs="1">
+											<xsd:complexType>
+												<xsd:sequence>
+													<xsd:element name="content" minOccurs="0"
+														maxOccurs="unbounded">
+														<xsd:complexType>
+															<xsd:attribute name="value" type="xsd:string"
+																use="required" />
+															<xsd:attribute name="presence" type="xsd:string" />
+															<xsd:attribute name="direction" type="direction" />
+														</xsd:complexType>
+													</xsd:element>
+												</xsd:sequence>
+											</xsd:complexType>
+										</xsd:element>
+										<xsd:element name="diff" minOccurs="0" maxOccurs="1">
+											<xsd:complexType>
+												<xsd:sequence>
+													<xsd:element name="options" minOccurs="0"
+														maxOccurs="1">
+														<xsd:complexType>
+															<xsd:sequence>
+																<xsd:element name="option" minOccurs="0"
+																	maxOccurs="unbounded">
+																	<xsd:complexType>
+																		<xsd:attribute name="key" type="xsd:string"
+																			use="required" />
+																		<xsd:attribute name="value" type="xsd:string" />
+																	</xsd:complexType>
+																</xsd:element>
+															</xsd:sequence>
+														</xsd:complexType>
+													</xsd:element>
+													<xsd:element name="xpath" minOccurs="1"
+														maxOccurs="3">
+														<xsd:complexType>
+															<xsd:attribute name="query" type="xsd:string"
+																use="required" />
+															<xsd:attribute name="direction" type="direction" />
+														</xsd:complexType>
+													</xsd:element>
+												</xsd:sequence>
+												<xsd:attribute name="parser" type="xsd:string" />
+											</xsd:complexType>
+										</xsd:element>
+									</xsd:sequence>
+									<xsd:attribute name="id" type="xsd:string" use="required" />
+									<xsd:attribute name="desc" type="xsd:string" />
+								</xsd:complexType>
+							</xsd:element>
+						</xsd:sequence>
+						<xsd:attribute name="id" type="xsd:string" use="required" />
+						<xsd:attribute name="desc" type="xsd:string" />
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

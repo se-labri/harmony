@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import fr.labri.harmony.core.analysis.AbstractAnalysis;
+import fr.labri.harmony.core.analysis.AbstractPostProcessingAnalysis;
 import fr.labri.harmony.core.model.Source;
 
 public class OutputUtils {
@@ -22,6 +23,29 @@ public class OutputUtils {
 	 * 
 	 */
 	public static java.nio.file.Path buildOutputPath(Source src, AbstractAnalysis analysis, String fileName) throws IOException{
+		
+		String baseUrl = analysis.getConfig().getFoldersConfiguration().getOutFolder();
+		
+		//Specific to TFS
+		String pathOnServer= "";
+		if (src.getConfig().getPathOnServer()!= null){
+			pathOnServer=src.getConfig().getPathOnServer();
+		}
+		
+		String urlFolder = convertToFolderName(src.getUrl()+pathOnServer);
+		
+		Path outputPath = Paths.get(baseUrl,urlFolder,analysis.getName());
+		File outputFolder = outputPath.toFile();
+		if (!outputFolder.exists()){
+			outputFolder.mkdirs();
+		}
+		
+		outputPath=Paths.get(outputPath.toString(),fileName);
+		
+		return outputPath;
+	}
+	
+public static java.nio.file.Path buildOutputPath(Source src, AbstractPostProcessingAnalysis analysis, String fileName) throws IOException{
 		
 		String baseUrl = analysis.getConfig().getFoldersConfiguration().getOutFolder();
 		
