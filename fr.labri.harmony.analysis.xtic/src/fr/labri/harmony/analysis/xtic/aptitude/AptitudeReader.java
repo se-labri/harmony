@@ -31,7 +31,7 @@ import fr.labri.harmony.core.output.FileUtils;
 public class AptitudeReader {
 	public static List<Aptitude> readXTicConfig(AnalysisConfiguration config) throws AptitudeReaderException {
 		if(config.getOptions().get("xtic-files")==null) {
-			throw new AptitudeReaderException("The configuration file does not contain any xtic-files option");
+			throw new AptitudeReaderException("The configuration file must contain a directory within an 'xtic-files' option");
 		}
 		File xticsource = new File(config.getOptions().get("xtic-files").toString());
 		if (!xticsource.exists())
