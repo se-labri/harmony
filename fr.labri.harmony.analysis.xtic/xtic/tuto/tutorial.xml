@@ -1,0 +1,50 @@
+
+
+<aptitude id="examples_java" desc="sample of aptitudes for java">
+
+	<pattern id="touch_test_file" desc="Touch on Java files which name start by 'Test'">
+		<file value="Test[a-zA-Z]*\.java$" />
+	</pattern>
+
+	<pattern id="touch_junit_file"
+		desc="Touch on Java files which name start by 'Test' and contains 'org.junit'">
+		<file value="Test[a-zA-Z]*\.java$" />
+		<contents>
+			<content value="org\.junit" direction="target" />
+		</contents>
+	</pattern>
+
+	<pattern id="java_io_migration" desc="Replaced imports from java.io to java.nio">
+		<file value="\.java$" />
+		<diff parser="JAVA">
+			<xpath
+				query="//ImportDeclaration/QualifiedName[matches(@label,'java.io.*')][@removed]"
+				direction="source" />
+			<xpath
+				query="//ImportDeclaration/QualifiedName[matches(@label,'java.nio.*')][@added]"
+				direction="target" />
+		</diff>
+	</pattern>
+
+
+	<pattern id="remove_deprecated" desc="Remove deprecated">
+		<file value="\.java$" />
+		<diff parser="JAVA">
+			<xpath
+				query="//MarkerAnnotation[@removed]/SimpleName[@label='Deprecated'][@removed]"
+				direction="source" />
+		</diff>
+	</pattern>
+
+
+	<pattern id="moved_package" desc="Move files">
+		<file value="\.java$" />
+		<diff parser="JAVA">
+			<xpath query="//PackageDeclaration/QualifiedName[@removed]"
+				direction="source" />
+			<xpath query="//PackageDeclaration/QualifiedName[@added]"
+				direction="target" />
+		</diff>
+	</pattern>
+	
+</aptitude>
