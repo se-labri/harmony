@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description name="Harmony" url="http://se.labri.fr/data/harmony/updateSite/harmony">
+      Harmony Update Site
+   </description>
+   <feature url="features/fr.labri.harmony.analysis.examples_1.0.0.201311032014.jar" id="fr.labri.harmony.analysis.examples" version="1.0.0.201311032014">
+      <category name="harmony"/>
+   </feature>
+   <feature url="features/fr.labri.harmony.core_1.0.0.201311032014.jar" id="fr.labri.harmony.core" version="1.0.0.201311032014">
+      <category name="harmony"/>
+   </feature>
+   <feature url="features/fr.labri.harmony.wizards_1.0.0.201311032014.jar" id="fr.labri.harmony.wizards" version="1.0.0.201311032014">
+      <category name="harmony"/>
+   </feature>
+   <category-def name="harmony" label="Harmony"/>
+</site>

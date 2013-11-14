@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            category="fr.labri.harmony.wizard.category"
+            class="fr.labri.harmony.wizard.workdir.WorkingDirectoryWizard"
+            icon="icons/logo.png"
+            id="fr.labri.harmony.wizard.workdir.WorkingDirectoryWizard"
+            name="WorkingDirectory"
+            project="true">
+      </wizard>
+      <category
+            id="fr.labri.harmony.wizard.category"
+            name="Harmony">
+      </category>
+   </extension>
+
+</plugin>
