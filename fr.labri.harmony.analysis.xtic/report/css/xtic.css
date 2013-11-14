@@ -1,0 +1,82 @@
+#chart_container {
+	display: inline-block;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.chart {
+	float: left;
+}
+
+.legend {
+	float: left;
+	margin-left: 7px;
+	font-family: Arial;
+	font-size: 11px;
+	color: white;
+	background: #404040;
+	display: inline-block;
+	padding: 5px 3px; 
+	border-radius: 2px;
+	position: relative;
+}
+
+.legend .label {
+	margin: 0;
+	white-space: nowrap;
+	display: inline;
+	font-size: inherit;
+	background-color: transparent;
+	color: inherit;
+	font-weight: normal;
+	line-height: normal;
+	padding: 0px;
+	text-shadow: none;
+}
+
+.legend .action {
+	margin-right: 0.2em;
+	opacity: 0.8;
+	cursor: pointer;
+	font-size: 11px;
+}
+
+.legend .line.disabled {
+	opacity: 0.4;
+}
+	
+}
+
+.toggler {
+	float: top;
+	margin: 2em 0 0 15px;
+	font-size: 13px;
+}
+
+.y_axis {
+	float: left;
+	width: 40px;
+}
+
+.slider {
+	margin-top: 10px;
+}
+
+h1 {
+	color: #08088A;
+}
+
+h2 {
+	color: #6E6E6E;
+}
+
+.less {
+	color : red;
+}
+
+.more {
+	color : green;
+}
+
+.gray {
+	color : #D8D8D8;
+}

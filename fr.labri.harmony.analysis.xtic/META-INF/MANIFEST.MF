@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Meta-Persistence: META-INF/persistence.xml
+Export-Package: fr.labri.harmony.analysis.xtic
+Require-Bundle: fr.labri.harmony.core;bundle-version="1.0.0",
+ org.apache.xerces;bundle-version="2.9.0",
+ javax.xml.stream;bundle-version="1.0.1",
+ org.apache.xml.serializer;bundle-version="2.7.1",
+ com.mysql.jdbc;bundle-version="5.1.26"
+Service-Component: OSGI-INF/*.xml
+Bundle-Version: 1.0.0.qualifier
+Bundle-Name: fr.labri.harmony.analysis.xtic
+Bundle-ManifestVersion: 2
+Import-Package: com.ctc.wstx.stax,
+ javax.persistence;version="2.0.4",
+ org.osgi.framework;version="1.7.0"
+Bundle-SymbolicName: fr.labri.harmony.analysis.xtic
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ClassPath: lib/jdom-2.0.5.jar,
+ lib/saxon9he.jar,
+ .,
+ lib/weka.jar,
+ lib/snappy-java-1.1.0-M4.jar,
+ lib/gumtree.jar
+
