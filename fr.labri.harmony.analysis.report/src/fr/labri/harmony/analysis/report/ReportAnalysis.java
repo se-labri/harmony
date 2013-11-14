@@ -55,7 +55,7 @@ public class ReportAnalysis extends AbstractAnalysis {
 	public void runOn(Source src) {
 		HarmonyLogger.info("Starting reporting analysis on " + src.getUrl() + ".");
 		
-		for (RepositoryAnalyzer ra : getRepositoryAnalyzers()) {
+		/*for (RepositoryAnalyzer ra : getRepositoryAnalyzers()) {
 			ra.extractData(src);
 		}
 
@@ -63,17 +63,17 @@ public class ReportAnalysis extends AbstractAnalysis {
 			FileUtils.copyFile("fr.labri.harmony.analysis.report", "/res/report.html", OutputUtils.buildOutputPath(src,this, "report.html"));
 		} catch (IOException e) {
 			HarmonyLogger.error("Could not produce report for source: "+src.getUrl());
-		}
+		}*/
 		
 		
 		
-		/*for (ChartDrawer drawer : getChartDrawers()) {
+		for (ChartDrawer drawer : getChartDrawers()) {
 			try {
 				saveChartToPDF(drawer.createChart(src), OutputUtils.buildOutputPath(src, this, drawer.getChartName() + ".pdf").toString() , 1680, 1050);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}*/
+		}
 	}
 	
 	public List<RepositoryAnalyzer> getRepositoryAnalyzers() {
