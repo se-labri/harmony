@@ -65,6 +65,8 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 				Author author = getAuthor(user);
 				if (author == null) {
 					author = new Author(source, user, user);
+					if(c.getAuthorIdent().getEmailAddress() != null) 
+						author.setEmail(c.getAuthorIdent().getEmailAddress());
 					saveAuthor(author);
 				}
 				List<Author> authors = new ArrayList<>(Arrays.asList(new Author[] { author }));
@@ -77,9 +79,6 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 				e.setMetadata(metadata);
 				
 				saveEvent(e); 
-				
-				
-				 
 			}
 		} catch (Exception e) {
 			throw new SourceExtractorException(e);
