@@ -195,7 +195,7 @@ public class Dao extends AbstractDao {
 		EntityManager em = getEntityManager();
 		String stringQuery = "SELECT a FROM Action a JOIN a.item i JOIN a.event e WHERE e.timestamp > :fromDate AND e.timestamp < :toDate AND i = :item ORDER BY e.timestamp";
 		TypedQuery<Action> query = em.createQuery(stringQuery, Action.class);
-		query.setParameter("item", item).setParameter("fromDate", 0).setParameter("toDate", Long.MAX_VALUE);
+		query.setParameter("item", item).setParameter("fromDate", fromDate.getTime()).setParameter("toDate", toDate.getTime());
 
 		try {
 			return query.getResultList();
