@@ -127,7 +127,7 @@ public class Dao extends AbstractDao {
 
 		// We select the items that are not created after the date or deleted before the date
 		String queryString = "SELECT i FROM Item i WHERE i.source = :source AND NOT EXISTS "
-				// Returns 'found' if the next event is a create
+		// Returns 'found' if the next event is a create
 				+ " (SELECT 'found' FROM Action a JOIN a.event e WHERE a.item = i AND a.kind = :createKind AND e.timestamp = "
 				// Selects the timestamp of the next event on this item
 				+ "(SELECT MIN(e.timestamp) FROM Event e, Action a WHERE a.item = i AND a MEMBER OF e.actions AND e.timestamp > :date)) " + "AND NOT EXISTS "
@@ -357,6 +357,23 @@ public class Dao extends AbstractDao {
 		DataMappingObject dmo = new DataMappingObject(database, data.getClass().getSimpleName(), dataId, harmonyModelElement.getId(), harmonyModelElement.getClass()
 				.getSimpleName());
 		save(dmo);
+	}
+
+	/**
+	 * Updates a data object in the database
+	 * 
+	 * @param database
+	 * @param data
+	 */
+	public void updateData(String database, Object data) {
+		EntityManager dataEntityManager = getEntityManager(database);
+		dataEntityManager.getTransaction().begin();
+		try {
+			dataEntityManager.persist(dataEntityManager.merge(data));
+			dataEntityManager.getTransaction().commit();
+		} catch (Exception e) {
+			dataEntityManager.getTransaction().rollback();
+		}
 	}
 
 	/****************************
