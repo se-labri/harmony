@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,12 +21,12 @@ public class Dag<N> {
 
 	public Dag() {
 		edges = new HashMap<>();
-		vertices = new HashMap<>();
+		vertices = new LinkedHashMap<>();
 	}
 	
 	public Dag(Dag<N> other) {
 		edges = new HashMap<>(other.edges);
-		vertices = new HashMap<>(other.vertices);
+		vertices = new LinkedHashMap<>(other.vertices);
 	}
 	
 	public void addVertex(String name, N value) {
