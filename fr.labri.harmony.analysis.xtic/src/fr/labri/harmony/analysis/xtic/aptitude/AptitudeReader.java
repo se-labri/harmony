@@ -26,12 +26,16 @@ import org.xml.sax.SAXException;
 
 import fr.labri.harmony.analysis.xtic.PatternContent;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
+import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.output.FileUtils;
 
 public class AptitudeReader {
 	public static List<Aptitude> readXTicConfig(AnalysisConfiguration config) throws AptitudeReaderException {
-		if(config.getOptions().get("xtic-files")==null) {
-			throw new AptitudeReaderException("The configuration file must contain a directory within an 'xtic-files' option");
+		if(config.getOptions()==null || config.getOptions().get("xtic-files")==null) {
+			HarmonyLogger.error("The configuration file does not an 'xtic-files' option");
+			HarmonyLogger.error("Default Demo file is considered");
+			FileUtils.copyFile("fr.labri.harmony.analysis.xtic", "xtic/default.xml", Paths.get("tmp/default.xml"));
+			return readXticFile(new File("tmp/default.xml").getPath());
 		}
 		File xticsource = new File(config.getOptions().get("xtic-files").toString());
 		if (!xticsource.exists())
