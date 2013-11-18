@@ -2,7 +2,7 @@
 
 <xtic-aptitudes>
 
-	<aptitude id="demo_website" desc="example on the XTic web page"> 
+	<aptitude id="demo_website" desc="examples from the XTic Tutorial"> 
 		
 		<pattern id="touch_test_file" desc="Touch on Java files which name starts by 'Test'">
 			<file value="Test[a-zA-Z]*\.java$" />
@@ -34,17 +34,6 @@
 			</diff>
 		</pattern>
 
-		<pattern id="java_io_migration" desc="Replaced imports from java.io to java.nio">
-			<file value="\.java$" />
-			<diff parser="JAVA">
-				<xpath
-					query="//ImportDeclaration/QualifiedName[matches(@label,'java.io.*')][@removed]"
-					direction="source" />
-				<xpath
-					query="//ImportDeclaration/QualifiedName[matches(@label,'java.nio.*')][@added]"
-					direction="target" />
-			</diff>
-		</pattern>
 		
 		<pattern id="pom_update_version" desc="update version of an existing dependency">
 			<file value="pom\.xml$" />
