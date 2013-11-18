@@ -9,7 +9,8 @@ Require-Bundle: fr.labri.harmony.core;bundle-version="1.0.0",
  fr.labri.gumtree;bundle-version="1.0.0",
  nz.ac.waikato.cms.weka;bundle-version="1.0.0",
  org.jdom;bundle-version="2.0.5",
- org.xerial.snappy;bundle-version="1.1.0"
+ org.xerial.snappy;bundle-version="1.1.0",
+ net.sf.saxon;bundle-version="1.0.0"
 Service-Component: OSGI-INF/*.xml
 Bundle-Version: 1.0.0.qualifier
 Bundle-Name: fr.labri.harmony.analysis.xtic
