@@ -22,11 +22,16 @@ import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.Source;
 
 public class FilterVCS implements FilterXTic {
+	
+	static boolean toCompute = true;
 	static final double NCD_MIN = 0.00D;
 	static final double NCD_MAX = 0.25D;
 
 	public Object filter(AnalyseSource analyse, Event event, Event parent, List<Action> actions) {
 		
+		if(toCompute==false)
+			return new HashMap<Action,Action>();
+			
 		Source src = analyse._src;
 
 		boolean deleteContent = false;

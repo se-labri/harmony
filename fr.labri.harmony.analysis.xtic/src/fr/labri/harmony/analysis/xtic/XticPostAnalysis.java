@@ -10,6 +10,7 @@ import java.util.Properties;
 import fr.labri.harmony.analysis.xtic.aptitude.Aptitude;
 import fr.labri.harmony.analysis.xtic.aptitude.PatternAptitude;
 import fr.labri.harmony.analysis.xtic.report.GenerateReport;
+import fr.labri.harmony.analysis.xtic.report.UtilsDeveloper;
 import fr.labri.harmony.core.analysis.AbstractPostProcessingAnalysis;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
@@ -25,6 +26,11 @@ public  class XticPostAnalysis extends AbstractPostProcessingAnalysis{
 	public XticPostAnalysis(AnalysisConfiguration config, Dao dao,
 			Properties properties) {
 		super(config, dao, properties);
+		if(config.getOptions()!=null) {
+			if(config.getOptions().containsKey("MIN_COMMITS_DEV")) {
+				UtilsDeveloper.MIN_COMMITS = Integer.valueOf(config.getOptions().get("MIN_COMMITS_DEV").toString());
+			}
+		}
 	}
 
 	@Override
