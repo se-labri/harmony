@@ -8,7 +8,7 @@ import fr.labri.harmony.analysis.xtic.Developer;
 
 public class UtilsDeveloper {
 	
-	static int MIN_COMMITS = 5;
+	public static int MIN_COMMITS = 5;
 
 	static void cleanDevelopers(List<Developer> devs) {
 		detectMerge(devs);

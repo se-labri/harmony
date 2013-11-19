@@ -27,6 +27,7 @@ import fr.labri.harmony.analysis.xtic.aptitude.AptitudeReader;
 import fr.labri.harmony.analysis.xtic.aptitude.AptitudeReaderException;
 import fr.labri.harmony.analysis.xtic.aptitude.Parser;
 import fr.labri.harmony.analysis.xtic.aptitude.PatternAptitude;
+import fr.labri.harmony.analysis.xtic.report.UtilsDeveloper;
 import fr.labri.harmony.core.analysis.AbstractAnalysis;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
@@ -51,6 +52,14 @@ public class XticAnalysis extends AbstractAnalysis {
 
 	public XticAnalysis(AnalysisConfiguration config, Dao dao, Properties properties) {
 		super(config, dao, properties);
+		if(config.getOptions() != null ) {
+			if(config.getOptions().containsKey("MAX_COMMIT_SIZE")) {
+				FilterTooManyChanges.LIMIT_ACTIONS_PER_EVENT = Integer.valueOf(config.getOptions().get("MAX_COMMIT_SIZE").toString());
+			}
+			if(config.getOptions().containsKey("RENAME_MOVE")) {
+				FilterVCS.toCompute = config.getOptions().get("RENAME_MOVE").toString().equals("FALSE") ? false : true;
+			}
+		}
 	}
 
 	@Override
@@ -80,12 +89,12 @@ public class XticAnalysis extends AbstractAnalysis {
 			e.printStackTrace();
 			return;
 		}
-		
+
 		for (Aptitude as : aptitudes) {
 			dao.saveData(this.getPersitenceUnitName(), as, src);
 		}
 
-		
+
 		if (BENCHMARK)
 			for (Aptitude apt : patterns.keySet())
 				doAnalyse(src, apt, patterns);
@@ -125,7 +134,7 @@ public class XticAnalysis extends AbstractAnalysis {
 		public Timer<String> getTimer() {
 			return _timer;
 		}
-		
+
 		public void perform() {
 			if (DEBUG)
 				System.out.printf("Start on %s", _src.getUrl());
@@ -215,7 +224,7 @@ public class XticAnalysis extends AbstractAnalysis {
 				if(TIMER)
 					preprocess = _timer.start("preprocess");
 				// Pre-processing
-				applyPreprocessFilter("preprocess_toomany", new FilterToManyChanges(), e, parent, actions);
+				applyPreprocessFilter("preprocess_toomany", new FilterTooManyChanges(), e, parent, actions);
 				applyPreprocessFilter("preprocess_mime", _mimeFilter, e, parent, actions);
 				Object res = applyPreprocessFilter("preprocess_fixvcs", new FilterVCS(), e, parent, actions);
 				if(res!=null)
@@ -229,7 +238,7 @@ public class XticAnalysis extends AbstractAnalysis {
 					TimerToken aptitude = null;
 					if(TIMER)
 						aptitude = _timer.start("aptitude");
-					
+
 					for (Action a : actions) {
 						Score score = new Score(a);
 						for (PatternAptitude p : _patterns) {
@@ -401,7 +410,7 @@ public class XticAnalysis extends AbstractAnalysis {
 					TimerToken diff = null;
 					if(TIMER)
 						diff = _timer.start("aptitude_diff");
-					
+
 					_xmlDiff[pos][targetNewFile ? 1 : 0] = res = DiffProducer.Factory(type).computeDiffToXml(_oldFile, _newFile, targetNewFile);
 					if(TIMER)
 						diff.stop();
@@ -421,7 +430,7 @@ public class XticAnalysis extends AbstractAnalysis {
 				_actions.increment("mime_ok");
 
 				int toFind = p.getContents().size();
-			
+
 				if (toFind > 0) {
 					String text = "", oldText = "";
 					if(p.needContent(true))

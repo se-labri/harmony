@@ -30,6 +30,9 @@ public class ListTimedScore implements Serializable {
 	@ManyToOne
 	Developer dev;
 	
+	@OneToMany(cascade=CascadeType.ALL)
+	private List<TimedScore> list;
+	
 	public Developer getAptitude() {
 		return dev;
 	}
@@ -58,8 +61,7 @@ public class ListTimedScore implements Serializable {
 		this.list = list;
 	}
 
-	@OneToMany(cascade=CascadeType.ALL)
-	private List<TimedScore> list;
+	
 
 	public ListTimedScore(){
 		list = new ArrayList<>();
