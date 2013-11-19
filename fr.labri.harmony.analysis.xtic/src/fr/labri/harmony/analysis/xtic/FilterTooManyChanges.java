@@ -7,8 +7,8 @@ import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.Event;
 
-public class FilterToManyChanges implements FilterXTic {
-	static final double LIMIT_ACTIONS_PER_EVENT = 300;
+public class FilterTooManyChanges implements FilterXTic {
+	static int LIMIT_ACTIONS_PER_EVENT = 300;
 
 	// Un commit avec + de 300 actions ne fait pas de sens : soit un gros
 	// merge, ou whatever, mais pas de la contrib purement technique
