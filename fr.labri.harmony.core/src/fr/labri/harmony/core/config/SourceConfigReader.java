@@ -38,7 +38,6 @@ public class SourceConfigReader {
 				config.setFoldersConfiguration(global.getFoldersConfig());
 				config.setConfigurationFileName(configurationFileName);
 				configs.add(config);
-				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

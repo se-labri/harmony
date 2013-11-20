@@ -45,7 +45,6 @@ public class XticAnalysis extends AbstractAnalysis {
 	private static final boolean BENCHMARK = Boolean.parseBoolean(System.getProperty("xtic.benchmark", "false"));
 	private static final int BENCHMARK_RUN = Integer.parseInt(System.getProperty("xtic.benchmark.run", "1"));
 
-
 	public XticAnalysis() {
 		super();
 	}
@@ -93,7 +92,6 @@ public class XticAnalysis extends AbstractAnalysis {
 		for (Aptitude as : aptitudes) {
 			dao.saveData(this.getPersitenceUnitName(), as, src);
 		}
-
 
 		if (BENCHMARK)
 			for (Aptitude apt : patterns.keySet())
