@@ -56,7 +56,7 @@ public class XticAnalysis extends AbstractAnalysis {
 				FilterTooManyChanges.LIMIT_ACTIONS_PER_EVENT = Integer.valueOf(config.getOptions().get("MAX_COMMIT_SIZE").toString());
 			}
 			if(config.getOptions().containsKey("RENAME_MOVE")) {
-				FilterVCS.toCompute = config.getOptions().get("RENAME_MOVE").toString().equals("FALSE") ? false : true;
+				FilterVCS.toCompute = config.getOptions().get("RENAME_MOVE").toString().toUpperCase().equals("FALSE") ? false : true;
 			}
 		}
 	}

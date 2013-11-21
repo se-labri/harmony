@@ -29,9 +29,9 @@ import fr.labri.harmony.core.source.SourceExtractorException;
 public class Hg4JSourceExtractor extends AbstractSourceExtractor<Hg4JWorkspace>{
 
 	private static final long MILLI_2_SECONDS = 1000;
-	
+
 	private Map<String, HgChangeset> changeSets = new HashMap<String, HgChangeset>();
-	
+
 	public Hg4JSourceExtractor() {
 		super();
 	}
@@ -41,29 +41,30 @@ public class Hg4JSourceExtractor extends AbstractSourceExtractor<Hg4JWorkspace>{
 		super(config, dao, properties);
 	}
 
-	
+	@Override
+	public void initializeWorkspace() {
+		workspace = new Hg4JWorkspace(this);
+		workspace.init();
+	}
 
 	@Override
 	public void extractEvents() {
 		try {
-			
 			List<HgChangeset> result = workspace.getRepoFacade().createLogCommand().execute();
-	
+
 			for (HgChangeset chgSet : result) {
 				//Name
 				String revId = chgSet.getNodeid().toString();
-				
 				changeSets.put(revId, chgSet);
-				
-	
+
 				//Time
 				long time = chgSet.getDate().getRawTime() / MILLI_2_SECONDS;
 				DateFormat formatter = new SimpleDateFormat("yyyy");
-	
+
 				if(formatter.format(new Date(time)).equals("1970")){
 					time = time * MILLI_2_SECONDS;
 				}
-						
+
 				// Parent Events
 				List<Event> parents = new ArrayList<>();
 				if (!chgSet.getFirstParentRevision().isNull()){
@@ -72,34 +73,39 @@ public class Hg4JSourceExtractor extends AbstractSourceExtractor<Hg4JWorkspace>{
 				if (!chgSet.getSecondParentRevision().isNull()){
 					parents.add(getEvent(chgSet.getSecondParentRevision().toString()));
 				}
-					
+
 				// Authors
 				String user = chgSet.getUser();
+				String mail = "";
+				if(user.contains("<") && user.contains(">")) {
+					String base = user;
+					user = user.substring(0, user.indexOf("<")).trim();
+					mail = base.substring(base.indexOf("<")+1,base.indexOf(">")).trim();
+				}
 				Author author = getAuthor(user);
 				if (author == null) {
 					author = new Author(source, user, user);
+					author.setEmail(mail);
 					saveAuthor(author);
 				}
 				List<Author> authors = new ArrayList<>(Arrays.asList(new Author[] { author }));
-					
-				
+
 				Event e = new Event(source, revId, time, parents, authors);
-				
+
 				// Metadata
 				Map<String,String> metadata = new HashMap<String,String>();
 				metadata.put(COMMIT_MESSAGE, chgSet.getComment());
 				metadata.put(BRANCH, chgSet.getBranch());
 				e.setMetadata(metadata);
-				
-				saveEvent(e); 
-	
+
+				saveEvent(e);
 			}
 		} catch (Exception e) {
 			throw new SourceExtractorException(e);
 		}
-		
+
 	}
-		
+
 
 	@Override
 	public void extractActions(Event e) {
@@ -109,10 +115,10 @@ public class Hg4JSourceExtractor extends AbstractSourceExtractor<Hg4JWorkspace>{
 			if(!e.getParents().isEmpty()){
 				parent= e.getParents().get(0);
 			}
-			
+
 			// TODO Memory optimization possible by making a query foreach event instead of storing th whole list of events.
 			HgChangeset currentChgSet = changeSets.get(e.getNativeId());
-			
+
 			// We use the high level API provided by to hg4j to find the files that have been ...
 			// ... added ...
 			for(HgFileRevision fileRev :currentChgSet.getAddedFiles()){
@@ -121,20 +127,18 @@ public class Hg4JSourceExtractor extends AbstractSourceExtractor<Hg4JWorkspace>{
 					i = new Item(source, fileRev.getPath().toString());
 					saveItem(i);
 				}
-				
-				Action a = new Action(i, ActionKind.Create, e,parent , source);
+				Action a = new Action(i, ActionKind.Create, e, parent , source);
 				saveAction(a);
 			}
-			
+
 			// ... or modified ...
 			for(HgFileRevision fileRev :currentChgSet.getModifiedFiles()){
 				Item i = getItem(fileRev.getPath().toString());
 				if (i == null) {
 					// Should not happen
-					i = new Item(source, "ERROR_"+fileRev.getPath().toString());
+					i = new Item(source, fileRev.getPath().toString());
 					saveItem(i);
 				}
-				
 				Action a = new Action(i, ActionKind.Edit, e,parent , source);
 				saveAction(a);
 			}
@@ -144,15 +148,14 @@ public class Hg4JSourceExtractor extends AbstractSourceExtractor<Hg4JWorkspace>{
 				Item i = getItem(path.toString());
 				if (i == null) {
 					// Should not happen
-					i = new Item(source, "ERROR_"+path.toString());
+					i = new Item(source, path.toString());
 					saveItem(i);
 				}
-				
 				Action a = new Action(i, ActionKind.Delete, e,parent , source);
 				saveAction(a);
 			}
-			
-		
+
+
 		} 
 		// TODO debug Hg4j to avoid the exceptions
 		/*catch (HgInvalidControlFileException ex) {		
@@ -163,14 +166,9 @@ public class Hg4JSourceExtractor extends AbstractSourceExtractor<Hg4JWorkspace>{
 			//throw new SourceExtractorException(ex);
 		}
 	}
-	
-	
-	@Override
-	public void initializeWorkspace() {
-		workspace = new Hg4JWorkspace(this);
-		workspace.init();
-		
-	}
-	
+
+
+
+
 
 }
