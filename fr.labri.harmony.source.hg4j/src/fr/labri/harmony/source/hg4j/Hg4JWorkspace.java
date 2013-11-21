@@ -4,14 +4,21 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-import org.apache.commons.io.FileUtils;
+import org.tmatesoft.hg.core.HgBadArgumentException;
+import org.tmatesoft.hg.core.HgCheckoutCommand;
 import org.tmatesoft.hg.core.HgCloneCommand;
+import org.tmatesoft.hg.core.HgException;
 import org.tmatesoft.hg.core.HgRepoFacade;
 import org.tmatesoft.hg.core.HgRepositoryNotFoundException;
+import org.tmatesoft.hg.core.Nodeid;
 import org.tmatesoft.hg.repo.HgLookup;
 import org.tmatesoft.hg.repo.HgRemoteRepository;
+import org.tmatesoft.hg.util.CancelledException;
 
+import fr.labri.harmony.core.log.HarmonyLogger;
+import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.Event;
+import fr.labri.harmony.core.model.Item;
 import fr.labri.harmony.core.source.AbstractLocalWorkspace;
 import fr.labri.harmony.core.source.SourceExtractor;
 import fr.labri.harmony.core.source.WorkspaceException;
@@ -21,6 +28,8 @@ import fr.labri.harmony.core.source.WorkspaceException;
 public class Hg4JWorkspace extends AbstractLocalWorkspace {
 
 	private HgRepoFacade repoFacade;
+	
+	private Event lastEvent;
 
 	public Hg4JWorkspace(SourceExtractor<?> sourceExtractor) {
 		super(sourceExtractor);
@@ -34,13 +43,25 @@ public class Hg4JWorkspace extends AbstractLocalWorkspace {
 	
 	@Override
 	public void update(Event e) throws WorkspaceException {
-		// TODO Implement
-		
+		try {
+				Nodeid node = Nodeid.fromAscii(e.getNativeId());
+				new HgCheckoutCommand(repoFacade.getRepository()).clean(true).changeset(node).execute();
+				lastEvent = e;
+		} catch (NumberFormatException | HgException | CancelledException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void update(Event e, Item i) throws WorkspaceException {
+		if(lastEvent==null || lastEvent!=e)
+			update(e);
 	}
 	
 	@Override
 	public boolean isInitialized() {
-		// We attempt to create a façade on the local directory. If it fails then it means
+		// We attempt to create a faï¿½ade on the local directory. If it fails then it means
 		// that the clone of the repo hasn't been done yet
 		HgRepoFacade hgTestRepo = new HgRepoFacade();
 		try {
@@ -70,11 +91,6 @@ public class Hg4JWorkspace extends AbstractLocalWorkspace {
 			 throw new WorkspaceException("Harmony was not able to connect to newly cloned mercurial repository named: "+getUrl());
 			}
 		catch (Exception e) {
-			try {
-				FileUtils.deleteDirectory(new File(getPath()));
-			} catch (IOException e1) {
-				throw new WorkspaceException(e1);
-			}
 			throw new WorkspaceException(e);
 		}
 		

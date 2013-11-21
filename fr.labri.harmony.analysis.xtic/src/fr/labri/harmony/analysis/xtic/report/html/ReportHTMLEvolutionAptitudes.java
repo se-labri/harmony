@@ -156,7 +156,7 @@ public class ReportHTMLEvolutionAptitudes extends ReportHTML {
 					timestamps.addAll(dev.getScore().get(aptitude).getTimestamps());
 		
 		if(timestamps.isEmpty()) {
-			ps.println("</h4>No information to display here");
+			ps.println("No information to display here");
 			return ;
 		}
 		

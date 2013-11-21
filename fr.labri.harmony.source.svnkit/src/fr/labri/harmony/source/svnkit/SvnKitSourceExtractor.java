@@ -53,33 +53,6 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 
 	}
 
-	@Override
-	public void initializeSource(boolean extractHarmonyModel, boolean extractActions) {
-		HarmonyLogger.info("Initializing Workspace for source " + getUrl());
-		initializeWorkspace();
-
-		source = new Source();
-		source.setUrl(getUrl());
-		source.setWorkspace(workspace);
-		dao.saveSource(source);
-
-		if (extractHarmonyModel) {
-			HarmonyLogger.info("Extracting Events for source " + getUrl());
-			parent = null;
-			this.extractActions = extractActions;
-
-			extractEvents();
-
-			// Save the remaining events
-			saveAuthorsAndEvents();
-			saveItemsAndActions();
-
-			source = dao.reloadSource(source);
-		}
-		source.setConfig(getConfig());
-
-		onExtractionFinished();
-	}
 
 	@Override
 	protected void saveItemsAndActions() {
