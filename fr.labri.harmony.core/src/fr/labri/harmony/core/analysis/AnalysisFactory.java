@@ -1,11 +1,13 @@
 package fr.labri.harmony.core.analysis;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Properties;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 import fr.labri.harmony.core.AbstractHarmonyService;
@@ -57,7 +59,7 @@ public class AnalysisFactory {
 				return analysis;
 			}
 
-		} catch (Exception e) {
+		} catch (NoSuchMethodException | InvalidSyntaxException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
 			e.printStackTrace();
 		}
 		HarmonyLogger.error("The analysis '" + analysisConfig.getAnalysisName()
