@@ -49,7 +49,7 @@ public class OwnershipAnalysis extends AbstractAnalysis {
 		// Ownership computation
 		HashMap<Item , HashMap<Author, Integer>> ownership = new HashMap<Item , HashMap<Author, Integer>>();
 		
-		for (Item it : src.getItems()) {			
+		for (Item it : src.getItems()) {
 			HashMap<Author, Integer> authors = new HashMap<Author, Integer>();
 			ownership.put(it, authors);
 			for (Action a : it.getActions()){
@@ -63,7 +63,10 @@ public class OwnershipAnalysis extends AbstractAnalysis {
 			}		
 		}
 		
-		// Output of the results	
+		// Output of the results
+		//TODO do an helper
+		// dao.saveData(...)
+		// harmonyFileWriter.exportCsvData(DataClass.class, "csvFile.csv")
 		FileWriter writer;
 		try {
 			writer = new FileWriter(new File(OutputUtils.buildOutputPath(src, this, "OwnershipResults.csv").toString()));
