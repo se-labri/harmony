@@ -13,6 +13,7 @@ import fr.labri.harmony.analysis.xtic.TimedScore;
 import fr.labri.harmony.analysis.xtic.aptitude.Aptitude;
 import fr.labri.harmony.analysis.xtic.aptitude.PatternAptitude;
 import fr.labri.harmony.analysis.xtic.report.UtilsDate;
+import fr.labri.harmony.core.log.HarmonyLogger;
 
 public class ReportHTMLEvolutionAptitudes extends ReportHTML {
 
@@ -98,7 +99,7 @@ public class ReportHTMLEvolutionAptitudes extends ReportHTML {
 			for(PatternAptitude ap : apt.getPatterns())
 				createJsAptitudeDevelopers(ps, ap, developers);
 		}
-		
+
 		footer(ps);
 		ps.close();
 	}
@@ -106,7 +107,15 @@ public class ReportHTMLEvolutionAptitudes extends ReportHTML {
 	private void createJsAptitudeDetails(PrintStream ps, Aptitude apt, Map<PatternAptitude, ListTimedScore> score_apt) {
 		String aptName = apt.getIdName()+"_details";
 		printHeaderChart(ps, aptName, "", true);
-		
+
+	
+		Set<Long> timestamps = new HashSet<Long>();
+		for(PatternAptitude pa : score_apt.keySet()) 
+			if(pa.getAptitude().getId()==apt.getId()) 
+				if(!score_apt.get(pa).getList().isEmpty()) 
+					for(TimedScore ts : score_apt.get(pa).scoreSortedByTime()) 
+						timestamps.add(ts.getTimestamp());
+
 		boolean firstApt = true;
 		for(PatternAptitude pa : score_apt.keySet()) {
 			if(pa.getAptitude().getId()==apt.getId()) {
@@ -118,22 +127,14 @@ public class ReportHTMLEvolutionAptitudes extends ReportHTML {
 							+ "data : [ ");
 					long inc = 0;
 					boolean start=true;
-					long prev=0L;
 					for(TimedScore ts : score_apt.get(pa).scoreSortedByTime()) {
-						if(ts.getValue()==0) {
-							prev = ts.getTimestamp();
-							continue;
-						}
-						if(start && prev!=0L) {
-							ps.print(" { x : "+UtilsDate.convertEpoch(prev)+ ", y : "+0+" }");
-							start=false;
-						}
 						inc += ts.getValue();
 						if(!start)
 							ps.print(",");
 						ps.print(" { x : "+UtilsDate.convertEpoch(ts.getTimestamp())+ ", y : "+inc+" }");
 						start=false;
 					}
+
 					ps.print(" ], "
 							+ "color: palette.color()"
 							+ "} ");
@@ -154,14 +155,14 @@ public class ReportHTMLEvolutionAptitudes extends ReportHTML {
 			if(dev.getScore().get(aptitude) != null) 
 				if(!dev.getScore().get(aptitude).getList().isEmpty())
 					timestamps.addAll(dev.getScore().get(aptitude).getTimestamps());
-		
+
 		if(timestamps.isEmpty()) {
 			ps.println("No information to display here");
 			return ;
 		}
-		
-		printHeaderChart(ps, aptName, "", true);
-		
+
+		printHeaderChart(ps, aptName, aptitude.getIdName()+" : "+aptitude.getDescription(), true);
+
 		//On ajoute des valeurs vides aux devs pour les timestamps
 		for(Developer dev : developers) 
 			if(dev.getScore().get(aptitude) != null) 
@@ -169,7 +170,7 @@ public class ReportHTMLEvolutionAptitudes extends ReportHTML {
 					for(long timestamp : timestamps)
 						dev.addIfAbsentAptitudePattern(aptitude, timestamp);
 				}
-		
+
 		//Now for each developer we have to put the lines
 		boolean firstDev = true;
 		for(Developer dev : developers) {
