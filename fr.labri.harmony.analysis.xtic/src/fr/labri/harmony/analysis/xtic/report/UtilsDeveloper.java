@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.labri.harmony.analysis.xtic.Developer;
+import fr.labri.harmony.core.log.HarmonyLogger;
 
 public class UtilsDeveloper {
 	
@@ -68,12 +69,12 @@ public class UtilsDeveloper {
 				if(copy.get(j).getName().length() > copy.get(j+1).getName().length()) {
 					copy.get(j).mergeDeveloper(copy.get(j+1));
 					devs.remove(copy.get(j+1));
-					//System.out.println("Merge "+	copy.get(j).getName()+" with "+	copy.get(j+1).getName());
+					HarmonyLogger.info("Merge "+	copy.get(j).getName()+" with "+	copy.get(j+1).getName());
 				}
 				else {
 					copy.get(j+1).mergeDeveloper(copy.get(j));
 					devs.remove(copy.get(j));
-					//System.out.println("Merge "+	copy.get(j+1).getName()+" with "+	copy.get(j).getName());
+					HarmonyLogger.info("Merge "+	copy.get(j+1).getName()+" with "+	copy.get(j).getName());
 				}
 			}
 			newSize = devs.size();

@@ -69,13 +69,11 @@ public class FilterVCS implements FilterXTic {
 					itemIds.put(p, a);
 				}
 			}
-			int nbItems = actions.size();
 			//TimerToken ncd = timer.start("ncd");
 			Map<Action,Action> renamed = bestNCD(actions, itemIds, created, deleted);
 			//ncd.stop();
-			nbItems -= actions.size();
-			if (nbItems > 0)
-				HarmonyLogger.info(nbItems + " files skipped for rename/move" + "\t" + event.getNativeId());
+			if (renamed.size() > 0)
+				HarmonyLogger.info(renamed.size()+" files detected as renamed/moved" + "\t" + event.getNativeId());
 			return renamed;
 		}
 		return null;
@@ -83,6 +81,7 @@ public class FilterVCS implements FilterXTic {
 
 	Map<Action,Action> bestNCD(List<Action> actions, Map<File, Action> itemIds, Set<File> created, Set<File> deleted) {
 		// Mappings between deleted et created pour choper les move et rename
+	
 		Map<Action,Action> renamed = new HashMap<Action, Action>();
 		Map<File, File> best_cdt = computeNCDScore(created, deleted);
 		for (File p : deleted) {

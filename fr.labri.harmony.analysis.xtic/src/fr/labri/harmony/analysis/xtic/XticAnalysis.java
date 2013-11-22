@@ -27,7 +27,6 @@ import fr.labri.harmony.analysis.xtic.aptitude.AptitudeReader;
 import fr.labri.harmony.analysis.xtic.aptitude.AptitudeReaderException;
 import fr.labri.harmony.analysis.xtic.aptitude.Parser;
 import fr.labri.harmony.analysis.xtic.aptitude.PatternAptitude;
-import fr.labri.harmony.analysis.xtic.report.UtilsDeveloper;
 import fr.labri.harmony.core.analysis.AbstractAnalysis;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
