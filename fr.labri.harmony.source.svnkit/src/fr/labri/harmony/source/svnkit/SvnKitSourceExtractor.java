@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.tigris.subversion.javahl.NodeKind;
 import org.tmatesoft.svn.core.ISVNLogEntryHandler;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNLogEntry;
@@ -53,6 +52,34 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 
 	}
 
+	@Override
+	public void initializeSource(boolean extractHarmonyModel, boolean extractActions) {
+		HarmonyLogger.info("Initializing Workspace for source " + getUrl());
+		initializeWorkspace();
+
+		source = new Source();
+		source.setUrl(getUrl());
+		source.setWorkspace(workspace);
+		dao.saveSource(source);
+
+		if (extractHarmonyModel) {
+			HarmonyLogger.info("Extracting Events for source " + getUrl());
+			parent = null;
+			this.extractActions = extractActions;
+
+			extractEvents();
+
+			// Save the remaining events
+			saveAuthorsAndEvents();
+			saveItemsAndActions();
+
+			source = dao.reloadSource(source);
+		}
+		source.setConfig(getConfig());
+
+		onExtractionFinished();
+	}
+	
 
 	@Override
 	protected void saveItemsAndActions() {
@@ -128,22 +155,22 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 					String path = entry.getPath();
 					if(path.startsWith("/")) path = path.substring(1);
 					String tokens[] = path.split("\\/");
-					String newPath = "";
+					String commonPart = "";
 					for(String token : tokens) {
-						newPath+="/"+token;
-						if(url.endsWith(newPath) || url.endsWith(newPath+"/")){
-							newPath = newPath.substring(1);
-							if(url.equals(newPath)==false) {
-								path = path.substring(newPath.length());
+						commonPart+="/"+token;
+						if(url.endsWith(commonPart) || url.endsWith(commonPart+"/")){
+							commonPart = commonPart.substring(1);
+							if(url.equals(commonPart)==false) {
+								path = path.substring(commonPart.length());
 							}
 							else
 								path = "/";
 							break;
 						}
 					}
-					Item i = getItem(entry.getPath());
+					Item i = getItem(path);
 					if (i == null) {
-						i = new Item(source, entry.getPath());
+						i = new Item(source, path);
 						saveItem(i);
 					}
 					Action a = new Action(i, kind, e, parent, source);
@@ -160,7 +187,7 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 	public void extractEvents() {
 		try {
 			getWorkspace().getSvnClientManager().getLogClient()
-					.doLog(workspace.getSurl(), new String[] {}, SVNRevision.HEAD, SVNRevision.create(0), SVNRevision.HEAD, true, true, false, -1L, new String[] {}, this);
+					.doLog(workspace.getSurl(), new String[] {}, SVNRevision.HEAD, SVNRevision.create(0), SVNRevision.HEAD, false, true, false, -1L, new String[] {}, this);
 		} catch (SVNException e) {
 			e.printStackTrace();
 		}
