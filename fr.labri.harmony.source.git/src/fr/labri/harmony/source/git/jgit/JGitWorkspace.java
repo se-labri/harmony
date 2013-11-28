@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.ResetCommand.ResetType;
 
 import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.Item;
@@ -67,7 +66,8 @@ public class JGitWorkspace extends AbstractLocalWorkspace {
 	@Override
 	public void update(Event e) throws WorkspaceException {
 		try {
-			git.reset().setMode(ResetType.HARD).setRef(e.getNativeId()).call();
+			git.checkout().setStartPoint(e.getNativeId()).addPath(".").setForce(true).call();
+			git.clean().setCleanDirectories(true).setIgnore(true).call();
 		} catch (Exception ex) {
 			throw new WorkspaceException(ex);
 		}
