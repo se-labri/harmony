@@ -14,6 +14,9 @@ import fr.labri.harmony.core.source.WorkspaceException;
  * Counts the lines of code at the <strong>each</strong> commit of the source repository. <br>
  * Requires that the cloc program is installed on your machine (and added to the path). <br>
  * cloc is available at http://cloc.sourceforge.net/
+ * 
+ *  * The ClocEntries created by this analysis can be retrieved with the a call to:<br>
+ *  <code>dao.getData("cloc",ClocEntries.class, event)</code>  
  */
 public class ClocAnalysis extends AbstractAnalysis {
 
