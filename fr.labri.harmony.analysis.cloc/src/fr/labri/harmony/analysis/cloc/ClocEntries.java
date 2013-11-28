@@ -35,7 +35,7 @@ public class ClocEntries {
 	}
 	
 	public ClocEntry getEntry(String language) {
-		for (ClocEntry entry: getEntries()) if (language.equals(entry.getLanguage())) return entry;
+		for (ClocEntry entry: getEntries()) if (language.equalsIgnoreCase(entry.getLanguage())) return entry;
 		return null;
 	}
 
