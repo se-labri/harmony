@@ -13,6 +13,9 @@ import fr.labri.harmony.core.model.Source;
  * Counts the lines of code at the last commit of the source repository. <br>
  * Requires that the cloc program is installed on your machine (and added to the path). <br>
  * cloc is available at http://cloc.sourceforge.net/. <br>
+ * 
+ * The ClocEntries created by this analysis can be retrieved with the a call to:<br>
+ *  <code>dao.getData("cloc",ClocEntries.class, source)</code>  
  */
 public class ClocLastCommitAnalysis extends AbstractAnalysis {
 
@@ -30,7 +33,7 @@ public class ClocLastCommitAnalysis extends AbstractAnalysis {
 
 		src.getWorkspace().update(lastCommit);
 		ClocEntries entries = ClocRunner.runCloc(src.getWorkspace().getPath());
-		if (entries != null) dao.saveData(this.getPersitenceUnitName(), entries, lastCommit);
+		if (entries != null) dao.saveData(this.getPersitenceUnitName(), entries, src);
 	}
 
 }
