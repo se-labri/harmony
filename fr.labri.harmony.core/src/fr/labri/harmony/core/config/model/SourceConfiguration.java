@@ -100,6 +100,10 @@ public class SourceConfiguration {
 		this.pathOnServer = pathOnServer;
 	}
 	
+	public Object getOption(String key) {
+		return options.get(key);
+	}
+	
 	
 	
 	
