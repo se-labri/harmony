@@ -5,9 +5,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
+import fr.labri.Counters;
 import fr.labri.harmony.analysis.xtic.Developer;
 import fr.labri.harmony.analysis.xtic.TimedScore;
 import fr.labri.harmony.analysis.xtic.aptitude.Aptitude;
@@ -71,27 +75,35 @@ public class ReportHTMLDevelopers extends ReportHTML {
 					}
 				}
 
-		//Now for each developer we have to put the lines
+		//Now for each aptitude we have to put the lines
 		boolean firstApt = true;
 		for(Aptitude apt : aptitudes) {
 			if(!firstApt)
 				ps.println(",");
 			
 			StringBuffer data = new StringBuffer();
-			List<Pair<Long,Long>> values = new ArrayList<>();
+			Counters<Long> values = new Counters<>();
 			for(PatternAptitude ap : apt.getPatterns()) {
 				if(dev.getScore().get(ap)!=null) {
 					if(!dev.getScore().get(ap).getList().isEmpty()) {
+						System.out.println(dev.getScore().get(ap).scoreSortedByTime().size());
 						for(TimedScore ts : dev.getScore().get(ap).scoreSortedByTime()) {
-							values.add(new Pair<Long, Long>(ts.getTimestamp(), ts.getValue()));
+							values.add(ts.getTimestamp(),ts.getValue());
 						}
 					}
 				}
 			}
-			Collections.sort(values, new PairComparator());
+			List<Pair<Long,Long>> values_list = new ArrayList<>();
+			Iterator<Entry<Long, AtomicLong>> it = values.iterator();
+			while(it.hasNext()) {
+				Entry<Long, AtomicLong> tmp = it.next();
+				values_list.add(new Pair<Long,Long>(tmp.getKey(),tmp.getValue().get()));
+			}
+			System.out.println(dev.getName()+"\t"+timestamps.size()+"\t"+values_list.size());
+			Collections.sort(values_list, new PairComparator());
 			boolean start=true;
 			long inc = 0;
-			for(Pair<Long,Long> value : values) {
+			for(Pair<Long,Long> value : values_list) {
 				inc += value.getSecond();
 				if(!start){
 					data.append(",");
