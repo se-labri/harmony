@@ -9,7 +9,7 @@ import fr.labri.harmony.core.log.HarmonyLogger;
 
 public class UtilsDeveloper {
 	
-	public static int MIN_COMMITS = 5;
+	public static int MIN_COMMITS = 1;
 
 	static void cleanDevelopers(List<Developer> devs) {
 		detectMerge(devs);
