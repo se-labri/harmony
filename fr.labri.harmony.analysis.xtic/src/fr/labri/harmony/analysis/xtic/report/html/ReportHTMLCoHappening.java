@@ -30,7 +30,7 @@ public class ReportHTMLCoHappening extends ReportHTML{
 		header.append("<thead><tr><th>Aptitude couple (A,B)</th>");
 		header.append("<th><a class='descriptor_skill' href='#' data-toggle='tooltip' title=\"Number of times A happen\">Hap. A</a></th>");
 		header.append("<th><a class='descriptor_skill' href='#' data-toggle='tooltip' title=\"Number of times B happen\">Hap. B</a></th>");
-		header.append("<th><a class='descriptor_skill' href='#' data-toggle='tooltip' title=\"Number of times A and B happen together\">Happening</a></th>");
+		header.append("<th><a class='descriptor_skill' href='#' data-toggle='tooltip' title=\"Number of times A and B happen together\">Co-Hap.</a></th>");
 		header.append("<th><a class='descriptor_skill' href='#' data-toggle='tooltip' title=\"When A or B happens, how many times they happen together ?\">Co-Hap. (%)</a></th>");
 		header.append("<th><a class='descriptor_skill' href='#' data-toggle='tooltip' title=\"When A happens, how many times B happens?\">Co-Hap. (A => B) (%)</a></th>");
 		header.append("<th><a class='descriptor_skill' href='#' data-toggle='tooltip' title=\"When B happens, how many times A happens?\">Co-Hap. (B => A) (%)</a></th>");
