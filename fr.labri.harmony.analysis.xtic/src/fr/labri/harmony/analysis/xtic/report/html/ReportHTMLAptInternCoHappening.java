@@ -62,7 +62,7 @@ public class ReportHTMLAptInternCoHappening extends ReportHTMLCoHappening {
 			ps.println("<h1>"+apt.getIdName()+"</h1>");
 			ps.println(apt.getDescription());
 			ps.println("<h2>Visualization</h2>");
-			printVennDiagram(ps, list_patterns, score_apt, "venn_global");
+			printVennDiagram(ps, list_patterns, score_apt, "venn_global_apt"+apt.getId());
 
 			ps.println("<h2>Details</h2>");
 			double nbEvents = (double)this.totalEvents;

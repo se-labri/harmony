@@ -86,7 +86,6 @@ public class ReportHTMLDevelopers extends ReportHTML {
 			for(PatternAptitude ap : apt.getPatterns()) {
 				if(dev.getScore().get(ap)!=null) {
 					if(!dev.getScore().get(ap).getList().isEmpty()) {
-						System.out.println(dev.getScore().get(ap).scoreSortedByTime().size());
 						for(TimedScore ts : dev.getScore().get(ap).scoreSortedByTime()) {
 							values.add(ts.getTimestamp(),ts.getValue());
 						}
@@ -99,7 +98,6 @@ public class ReportHTMLDevelopers extends ReportHTML {
 				Entry<Long, AtomicLong> tmp = it.next();
 				values_list.add(new Pair<Long,Long>(tmp.getKey(),tmp.getValue().get()));
 			}
-			System.out.println(dev.getName()+"\t"+timestamps.size()+"\t"+values_list.size());
 			Collections.sort(values_list, new PairComparator());
 			boolean start=true;
 			long inc = 0;

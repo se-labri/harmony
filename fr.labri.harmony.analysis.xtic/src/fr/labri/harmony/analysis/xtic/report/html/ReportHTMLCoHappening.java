@@ -176,7 +176,7 @@ public class ReportHTMLCoHappening extends ReportHTML{
 		// get positions for each set
 		sb.append("sets = venn.venn(sets, overlaps);");
 		// draw the diagram in the 'simple_example' div
-		sb.append("venn.drawD3Diagram(d3.select(\".venn_aptitudes_"+idName+"\"), sets, 250, 250);");
+		sb.append("venn.drawD3Diagram(d3.select(\".venn_aptitudes_"+idName+"\"), sets, 500, 500);");
 		sb.append("</script>");
 		//On affiche rien si il y a moins de deux éléments
 		if(cpt>=2)
