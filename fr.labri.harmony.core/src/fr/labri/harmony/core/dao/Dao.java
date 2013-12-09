@@ -300,7 +300,19 @@ public class Dao extends AbstractDao {
 	 * @return All data objects associated to the given {@link HarmonyModelElement}, in the provided database, and of the provided type.
 	 */
 	public <D> List<D> getData(String database, Class<D> dataClass, HarmonyModelElement harmonyModelElement) {
-		// Retrieve the data ids in the core mapping table
+		List<Integer> dataIds = getDataIds(database, dataClass, harmonyModelElement);
+
+		// Retrieve the data objects in the analysis database
+		EntityManager dataEntityManager = getEntityManager(database);
+		ArrayList<D> dataList = new ArrayList<>();
+		// TODO : do a single transaction
+		for (Integer dataId : dataIds) {
+			dataList.add(dataEntityManager.find(dataClass, dataId));
+		}
+		return dataList;
+	}
+
+	public List<Integer> getDataIds(String database, Class<?> dataClass, HarmonyModelElement harmonyModelElement) {
 		EntityManager coreEntityManager = getEntityManager();
 
 		String queryString = "SELECT dmo.dataId FROM " + DataMappingObject.class.getSimpleName() + " dmo WHERE dmo.elementId = :elementId "
@@ -312,15 +324,11 @@ public class Dao extends AbstractDao {
 		query.setParameter("databaseName", database);
 		query.setParameter("dataClass", dataClass.getSimpleName());
 
-		List<Integer> dataIds = query.getResultList();
-
-		// Retrieve the data objects in the analysis database
-		EntityManager dataEntityManager = getEntityManager(database);
-		ArrayList<D> dataList = new ArrayList<>();
-		for (Integer dataId : dataIds) {
-			dataList.add(dataEntityManager.find(dataClass, dataId));
+		try {
+			return query.getResultList();
+		} catch (NoResultException e) {
+			return new ArrayList<Integer>();
 		}
-		return dataList;
 	}
 
 	/**
