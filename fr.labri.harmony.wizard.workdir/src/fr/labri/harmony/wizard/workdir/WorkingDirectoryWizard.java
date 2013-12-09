@@ -125,10 +125,8 @@ public class WorkingDirectoryWizard extends Wizard implements INewWizard {
 			ILaunchConfiguration harmonyLaunchConfig = null;
 			ILaunchConfiguration[] tab = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurations();
 			 for (int i = 0; i < tab.length && harmonyLaunchConfig==null; i++) {
-				System.out.println("- "+tab[i].getFile().getName()+" -");
 				 if(tab[i].getFile().getName().equals("Harmony.launch")){
 					harmonyLaunchConfig= tab[i];
-					
 				}
 			}
 			harmonyLaunchConfig.launch(ILaunchManager.RUN_MODE, null);
