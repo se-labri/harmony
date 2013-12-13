@@ -19,9 +19,9 @@ public class AnalysisConfiguration {
 	private FoldersConfiguration foldersConfiguration;
 
 	/*
-	 * Whether the analysis requires the source to extract actions or not. If not set in the json configuration, the Java default will be used, which is 'false'
+	 * Whether the analysis requires the source to extract actions or not. True by default
 	 */
-	private boolean requireActions;
+	private boolean requireActions = true;
 
 	private boolean requireHarmonyModel = true;
 	
