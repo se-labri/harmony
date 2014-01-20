@@ -66,8 +66,7 @@ public class JGitWorkspace extends AbstractLocalWorkspace {
 	@Override
 	public void update(Event e) throws WorkspaceException {
 		try {
-			git.checkout().setStartPoint(e.getNativeId()).addPath(".").setForce(true).call();
-			git.clean().setCleanDirectories(true).setIgnore(true).call();
+			git.reset().setMode(ResetType.HARD).setRef(e.getNativeId()).call();
 		} catch (Exception ex) {
 			throw new WorkspaceException(ex);
 		}
