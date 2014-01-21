@@ -70,4 +70,16 @@ public class GitWorkspace extends AbstractLocalWorkspace {
 		}
 	}
 
+	@Override
+	public String getFileContentAfter(Action arg0) {
+		// TODO Auto-generated method stub
+		throw new RuntimeException("Not Implemented.");
+	}
+
+	@Override
+	public String getFileContentBefore(Action arg0) {
+		// TODO Auto-generated method stub
+		throw new RuntimeException("Not Implemented.");
+	}
+
 }

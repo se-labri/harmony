@@ -118,5 +118,17 @@ public abstract class AbstractDao {
 		m.getTransaction().commit();
 		m.close();
 	}
+	
+	/**
+	 * Updates an entity in the core database, in a single transaction (inefficient for multiple update)
+	 * @param e The entity
+	 */
+	protected <E> void update(E e) {
+		EntityManager m = getEntityManager();
+		m.getTransaction().begin();
+		m.merge(e);
+		m.getTransaction().commit();
+		m.close();
+	}
 
 }

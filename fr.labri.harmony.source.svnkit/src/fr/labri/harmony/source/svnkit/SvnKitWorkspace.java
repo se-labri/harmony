@@ -17,72 +17,68 @@ import fr.labri.harmony.core.source.AbstractLocalWorkspace;
 import fr.labri.harmony.core.source.SourceExtractor;
 import fr.labri.harmony.core.source.WorkspaceException;
 
-
 public class SvnKitWorkspace extends AbstractLocalWorkspace {
-	
+
 	private SVNClientManager svnClientManager;
 	private SVNURL surl;
 
-
 	public SvnKitWorkspace(SourceExtractor<?> sourceExtractor) {
 		super(sourceExtractor);
-		
+
 		String username = sourceExtractor.getConfig().getUsername();
 		String password = sourceExtractor.getConfig().getPassword();
-		
-                if(username==null || username.equals("")){
-			svnClientManager = SVNClientManager.newInstance(new DefaultSVNOptions());			
-		}else{
-			if(password==null){password = "";}
-			svnClientManager = SVNClientManager.newInstance(new DefaultSVNOptions(),username, password);			
+
+		if (username == null || username.equals("")) {
+			svnClientManager = SVNClientManager.newInstance(new DefaultSVNOptions());
+		} else {
+			if (password == null) {
+				password = "";
+			}
+			svnClientManager = SVNClientManager.newInstance(new DefaultSVNOptions(), username, password);
 		}
-		
-		
+
 		// Initialize factories
 		FSRepositoryFactory.setup();
 		DAVRepositoryFactory.setup();
-		SVNRepositoryFactoryImpl.setup();	
+		SVNRepositoryFactoryImpl.setup();
 	}
 
 	@Override
 	public boolean isInitialized() {
 		try {
-			//TODO check that repo contains the correct revision 
+			// TODO check that repo contains the correct revision
 			svnClientManager.getStatusClient().doStatus(new File(getPath()), false);
 			return true;
 		} catch (SVNException e) {
 			return false;
-		}	
-		
+		}
+
 	}
 
 	@Override
 	public void initNewWorkspace() {
 		try {
-			
-		
-			surl =  SVNURL.parseURIEncoded(getUrl());
+
+			surl = SVNURL.parseURIEncoded(getUrl());
 			svnClientManager.getUpdateClient().doCheckout(surl, new File(getPath()), SVNRevision.HEAD, SVNRevision.HEAD, SVNDepth.INFINITY, true);
 
 		} catch (SVNException e) {
 			throw new WorkspaceException(e);
 		}
-		
+
 	}
 
-	
 	@Override
 	public void initExistingWorkspace() {
-		
+
 		try {
-			surl =  SVNURL.parseURIEncoded(getUrl());
+			surl = SVNURL.parseURIEncoded(getUrl());
 		} catch (SVNException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	
+
 	@Override
 	public void update(Event e) throws WorkspaceException {
 		try {
@@ -92,7 +88,7 @@ public class SvnKitWorkspace extends AbstractLocalWorkspace {
 			throw new WorkspaceException(ex);
 		}
 	}
-	
+
 	public SVNURL getSurl() {
 		return surl;
 	}
@@ -100,6 +96,5 @@ public class SvnKitWorkspace extends AbstractLocalWorkspace {
 	public SVNClientManager getSvnClientManager() {
 		return svnClientManager;
 	}
-
 
 }

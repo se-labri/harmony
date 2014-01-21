@@ -29,7 +29,8 @@ Export-Package: fr.labri.harmony.core,
  fr.labri.harmony.core.log,
  fr.labri.harmony.core.model,
  fr.labri.harmony.core.output,
- fr.labri.harmony.core.source
+ fr.labri.harmony.core.source,
+ fr.labri.harmony.core.util
 Bundle-ClassPath: .
 Bundle-Vendor: SE@LaBRI
 Require-Bundle: org.apache.commons.io;bundle-version="2.4.0",

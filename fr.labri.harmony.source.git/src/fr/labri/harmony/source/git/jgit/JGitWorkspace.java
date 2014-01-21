@@ -2,10 +2,15 @@ package fr.labri.harmony.source.git.jgit;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ResetCommand.ResetType;
 
+import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.Item;
 import fr.labri.harmony.core.source.AbstractLocalWorkspace;
@@ -42,20 +47,32 @@ public class JGitWorkspace extends AbstractLocalWorkspace {
 	@Override
 	public void initNewWorkspace() {
 		try {
-			git = Git.cloneRepository().setURI(getUrl()).setDirectory(new File((getPath()))).call();
+			ProcessBuilder b = new ProcessBuilder("git", "clone", getUrl(), getPath());
+			Process p = b.start();
+			p.waitFor();
+			git = Git.open(new File(getPath()));
 		} catch (Exception e) {
 			try {
-				FileUtils.deleteDirectory(new File(getPath()));
-			} catch (IOException e1) {
+				HarmonyLogger.info("Native git not found, cloning with JGit");
+				git = Git.cloneRepository().setURI(getUrl()).setDirectory(new File((getPath()))).call();
+			} catch (Exception e1) {
+				try {
+					FileUtils.deleteDirectory(new File(getPath()));
+				} catch (IOException e2) {
+					throw new WorkspaceException(e2);
+				}
 				throw new WorkspaceException(e1);
 			}
-			throw new WorkspaceException(e);
+			
+			
 		}
 	}
 
 	@Override
 	public void initExistingWorkspace() {
 		try {
+			// check if index.lock is here, and remove it
+			Files.deleteIfExists(Paths.get(getPath(), ".git", "index.lock"));
 			git = Git.open(new File(getPath()));
 			git.pull().call();
 		} catch (Exception e) {
