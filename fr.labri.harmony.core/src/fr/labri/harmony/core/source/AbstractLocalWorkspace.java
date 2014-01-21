@@ -7,6 +7,8 @@ import java.net.URL;
 import org.apache.commons.io.FileUtils;
 
 import fr.labri.harmony.core.log.HarmonyLogger;
+import fr.labri.harmony.core.model.Action;
+import fr.labri.harmony.core.model.ActionKind;
 
 
 public abstract class AbstractLocalWorkspace extends AbstractWorkspace {
@@ -50,6 +52,33 @@ public abstract class AbstractLocalWorkspace extends AbstractWorkspace {
 
 	public String getPath() {
 		return path;
+	}
+	
+	@Override
+	public String getFileContentAfter(Action action) {
+		if (action.getKind().equals(ActionKind.Delete)) return null;
+		update(action.getEvent(), action.getItem());
+		String itemPath = getPath() + "/" + action.getItem().getNativeId();
+		try {
+			return FileUtils.readFileToString(new File(itemPath));
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+
+	@Override
+	public String getFileContentBefore(Action action) {
+		if (action.getKind().equals(ActionKind.Create)) return null;
+		update(action.getParentEvent(), action.getItem());
+		String itemPath = getPath() + "/" + action.getItem().getNativeId();
+		try {
+			return FileUtils.readFileToString(new File(itemPath));
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }

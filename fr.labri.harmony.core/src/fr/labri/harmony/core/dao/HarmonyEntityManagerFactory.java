@@ -72,7 +72,7 @@ public class HarmonyEntityManagerFactory {
 			s.executeUpdate("CREATE DATABASE " + databaseName);
 		} catch (SQLException e) {
 			HarmonyLogger.error(e.getMessage());
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 	}

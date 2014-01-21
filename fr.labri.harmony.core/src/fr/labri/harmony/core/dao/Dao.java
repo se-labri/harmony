@@ -478,5 +478,9 @@ public class Dao extends AbstractDao {
 	public void saveItems(Collection<Item> items) {
 		save(items);
 	}
+	
+	public void updateAction(Action a) {
+		update(a);
+	}
 
 }
