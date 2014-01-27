@@ -4,7 +4,11 @@ Bundle-Name: fr.labri.harmony.analysis.ownership
 Bundle-SymbolicName: fr.labri.harmony.analysis.ownership
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: fr.labri.harmony.core;bundle-version="1.0.0"
+Require-Bundle: fr.labri.harmony.core;bundle-version="1.0.0",
+ au.com.bytecode.opencsv;bundle-version="2.3.0",
+ com.mysql.jdbc;bundle-version="5.1.26",
+ org.h2;bundle-version="1.3.173"
 Service-Component: OSGI-INF/*.xml
+Meta-Persistence: META-INF/persistence.xml
 Import-Package: javax.persistence
 Bundle-Vendor: SE@LaBRI
