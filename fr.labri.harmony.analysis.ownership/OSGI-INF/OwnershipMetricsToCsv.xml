@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="false" name="OwnershipAnalysis">
-<implementation class="fr.labri.harmony.analysis.ownership.OwnershipAnalysis"/>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="false" name="ItemOwnershipAnalysis">
+<implementation class="fr.labri.harmony.analysis.ownership.ItemOwnershipAnalysis"/>
    <service>
       <provide interface="fr.labri.harmony.core.analysis.Analysis"/>
    </service>

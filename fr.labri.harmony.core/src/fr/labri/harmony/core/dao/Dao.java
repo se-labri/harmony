@@ -187,15 +187,23 @@ public class Dao extends AbstractDao {
 	/**
 	 * 
 	 * @param item
-	 * @param fromDate
-	 * @param toDate
+	 * @param fromDate Can be null
+	 * @param toDate Can be null
 	 * @return The list of actions which affected and item between fromDate and toDate, ordered by timestamp
 	 */
 	public List<Action> getActions(Item item, Date fromDate, Date toDate) {
 		EntityManager em = getEntityManager();
-		String stringQuery = "SELECT a FROM Action a JOIN a.item i JOIN a.event e WHERE e.timestamp >= :fromDate AND e.timestamp <= :toDate AND i = :item ORDER BY e.timestamp";
+		String stringQuery = "SELECT a FROM Action a JOIN a.item i JOIN a.event e WHERE i = :item ";
+				
+		if (fromDate != null) stringQuery += " AND e.timestamp >= :fromDate ";
+		if (toDate != null) stringQuery += " AND e.timestamp <= :toDate "; 
+		stringQuery += "ORDER BY e.timestamp";
+		
 		TypedQuery<Action> query = em.createQuery(stringQuery, Action.class);
-		query.setParameter("item", item).setParameter("fromDate", fromDate.getTime()).setParameter("toDate", toDate.getTime());
+		query.setParameter("item", item);
+
+		if (fromDate != null) query.setParameter("fromDate", fromDate.getTime());
+		if (toDate != null) query.setParameter("toDate", toDate.getTime());
 
 		try {
 			return query.getResultList();
@@ -478,7 +486,7 @@ public class Dao extends AbstractDao {
 	public void saveItems(Collection<Item> items) {
 		save(items);
 	}
-	
+
 	public void updateAction(Action a) {
 		update(a);
 	}
