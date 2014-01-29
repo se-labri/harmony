@@ -8,6 +8,7 @@ import java.util.List;
 import fr.labri.harmony.analysis.xtic.Developer;
 import fr.labri.harmony.analysis.xtic.aptitude.Aptitude;
 import fr.labri.harmony.analysis.xtic.report.Report;
+import fr.labri.harmony.core.model.Source;
 import fr.labri.harmony.core.output.FileUtils;
 
 public class ReportHTML extends Report {
@@ -136,6 +137,13 @@ public class ReportHTML extends Report {
 
 	@Override
 	public void printReport(List<Aptitude> aptitudes, List<Developer> developers) {
+	}
+
+	@Override
+	public void printReport(List<Source> sources, List<Aptitude> aptitudes,
+			List<Developer> developers) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -8,6 +8,7 @@ import java.util.List;
 
 import fr.labri.harmony.analysis.xtic.Developer;
 import fr.labri.harmony.analysis.xtic.aptitude.Aptitude;
+import fr.labri.harmony.core.model.Source;
 
 public abstract class Report {
 	
@@ -22,6 +23,8 @@ public abstract class Report {
 	}
 	
 	public abstract void printReport(List<Aptitude> aptitudes, List<Developer> developers);
+	
+	public abstract void printReport(List<Source> sources, List<Aptitude> aptitudes, List<Developer> developers);
 	
 	protected String formatDouble(double s) {
 		return new DecimalFormat("#.##").format(s);

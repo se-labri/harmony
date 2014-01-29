@@ -38,11 +38,12 @@ public class PatternAptitude {
 
 	private String description = "";
 
+	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + id;
 		result = prime * result + ((idName == null) ? 0 : idName.hashCode());
 		return result;
 	}
@@ -56,8 +57,6 @@ public class PatternAptitude {
 		if (getClass() != obj.getClass())
 			return false;
 		PatternAptitude other = (PatternAptitude) obj;
-		if (id != other.id)
-			return false;
 		if (idName == null) {
 			if (other.idName != null)
 				return false;
