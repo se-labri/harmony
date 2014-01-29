@@ -11,8 +11,8 @@ public class UtilsDeveloper {
 	
 	public static int MIN_COMMITS = 1;
 
-	static void cleanDevelopers(List<Developer> devs) {
-		detectMerge(devs);
+	public static void cleanDevelopers(List<Developer> devs) {
+		//detectMerge(devs);
 		removeSmall(devs);
 	}
 	
@@ -21,8 +21,7 @@ public class UtilsDeveloper {
 		for(Developer dev : devs)
 			if(dev.getNbCommit() <= MIN_COMMITS)
 				toRemove.add(dev);
-		devs.removeAll(toRemove);
-		
+		devs.removeAll(toRemove);	
 	}
 
 	static void detectMerge(List<Developer> devs) {

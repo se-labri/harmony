@@ -9,6 +9,7 @@ import fr.labri.harmony.analysis.xtic.TimedScore;
 import fr.labri.harmony.analysis.xtic.aptitude.Aptitude;
 import fr.labri.harmony.analysis.xtic.aptitude.PatternAptitude;
 import fr.labri.harmony.analysis.xtic.report.Report;
+import fr.labri.harmony.core.model.Source;
 
 public class ReportCSVTime extends Report {
 	
@@ -37,6 +38,13 @@ public class ReportCSVTime extends Report {
 		}
 
 		ps.close();
+	}
+
+	@Override
+	public void printReport(List<Source> sources, List<Aptitude> aptitudes,
+			List<Developer> developers) {
+		// TODO Auto-generated method stub
+		
 	}
 }
 
