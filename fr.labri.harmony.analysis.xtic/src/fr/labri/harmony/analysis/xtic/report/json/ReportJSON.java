@@ -61,9 +61,10 @@ public class ReportJSON extends Report {
 				//get data
 				List<Developer> devs = dao.getData("xtic", Developer.class, src);
 				System.out.println(src.getUrl()+" "+devs.size());
-				UtilsDeveloper.cleanDevelopers(devs);
+	
 
 				for(Developer dev : devs) {
+					System.out.println(dev.getId());
 					for(PatternAptitude ap : dev.getScore().keySet()) {
 						//Aptitude
 						if(!merged_aptitudes_index.containsKey(ap.getAptitude().hashCode()))
@@ -135,7 +136,7 @@ public class ReportJSON extends Report {
 				jGenerator.writeFieldName("expressions");
 				jGenerator.writeStartArray(); // [
 				System.out.println("domain aptitude "+merged_aptitudes_index.get(apt).get(0).getIdName());
-
+				
 				for(int apt_P : merged_Paptitudes_index.keySet()) {
 					for(PatternAptitude pattern : merged_Paptitudes_index.get(apt_P)) {
 						if(pattern.getAptitude().hashCode() == apt) {
@@ -148,6 +149,7 @@ public class ReportJSON extends Report {
 								//get data
 								List<Developer> devs = dao.getData("xtic", Developer.class, src);
 								for(Developer dev : devs) {
+									System.out.println(dev.getId());
 									for(PatternAptitude dev_apt : dev.getScore().keySet()) {
 										if(dev_apt.hashCode() == apt_P) {
 											if(!dev.getScore().get(dev_apt).getList().isEmpty()) {
