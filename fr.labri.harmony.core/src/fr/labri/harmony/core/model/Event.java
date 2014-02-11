@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
@@ -34,12 +35,16 @@ public class Event extends SourceElement {
 
 	@Basic
 	private long timestamp;
+	
+	@ElementCollection
+	private List<String> tags;
 
 	public Event() {
 		super();
 		authors = new ArrayList<Author>();
 		parents = new ArrayList<Event>();
 		actions = new ArrayList<Action>();
+		tags = new ArrayList<String>();
 	}
 
 	/**
@@ -52,6 +57,7 @@ public class Event extends SourceElement {
 	 * @param authors
 	 */
 	public Event(Source source, String nativeId, long timestamp, List<Event> parents, List<Author> authors) {
+		this();
 		this.source = source;
 		this.nativeId = nativeId;
 		this.timestamp = timestamp;
@@ -110,6 +116,14 @@ public class Event extends SourceElement {
 			if (a.getParentEvent() != null && a.getParentEvent().equals(parent)) result.add(a);
 		}
 		return result;
+	}
+
+	public List<String> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<String> tags) {
+		this.tags = tags;
 	}
 
 	public String getTimestampAsString() {

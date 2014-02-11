@@ -80,6 +80,26 @@ public class Dao extends AbstractDao {
 			return null;
 		}
 	}
+	
+	/**
+	 * 
+	 * @param src
+	 * @param tag
+	 * @return The event with the specified tag
+	 */
+	public Event getEventWithTag(Source src, String tag) {
+		String queryString = "SELECT e FROM Event e WHERE e.source = :source AND :tag MEMBER OF e.tags";
+		
+		TypedQuery<Event> query = getEntityManager().createQuery(queryString, Event.class);
+		query.setParameter("source", src).setParameter("tag", tag).setMaxResults(1);
+		
+		try {
+			return query.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
+		
+	}
 
 	/**
 	 * 

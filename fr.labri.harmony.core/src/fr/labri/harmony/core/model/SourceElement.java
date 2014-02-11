@@ -3,7 +3,6 @@ package fr.labri.harmony.core.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.Basic;
 import javax.persistence.ElementCollection;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -35,7 +34,7 @@ public abstract class SourceElement implements HarmonyModelElement {
 	@JoinColumn(nullable=false,name="sourceId")
 	protected Source source;
 	
-	@Basic 
+	@Lob 
 	@Index
 	protected String nativeId;
 	
