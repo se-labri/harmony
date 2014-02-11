@@ -31,6 +31,7 @@ import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.Item;
 import fr.labri.harmony.core.source.AbstractSourceExtractor;
 import fr.labri.harmony.core.source.SourceExtractorException;
+import fr.labri.harmony.core.util.MapUtils;
 
 public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> {
 
@@ -42,43 +43,66 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 		super(config, dao, properties);
 	}
 
-	protected Map<String, RevCommit> revs = new HashMap<String, RevCommit>();
+	protected Map<String, RevCommit> revs = new HashMap<>();
+	protected Map<String, List<String>> commitsTags = new HashMap<>(); // Key : commit Id , value : tags
 
 	@Override
 	public void extractEvents() {
 		try {
 			Git git = workspace.getGit();
+
+			List<Ref> tagList = git.tagList().call();
+			for (Ref tag : tagList) {
+				// tag.getName returns the full name (i.e. /refs/tags/the-tag), we need to split it
+				String[] splitted = tag.getName().split("\\/");
+				String commitId = null;
+				if (tag.isPeeled() && tag.getPeeledObjectId() != null) {
+					commitId = tag.getPeeledObjectId().getName();
+				} else {
+					commitId = tag.getObjectId().getName();
+				}
+				MapUtils.addElementToList(commitsTags, commitId, splitted[splitted.length - 1]);
+			}
+
 			RevWalk w = new RevWalk(git.getRepository());
 			w.sort(RevSort.TOPO, true);
 			w.sort(RevSort.REVERSE, true);
-			for (Ref ref : git.getRepository().getAllRefs().values())
-				w.markStart(w.parseCommit(ref.getObjectId()));
 
-			for (RevCommit c : w) {
-				revs.put(c.getName(), c);
+			Ref ref = git.getRepository().getRef("remotes/origin/master");
+			if (ref == null) ref = git.getRepository().getRef("remotes/origin/HEAD");
+			if (ref == null) ref = git.getRepository().getRef("remotes/origin/trunk");
+			if (ref == null) ref = git.getRepository().getRef("master");
+			if (ref == null) return;
+			w.markStart(w.parseCommit(ref.getObjectId()));
 
+			for (RevCommit commit : w) {
+
+				revs.put(commit.getName(), commit);
 				List<Event> parents = new ArrayList<>();
-				for (RevCommit parent : c.getParents())
+				for (RevCommit parent : commit.getParents())
 					parents.add(getEvent(parent.getName()));
 
-				String user = c.getAuthorIdent().getName();
+				String user = commit.getAuthorIdent().getName();
 				Author author = getAuthor(user);
 				if (author == null) {
 					author = new Author(source, user, user);
-					if(c.getAuthorIdent().getEmailAddress() != null) 
-						author.setEmail(c.getAuthorIdent().getEmailAddress());
+					if (commit.getAuthorIdent().getEmailAddress() != null) author.setEmail(commit.getAuthorIdent().getEmailAddress());
 					saveAuthor(author);
 				}
 				List<Author> authors = new ArrayList<>(Arrays.asList(new Author[] { author }));
-				//Better consistency of the time data is allowed using commit time on the repo instead of time of when the authors commited his changed
-				Event e = new Event(source, c.getName(), c.getCommitterIdent().getWhen().getTime(), parents, authors);
-				
-				// TODO : add additional metadata
-				Map<String,String> metadata = new HashMap<String,String>();
-				metadata.put(COMMIT_MESSAGE, c.getFullMessage());
-				e.setMetadata(metadata);
-				
-				saveEvent(e); 
+				// Better consistency of the time data is allowed using commit time on the repo instead of time of when the authors commited his changed
+				Event event = new Event(source, commit.getName(), commit.getCommitterIdent().getWhen().getTime(), parents, authors);
+
+				// Adding commit tags
+				if (commitsTags.get(commit.getName()) != null) {
+					event.setTags(commitsTags.get(commit.getName()));
+				}
+
+				Map<String, String> metadata = new HashMap<String, String>();
+				metadata.put(COMMIT_MESSAGE, commit.getFullMessage());
+				event.setMetadata(metadata);
+
+				saveEvent(event);
 			}
 		} catch (Exception e) {
 			throw new SourceExtractorException(e);
