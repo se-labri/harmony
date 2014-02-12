@@ -1,0 +1,7 @@
+<aptitude id="makefile" desc="sample of aptitudes for makefile">
+
+	<pattern id="touch_make" desc="modify Makefile">
+		<file value="Makefile$" />
+	</pattern>
+
+</aptitude>

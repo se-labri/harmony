@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<xtic-aptitudes>
+
+	<aptitude id="demo_website" desc="examples from the XTic Tutorial"> 
+		
+		<pattern id="touch_test_file" desc="Touch on Java files which name starts by 'Test'">
+			<file value="Test[a-zA-Z]*\.java$" />
+		</pattern>
+		<pattern id="touch_test_file_testng"
+			desc="Touch on Java files which name starts by 'Test' and contains 'org.testng'">
+			<file value="Test[a-zA-Z]*\.java$" />
+			<contents>
+				<content value="org\.testng" direction="target" />
+			</contents>
+		</pattern>
+		<pattern id="remove_deprecated" desc="Remove deprecated">
+			<file value="\.java$" />
+			<diff parser="JAVA">
+				<xpath
+					query="//MarkerAnnotation[@removed]/SimpleName[@label='Deprecated'][@removed]"
+					direction="source" />
+			</diff>
+		</pattern>
+		<pattern id="java_io_migration" desc="Replaced imports from java.io to java.nio">
+			<file value="\.java$" />
+			<diff parser="JAVA">
+				<xpath
+					query="//ImportDeclaration/QualifiedName[matches(@label,'java.io.*')][@removed]"
+					direction="source" />
+				<xpath
+					query="//ImportDeclaration/QualifiedName[matches(@label,'java.nio.*')][@added]"
+					direction="target" />
+			</diff>
+		</pattern>
+
+		
+		<pattern id="pom_update_version" desc="update version of an existing dependency">
+			<file value="pom\.xml$" />
+			<diff parser="XML">
+				<xpath
+					query="//ELEMENT/NAME[@label='dependency'][not(@added)]
+    [../ELEMENT/NAME[@label='version'][../DATA[@added]]]"
+					direction="target" />
+			</diff>
+		</pattern>
+	</aptitude>
+</xtic-aptitudes>
