@@ -92,14 +92,14 @@ public class NewAnalysisWizard extends Wizard implements INewWizard,IExecutableE
 		final String analysisClassName = harmonyPage.getAnalysisClassName();
 		final boolean databaseRequired = harmonyPage.isStorageFacilitiesRequired();
 		final Set<String> tailoredDataTypes = harmonyPage.getTailoredDataTypes();
-		
+		final String analysisType = harmonyPage.getAnalysisType();
 		
 		// We create the task
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
 					
-					doFinish(analysisProjectName,projectLocation, analysisClassName,databaseRequired,tailoredDataTypes, monitor);
+					doFinish(analysisProjectName,projectLocation, analysisClassName,analysisType,databaseRequired,tailoredDataTypes, monitor);
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				} finally {
@@ -125,13 +125,14 @@ public class NewAnalysisWizard extends Wizard implements INewWizard,IExecutableE
 	 * @param projectName Name and ID of the Harmony analysis Project (it is also the name of the root Java package)
 	 * @param projectLocation Path of the project location, null if the default location is selected by the user.
 	 * @param analysisClassName Name of the class that contains the analysis code.
-	 * @param databaseRequired Indicate if the analysis uses the database functionalities (whiteboard) provided by the Harmony framework 
+	 * @param analysisType Indicates the type of the analysis : standard or post analysis
+	 * @param databaseRequired Indicates if the analysis uses the database functionalities (whiteboard) provided by the Harmony framework 
 	 * @param tailoredDataTypes List of custom data types to be saved in the database
 	 * @param monitor Progress monitor of the thread
 	 * @return
 	 * @throws CoreException
 	 */
-	private boolean doFinish(String projectName, IPath projectLocation, String analysisClassName, boolean databaseRequired, Set<String> tailoredDataTypes,IProgressMonitor monitor) throws CoreException {
+	private boolean doFinish(String projectName, IPath projectLocation, String analysisClassName, String analysisType, boolean databaseRequired, Set<String> tailoredDataTypes,IProgressMonitor monitor) throws CoreException {
 		 try {
 			 
 			 // Project creation
@@ -163,7 +164,7 @@ public class NewAnalysisWizard extends Wizard implements INewWizard,IExecutableE
              harmonyProject.setOutputLocation(new Path("/" + projectName + "/bin"), monitor);
 
              // Generation of all the project files : java classes, Manifest.MF, persitence.xml, analysis.xml
-             createFiles(projectName,analysisClassName,databaseRequired,monitor);
+             createFiles(projectName,analysisClassName,analysisType,databaseRequired,monitor);
              
              // Associate project with PDE perspective
              BasicNewProjectResourceWizard.updatePerspective(this.configElem);
@@ -187,6 +188,7 @@ public class NewAnalysisWizard extends Wizard implements INewWizard,IExecutableE
 	 * 
 	 * @param projectName Name of the Harmony analysis Project
 	 * @param analysisClassName Name of the class that contains the analysis code.
+	 * @param analysisType Indicates the type of the analysis : standard or post analysis
 	 * @param tailoredDataTypes List of custom data types to be saved in the database
 	 * @param monitor Progress monitor of the thread
 	 * 
@@ -194,7 +196,7 @@ public class NewAnalysisWizard extends Wizard implements INewWizard,IExecutableE
 	 * @throws IOException
 	 */
 	@SuppressWarnings("deprecation")
-	private void createFiles(String projectName, String analysisClassName, boolean databaseRequired,IProgressMonitor monitor) throws CoreException, IOException {
+	private void createFiles(String projectName, String analysisClassName, String analysisType, boolean databaseRequired,IProgressMonitor monitor) throws CoreException, IOException {
 		 
 		 try { 
 		 
@@ -210,15 +212,27 @@ public class NewAnalysisWizard extends Wizard implements INewWizard,IExecutableE
 		IPackageFragmentRoot srcFolder = javaProject.getPackageFragmentRoot(folder);
 		IPackageFragment fragment = srcFolder.createPackageFragment(projectName, true, monitor);
 		
+		String extendedClass = "AbstractAnalysis";
+		String analysisMethodParameters="Source src";
+		String additionnalImports="";
+		
+		if(analysisType.equals("Post-Processing")){
+			extendedClass="AbstractPostProcessingAnalysis";
+			analysisMethodParameters="Collection<Source> sources";
+			additionnalImports="import java.util.Collection;";
+		}
+		
+		
 		// Generate Java Classes
 		String analysisClassContent = "package "+projectName+";"			+nl()+nl()+
 		"import java.util.Properties;"												+nl()+
-		"import fr.labri.harmony.core.analysis.AbstractAnalysis;"					+nl()+
+		additionnalImports															+nl()+
+		"import fr.labri.harmony.core.analysis."+extendedClass+";"					+nl()+
 		"import fr.labri.harmony.core.config.model.AnalysisConfiguration;"			+nl()+
 		"import fr.labri.harmony.core.dao.Dao;"										+nl()+
 		"import fr.labri.harmony.core.model.Source;"								+nl()+nl()+nl()+
 
-		"public class "+analysisClassName+" extends AbstractAnalysis{"				+nl()+nl()+
+		"public class "+analysisClassName+" extends "+extendedClass+"{"				+nl()+nl()+
 
 		"	public "+analysisClassName+"() {"				+nl()+
 		"		super();"									+nl()+
@@ -229,7 +243,7 @@ public class NewAnalysisWizard extends Wizard implements INewWizard,IExecutableE
 		"	}"																								+nl()+nl()+
 
 		"	@Override"										+nl()+
-		"	public void runOn(Source src) {"				+nl()+
+		"	public void runOn("+analysisMethodParameters+") {"				+nl()+
 		"	// TODO Implement your analysis here" 			+nl()+
 		"	}" 												+nl()+nl()+
 		"}";
