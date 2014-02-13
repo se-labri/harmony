@@ -23,6 +23,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -35,6 +36,7 @@ public class NewAnalysisWizardPage extends WizardPage {
 	
 	private Text nameText;
 	private Text analysisClassNameText;
+	private Combo analysisKindCombo;
 	private Button[] databaseUseButtons;
 	private Composite globalContainer;
 	private GridData gridData;
@@ -115,13 +117,33 @@ public class NewAnalysisWizardPage extends WizardPage {
 			public void modifyText(ModifyEvent e) {updatePageComplete();}
 		});
 	    
-	    // Database facilities 
+	    // Type of analysis (Standard or PostAnalysis)
 	    
 	    Label vSpace3 = new Label(globalContainer, SWT.NULL);
 	    vSpace3.setText("");
 	    gridData = new GridData();
 		gridData.horizontalSpan = 3;
 		vSpace3.setLayoutData(gridData);
+		
+		Label analysisKindQuestion = new Label(globalContainer, SWT.NULL);
+		analysisKindQuestion.setText("Analysis type:"); 
+	    
+		
+		analysisKindCombo = new Combo (globalContainer, SWT.READ_ONLY);
+		analysisKindCombo.setItems (new String [] {"Standard", "Post-Processing"});
+		analysisKindCombo.select(0);
+		gridData = new GridData();
+		gridData.horizontalSpan = 2;
+		analysisKindCombo.setLayoutData(gridData);
+		//analysisKindCombo.
+		
+	    // Database facilities 
+	    
+	    Label vSpace4 = new Label(globalContainer, SWT.NULL);
+	    vSpace4.setText("");
+	    gridData = new GridData();
+		gridData.horizontalSpan = 3;
+		vSpace4.setLayoutData(gridData);
 		
 	    Label databaseUseQuestion = new Label(globalContainer, SWT.NULL);
 	    databaseUseQuestion.setText("Will your analysis require the database facilities provided by the Harmony framework ?"); 
@@ -149,7 +171,6 @@ public class NewAnalysisWizardPage extends WizardPage {
 			public void widgetDefaultSelected(SelectionEvent e) {}
 		});
 	    
-	    // TODO add the management of custom data type.
 	    
 	    
 	    setControl(globalContainer);
@@ -211,6 +232,10 @@ public class NewAnalysisWizardPage extends WizardPage {
 
 	public String getAnalysisClassName() {
 		return analysisClassNameText.getText();
+	}
+	
+	public String getAnalysisType() {
+		return analysisKindCombo.getText();
 	}
 
 	public boolean isStorageFacilitiesRequired(){
