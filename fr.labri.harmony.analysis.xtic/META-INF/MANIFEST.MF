@@ -3,7 +3,6 @@ Meta-Persistence: META-INF/persistence.xml
 Export-Package: fr.labri.harmony.analysis.xtic
 Require-Bundle: fr.labri.harmony.core;bundle-version="1.0.0",
  org.apache.xerces;bundle-version="2.9.0",
- javax.xml.stream;bundle-version="1.0.1",
  org.apache.xml.serializer;bundle-version="2.7.1",
  com.mysql.jdbc;bundle-version="5.1.26",
  fr.labri.gumtree;bundle-version="1.0.0",
@@ -18,6 +17,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Name: fr.labri.harmony.analysis.xtic
 Bundle-ManifestVersion: 2
 Import-Package: javax.persistence;version="2.0.4",
+ javax.xml.stream,
  org.osgi.framework;version="1.7.0"
 Bundle-SymbolicName: fr.labri.harmony.analysis.xtic
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

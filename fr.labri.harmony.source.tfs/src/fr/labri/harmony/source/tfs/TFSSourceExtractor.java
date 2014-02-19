@@ -2,6 +2,7 @@ package fr.labri.harmony.source.tfs;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 
@@ -9,7 +10,6 @@ import com.microsoft.tfs.core.clients.versioncontrol.soapextensions.Change;
 import com.microsoft.tfs.core.clients.versioncontrol.soapextensions.ChangeType;
 import com.microsoft.tfs.core.clients.versioncontrol.soapextensions.Changeset;
 import com.microsoft.tfs.core.clients.versioncontrol.soapextensions.ItemType;
-import com.microsoft.tfs.core.clients.workitem.WorkItem;
 
 import fr.labri.harmony.core.config.model.SourceConfiguration;
 import fr.labri.harmony.core.dao.Dao;
@@ -75,7 +75,7 @@ public class TFSSourceExtractor extends AbstractSourceExtractor<TFSWorkspace> {
 	
 	            // Parent identification
 	            // TODO check this definition of parent        
-	            List<Event> parents = new ArrayList<>();
+	            HashSet<Event> parents = new HashSet<>();
 				if (last != null) parents.add(last);
 	
 				Event e = new Event(source, String.valueOf(eventId), eventTime, parents, authors);
