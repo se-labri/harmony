@@ -3,9 +3,8 @@ Meta-Persistence: META-INF/persistence.xml
 Service-Component: OSGI-INF/*.xml
 Bundle-ManifestVersion: 2
 Bundle-Name: Harmony Core
-Bundle-SymbolicName: fr.labri.harmony.core;singleton:=true
+Bundle-SymbolicName: fr.labri.harmony.core
 Bundle-Version: 1.0.0.qualifier
-Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.databind,
@@ -21,17 +20,33 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.junit;version="4.10.0",
  org.osgi.framework;version="1.7.0",
  org.osgi.service.jpa
-Export-Package: fr.labri.harmony.core,
- fr.labri.harmony.core.analysis,
- fr.labri.harmony.core.config,
- fr.labri.harmony.core.config.model,
- fr.labri.harmony.core.dao,
+Export-Package: fr.labri.harmony.core;uses:="fr.labri.harmony.core.dao,org.eclipse.osgi.framework.console",
+ fr.labri.harmony.core.analysis;
+  uses:="fr.labri.harmony.core.dao,
+   fr.labri.harmony.core.config.model,
+   fr.labri.harmony.core.model,
+   fr.labri.harmony.core",
+ fr.labri.harmony.core.config;uses:="fr.labri.harmony.core.config.model",
+ fr.labri.harmony.core.config.model;uses:="fr.labri.harmony.core.source",
+ fr.labri.harmony.core.dao;
+  uses:="fr.labri.harmony.core.config.model,
+   fr.labri.harmony.core.model,
+   fr.labri.harmony.core,
+   org.osgi.framework,
+   javax.persistence",
  fr.labri.harmony.core.log,
- fr.labri.harmony.core.model,
- fr.labri.harmony.core.output,
- fr.labri.harmony.core.source,
+ fr.labri.harmony.core.model;uses:="fr.labri.harmony.core.source,fr.labri.harmony.core.config.model",
+ fr.labri.harmony.core.output;
+  uses:="org.eclipse.core.runtime,
+   fr.labri.harmony.core.model,
+   org.eclipse.core.resources,
+   fr.labri.harmony.core.analysis",
+ fr.labri.harmony.core.source;
+  uses:="fr.labri.harmony.core.config.model,
+   fr.labri.harmony.core.dao,
+   fr.labri.harmony.core.model,
+   fr.labri.harmony.core",
  fr.labri.harmony.core.util
-Bundle-ClassPath: .
 Bundle-Vendor: SE@LaBRI
 Require-Bundle: org.apache.commons.io;bundle-version="2.4.0",
  org.h2;bundle-version="1.3.173",
