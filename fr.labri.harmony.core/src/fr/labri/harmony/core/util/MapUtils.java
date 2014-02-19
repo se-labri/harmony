@@ -1,8 +1,10 @@
 package fr.labri.harmony.core.util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class MapUtils {
 
@@ -30,5 +32,18 @@ public class MapUtils {
 		if (list == null) list = new ArrayList<>();
 		list.add(elementToAdd);
 		map.put(key, list);
+	}
+	
+	/**
+	 * Adds an element to a list in a map, in a null safe manner.
+	 * @param map
+	 * @param key
+	 * @param elementToAdd
+	 */
+	public static <K,E> void addElementToSet(Map<K,Set<E>> map, K key, E elementToAdd) {
+		Set<E> set = map.get(key);
+		if (set == null) set = new HashSet<>();
+		set.add(elementToAdd);
+		map.put(key, set);
 	}
 }

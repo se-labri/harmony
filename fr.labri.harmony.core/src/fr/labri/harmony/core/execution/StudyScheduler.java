@@ -64,7 +64,8 @@ public class StudyScheduler {
 			return;
 		}
 
-		// We create a global DAO which is in charge of building and managing the EntityManagers from all the bundles defining analyses
+		// We create a global DAO which is in charge of building and managing the EntityManagers from all the bundles
+		// defining analyses
 		DaoFactory daoFactory = new DaoFactory(global.getDatabaseConfiguration());
 		dao = daoFactory.createDao();
 
@@ -81,7 +82,7 @@ public class StudyScheduler {
 		// Create the ExecutionReport
 		mainMonitor = new ExecutionMonitor(dao);
 		executionReportId = mainMonitor.initMonitoring();
-		
+
 		List<AnalysisConfiguration> analysisConfigurations = global.getAnalysisConfigurations();
 		// We iterate on each sources and for each one we run the set of analysis
 		for (SourceConfiguration sourceConfiguration : sourceConfigurations) {
@@ -97,7 +98,7 @@ public class StudyScheduler {
 		// We run the post-processing analyses
 		Collection<Source> sources = getSources(sourceConfigurations);
 
-		List<AnalysisConfiguration> postProcessingAnalysisConfigurations = global.getPostProcessingAnalysisConfigurations();		
+		List<AnalysisConfiguration> postProcessingAnalysisConfigurations = global.getPostProcessingAnalysisConfigurations();
 		AnalysisFactory analysisFactory = new AnalysisFactory(dao);
 		for (AnalysisConfiguration analysisConfiguration : postProcessingAnalysisConfigurations) {
 			PostProcessingAnalysis postProcessingAnalysis = analysisFactory.createPostProcessingAnalysis(analysisConfiguration);
@@ -118,7 +119,8 @@ public class StudyScheduler {
 		return sources;
 	}
 
-	// TODO Initialization of sources should be done concurrently to the launches of analyses, a thread must be dedicated to this task.
+	// TODO Initialization of sources should be done concurrently to the launches of analyses, a thread must be
+	// dedicated to this task.
 	private void launchSortedAnalysisOnSource(final SourceExtractorFactory sourceExtractorFactory, final SourceConfiguration sourceConfiguration,
 			final Collection<AnalysisConfiguration> analysesConfigurations) {
 
@@ -148,25 +150,32 @@ public class StudyScheduler {
 						sourceExtractor.initializeExistingSource(src);
 					} else {
 
-						// If at least one analysis requires the actions, we have to extract them
-						boolean extractActions = false;
-						boolean extractHarmonyModel = false;
-						for (AnalysisConfiguration a : analysesConfigurations) {
-							if (a != null) {
-								extractActions = (a.requireActions()) || extractActions;
-								extractHarmonyModel = (a.requireHarmonyModel()) || extractHarmonyModel;
+						if (analysesConfigurations.isEmpty()) {
+							// if there is no analysis, we simply extract the model
+							sourceExtractor.initializeSource(true, true);
+						} else {
+							// If at least one analysis requires the actions or the harmony model, we have to extract them
+							// these values are at true by default, so unless specified explicitly in the configuration, they will be extracted
+							boolean extractActions = false;
+							boolean extractHarmonyModel = false;
+							for (AnalysisConfiguration a : analysesConfigurations) {
+								if (a != null) {
+									extractActions = (a.requireActions()) || extractActions;
+									extractHarmonyModel = (a.requireHarmonyModel()) || extractHarmonyModel;
+								}
 							}
+							sourceExtractor.initializeSource(extractHarmonyModel, extractActions);
 						}
-						sourceExtractor.initializeSource(extractHarmonyModel, extractActions);
 					}
-					
+
 					AnalysisFactory analysisFactory = new AnalysisFactory(dao);
 					// We perform the analysis one after the other and between each of them we check
 					// that an interruption of the thread wasn't requested due to the timeout limit.
 					// TODO catch exception in the loop.
 					for (Iterator<AnalysisConfiguration> it = analysesConfigurations.iterator(); it.hasNext() && !this.isInterrupted();) {
 						Analysis currentAnalysis = analysisFactory.createAnalysis(it.next());
-						HarmonyLogger.info("Running analysis " + currentAnalysis.getConfig().getAnalysisName() + " on source " + sourceExtractor.getSource().getUrl());
+						HarmonyLogger.info("Running analysis " + currentAnalysis.getConfig().getAnalysisName() + " on source "
+								+ sourceExtractor.getSource().getUrl());
 						currentAnalysis.runOn(sourceExtractor.getSource());
 					}
 					long endTime = System.currentTimeMillis();
