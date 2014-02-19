@@ -7,6 +7,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import fr.labri.harmony.core.source.SourceExtractor;
 
+/**
+ * Model class for the configuration of a source. It is mapped to a JSON object thanks to the annotations on the
+ * getters/setters
+ * 
+ */
 public class SourceConfiguration {
 	private String repositoryURL;
 	private String sourceExtractorName;
@@ -15,12 +20,13 @@ public class SourceConfiguration {
 	private String pathOnServer;
 	private FoldersConfiguration foldersConfiguration;
 	private String configurationFileName;
+	private boolean extractAllBranches;
 
 	private HashMap<String, Object> options;
 
-	
 	public SourceConfiguration() {
 		options = new HashMap<>();
+		setExtractAllBranches(false);
 	}
 
 	public SourceConfiguration(String repositoryURL, SourceExtractor<?> srcConnector) {
@@ -41,7 +47,7 @@ public class SourceConfiguration {
 	public String getSourceExtractorName() {
 		return sourceExtractorName;
 	}
-	
+
 	public void setSourceExtractorName(String sourceExtractorName) {
 		this.sourceExtractorName = sourceExtractorName;
 	}
@@ -50,7 +56,7 @@ public class SourceConfiguration {
 	public void setFoldersConfiguration(FoldersConfiguration foldersConfiguration) {
 		this.foldersConfiguration = foldersConfiguration;
 	}
-	
+
 	public FoldersConfiguration getFoldersConfiguration() {
 		return foldersConfiguration;
 	}
@@ -99,13 +105,18 @@ public class SourceConfiguration {
 	public void setPathOnServer(String pathOnServer) {
 		this.pathOnServer = pathOnServer;
 	}
-	
+
 	public Object getOption(String key) {
 		return options.get(key);
 	}
-	
-	
-	
-	
+
+	public boolean extractAllBranches() {
+		return extractAllBranches;
+	}
+
+	@JsonProperty("extract-all-branches")
+	public void setExtractAllBranches(boolean extractAllBranches) {
+		this.extractAllBranches = extractAllBranches;
+	}
 
 }

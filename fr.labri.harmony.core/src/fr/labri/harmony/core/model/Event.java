@@ -16,35 +16,35 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 /**
- * An event is performed on a source, by one or several authors (only one in most cases), and is composed by a set of actions. <br>
- * Typically, in a VCS an event is a commit/changeset.  
- *
+ * An event is performed on a source, by one or several authors (only one in
+ * most cases), and is composed by a set of actions. <br>
+ * Typically, in a VCS an event is a commit/changeset.
+ * 
  */
 @Entity
 public class Event extends SourceElement {
 
-	
 	@ManyToMany
 	private List<Author> authors;
 
 	@ManyToMany
-	private List<Event> parents;
+	private Set<Event> parents;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "event")
 	private List<Action> actions;
 
 	@Basic
 	private long timestamp;
-	
+
 	@ElementCollection
-	private List<String> tags;
+	private Set<String> tags;
 
 	public Event() {
 		super();
 		authors = new ArrayList<Author>();
-		parents = new ArrayList<Event>();
+		parents = new HashSet<Event>();
 		actions = new ArrayList<Action>();
-		tags = new ArrayList<String>();
+		tags = new HashSet<String>();
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class Event extends SourceElement {
 	 * @param parents
 	 * @param authors
 	 */
-	public Event(Source source, String nativeId, long timestamp, List<Event> parents, List<Author> authors) {
+	public Event(Source source, String nativeId, long timestamp, Set<Event> parents, List<Author> authors) {
 		this();
 		this.source = source;
 		this.nativeId = nativeId;
@@ -87,10 +87,10 @@ public class Event extends SourceElement {
 	}
 
 	public List<Event> getParents() {
-		return parents;
+		return new ArrayList<>(parents);
 	}
 
-	public void setParents(List<Event> parents) {
+	public void setParents(Set<Event> parents) {
 		this.parents = parents;
 	}
 
@@ -101,8 +101,6 @@ public class Event extends SourceElement {
 	public void setActions(List<Action> actions) {
 		this.actions = actions;
 	}
-
-
 
 	/**
 	 * 
@@ -118,11 +116,11 @@ public class Event extends SourceElement {
 		return result;
 	}
 
-	public List<String> getTags() {
+	public Set<String> getTags() {
 		return tags;
 	}
 
-	public void setTags(List<String> tags) {
+	public void setTags(Set<String> tags) {
 		this.tags = tags;
 	}
 
