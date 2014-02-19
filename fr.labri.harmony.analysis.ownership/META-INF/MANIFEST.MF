@@ -12,3 +12,5 @@ Service-Component: OSGI-INF/*.xml
 Meta-Persistence: META-INF/persistence.xml
 Import-Package: javax.persistence
 Bundle-Vendor: SE@LaBRI
+Export-Package: fr.labri.harmony.analysis.ownership.contributions,
+ fr.labri.harmony.analysis.ownership.metric

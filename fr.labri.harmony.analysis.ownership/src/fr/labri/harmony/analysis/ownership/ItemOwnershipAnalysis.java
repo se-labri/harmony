@@ -24,7 +24,7 @@ import fr.labri.harmony.core.model.Source;
 /**
  * This analysis compute for each item of a source the number of actions that an author performed.
  * 
- * In the article 'Don’t Touch My Code! Examining the Effects of Ownership on Software Quality' from Bird et al. they state that an author is a major
+ * In the article 'Donï¿½t Touch My Code! Examining the Effects of Ownership on Software Quality' from Bird et al. they state that an author is a major
  * contributor of an item if he performed at least 5% of the actions on the files. Otherwise he is a minor contributor. In their case study they found that high
  * levels of ownership, specifically operationalized as high values of Ownership and Major, and low values of Minor, are associated with less defects.
  * 
@@ -68,7 +68,7 @@ public class ItemOwnershipAnalysis extends AbstractAnalysis {
 				String previousVersion = snapshotsNativeIds.get(1);
 				Event previousVersionEvent = dao.getEvent(src, previousVersion);
 				if (previousVersionEvent == null) {
-					HarmonyLogger.error("Could not find snapshot " + currentVersion + " in source " + src.getUrl());
+					HarmonyLogger.error("Could not find snapshot " + previousVersion + " in source " + src.getUrl());
 					return;
 				}
 				fromDate = new Date(previousVersionEvent.getTimestamp());
