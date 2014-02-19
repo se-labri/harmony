@@ -3,11 +3,11 @@ package fr.labri.harmony.source.svnkit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.tigris.subversion.javahl.NodeKind;
 import org.tmatesoft.svn.core.ISVNLogEntryHandler;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNLogEntry;
@@ -91,7 +91,7 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 	@Override
 	public void handleLogEntry(SVNLogEntry logEntry) throws SVNException {
 
-		List<Event> parents = new ArrayList<Event>();
+		HashSet<Event> parents = new HashSet<>();
 		if (parent != null) {
 			parents.add(parent);
 		}

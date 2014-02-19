@@ -6,13 +6,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.tmatesoft.hg.core.HgChangeset;
 import org.tmatesoft.hg.core.HgFileRevision;
-import org.tmatesoft.hg.repo.HgInvalidControlFileException;
 import org.tmatesoft.hg.util.Path;
 
 import fr.labri.harmony.core.config.model.SourceConfiguration;
@@ -66,7 +67,7 @@ public class Hg4JSourceExtractor extends AbstractSourceExtractor<Hg4JWorkspace>{
 				}
 
 				// Parent Events
-				List<Event> parents = new ArrayList<>();
+				Set<Event> parents = new HashSet<>();
 				if (!chgSet.getFirstParentRevision().isNull()){
 					parents.add(getEvent(chgSet.getFirstParentRevision().toString()));
 				}		

@@ -4,10 +4,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -106,7 +106,7 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 
 				// String message = log.get("message").asText();
 
-				List<Event> parents = new ArrayList<>();
+				Set<Event> parents = new HashSet<>();
 				for (String parentHash : parentHashes) {
 					if (!"".equals(parentHash)) {
 						Event parent = dao.getEvent(source, parentHash);

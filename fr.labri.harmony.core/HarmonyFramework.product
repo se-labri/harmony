@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="harmony" uid="fr.labri.harmony" version="1.0.0" useFeatures="false" includeLaunchers="true">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>-console -debug -consoleLog</programArgs>
+      <vmArgs>-Declipse.ignoreApp=true
+-Dosgi.noShutdown=true
+-Dequinox.ds.debug=true</vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <launcher>
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+      <plugin id="au.com.bytecode.opencsv"/>
+      <plugin id="com.fasterxml.jackson"/>
+      <plugin id="com.ibm.icu"/>
+      <plugin id="com.jcraft.jsch"/>
+      <plugin id="com.microsoft.tfs.core"/>
+      <plugin id="com.microsoft.tfs.core.httpclient"/>
+      <plugin id="com.microsoft.tfs.core.ws"/>
+      <plugin id="com.microsoft.tfs.core.ws.runtime"/>
+      <plugin id="com.microsoft.tfs.jni"/>
+      <plugin id="com.microsoft.tfs.logging"/>
+      <plugin id="com.microsoft.tfs.util"/>
+      <plugin id="com.mysql.jdbc"/>
+      <plugin id="com.trilead.ssh2"/>
+      <plugin id="fr.labri.harmony.analysis.cloc"/>
+      <plugin id="fr.labri.harmony.analysis.cloc.chart"/>
+      <plugin id="fr.labri.harmony.analysis.ownership"/>
+      <plugin id="fr.labri.harmony.analysis.report"/>
+      <plugin id="fr.labri.harmony.core"/>
+      <plugin id="fr.labri.harmony.source.git"/>
+      <plugin id="fr.labri.harmony.source.hg4j"/>
+      <plugin id="fr.labri.harmony.source.svnkit"/>
+      <plugin id="fr.labri.harmony.source.tfs"/>
+      <plugin id="javaewah"/>
+      <plugin id="javax.persistence"/>
+      <plugin id="javax.xml"/>
+      <plugin id="org.apache.commons.io"/>
+      <plugin id="org.apache.felix.gogo.runtime"/>
+      <plugin id="org.apache.felix.gogo.shell"/>
+      <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.expressions"/>
+      <plugin id="org.eclipse.core.filesystem"/>
+      <plugin id="org.eclipse.core.filesystem.linux.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.resources"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+      <plugin id="org.eclipse.core.variables"/>
+      <plugin id="org.eclipse.debug.core"/>
+      <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.console"/>
+      <plugin id="org.eclipse.equinox.ds"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.equinox.transforms.hook" fragment="true"/>
+      <plugin id="org.eclipse.equinox.util"/>
+      <plugin id="org.eclipse.equinox.weaving.hook" fragment="true"/>
+      <plugin id="org.eclipse.gemini.jpa"/>
+      <plugin id="org.eclipse.jgit"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.eclipse.persistence.antlr"/>
+      <plugin id="org.eclipse.persistence.asm"/>
+      <plugin id="org.eclipse.persistence.core"/>
+      <plugin id="org.eclipse.persistence.jpa"/>
+      <plugin id="org.eclipse.persistence.jpa.jpql"/>
+      <plugin id="org.eclipse.persistence.nosql" fragment="true"/>
+      <plugin id="org.eclipse.persistence.oracle" fragment="true"/>
+      <plugin id="org.eclipse.persistence.oracle.nosql" fragment="true"/>
+      <plugin id="org.h2"/>
+      <plugin id="org.hamcrest.core"/>
+      <plugin id="org.jfree.chart"/>
+      <plugin id="org.junit"/>
+      <plugin id="org.tmatesoft.hg4j"/>
+      <plugin id="org.tmatesoft.sqljet"/>
+      <plugin id="org.tmatesoft.svnkit"/>
+      <plugin id="osgi.enterprise"/>
+   </plugins>
+
+   <configurations>
+      <plugin id="au.com.bytecode.opencsv" autoStart="true" startLevel="0" />
+      <plugin id="com.fasterxml.jackson" autoStart="true" startLevel="0" />
+      <plugin id="com.ibm.icu" autoStart="true" startLevel="0" />
+      <plugin id="com.jcraft.jsch" autoStart="true" startLevel="0" />
+      <plugin id="com.microsoft.tfs.core" autoStart="true" startLevel="0" />
+      <plugin id="com.microsoft.tfs.core.httpclient" autoStart="true" startLevel="0" />
+      <plugin id="com.microsoft.tfs.core.ws" autoStart="true" startLevel="0" />
+      <plugin id="com.microsoft.tfs.core.ws.runtime" autoStart="true" startLevel="0" />
+      <plugin id="com.microsoft.tfs.jni" autoStart="true" startLevel="0" />
+      <plugin id="com.microsoft.tfs.logging" autoStart="true" startLevel="0" />
+      <plugin id="com.microsoft.tfs.util" autoStart="true" startLevel="0" />
+      <plugin id="com.mysql.jdbc" autoStart="true" startLevel="0" />
+      <plugin id="com.trilead.ssh2" autoStart="true" startLevel="0" />
+      <plugin id="fr.labri.harmony.analysis.cloc" autoStart="true" startLevel="0" />
+      <plugin id="fr.labri.harmony.analysis.cloc.chart" autoStart="true" startLevel="0" />
+      <plugin id="fr.labri.harmony.analysis.ownership" autoStart="true" startLevel="0" />
+      <plugin id="fr.labri.harmony.analysis.report" autoStart="true" startLevel="0" />
+      <plugin id="fr.labri.harmony.core" autoStart="true" startLevel="0" />
+      <plugin id="fr.labri.harmony.source.git" autoStart="true" startLevel="0" />
+      <plugin id="fr.labri.harmony.source.hg4j" autoStart="true" startLevel="0" />
+      <plugin id="fr.labri.harmony.source.svnkit" autoStart="true" startLevel="0" />
+      <plugin id="fr.labri.harmony.source.tfs" autoStart="true" startLevel="0" />
+      <plugin id="javaewah" autoStart="true" startLevel="0" />
+      <plugin id="javax.persistence" autoStart="true" startLevel="0" />
+      <plugin id="javax.xml" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.commons.io" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.felix.gogo.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.felix.gogo.shell" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.contenttype" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.expressions" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.filesystem" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.jobs" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.resources" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.variables" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.debug.core" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.app" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.console" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.preferences" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.registry" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.util" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.gemini.jpa" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.jgit" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.osgi.services" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.persistence.antlr" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.persistence.asm" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.persistence.core" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.persistence.jpa" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.persistence.jpa.jpql" autoStart="true" startLevel="0" />
+      <plugin id="org.h2" autoStart="true" startLevel="0" />
+      <plugin id="org.hamcrest.core" autoStart="true" startLevel="0" />
+      <plugin id="org.jfree.chart" autoStart="true" startLevel="0" />
+      <plugin id="org.junit" autoStart="true" startLevel="0" />
+      <plugin id="org.tmatesoft.hg4j" autoStart="true" startLevel="0" />
+      <plugin id="org.tmatesoft.sqljet" autoStart="true" startLevel="0" />
+      <plugin id="org.tmatesoft.svnkit" autoStart="true" startLevel="0" />
+      <plugin id="osgi.enterprise" autoStart="true" startLevel="0" />
+   </configurations>
+
+</product>
