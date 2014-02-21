@@ -4,14 +4,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.RawTextComparator;
+import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevSort;
@@ -44,10 +47,10 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 	}
 
 	protected Map<String, RevCommit> revs = new HashMap<>();
-	protected Map<String, List<String>> commitsTags = new HashMap<>(); // Key : commit Id , value : tags
-
+	
 	@Override
 	public void extractEvents() {
+		Map<String, Set<String>> commitsTags = new HashMap<>(); // Key : commit Id , value : tags
 		try {
 			Git git = workspace.getGit();
 
@@ -61,24 +64,35 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 				} else {
 					commitId = tag.getObjectId().getName();
 				}
-				MapUtils.addElementToList(commitsTags, commitId, splitted[splitted.length - 1]);
+				MapUtils.addElementToSet(commitsTags, commitId, splitted[splitted.length - 1]);
 			}
 
 			RevWalk w = new RevWalk(git.getRepository());
 			w.sort(RevSort.TOPO, true);
 			w.sort(RevSort.REVERSE, true);
 
-			Ref ref = git.getRepository().getRef("remotes/origin/master");
-			if (ref == null) ref = git.getRepository().getRef("remotes/origin/HEAD");
-			if (ref == null) ref = git.getRepository().getRef("remotes/origin/trunk");
-			if (ref == null) ref = git.getRepository().getRef("master");
-			if (ref == null) return;
-			w.markStart(w.parseCommit(ref.getObjectId()));
+			if (getConfig().extractAllBranches()) {
+				for (Ref ref : git.getRepository().getAllRefs().values()) {
+					try {
+						w.markStart(w.parseCommit(ref.getObjectId()));
+					} catch (IncorrectObjectTypeException e) {
+						try {
+						w.markStart(w.parseCommit(ref.getTarget().getObjectId()));
+						} catch (IncorrectObjectTypeException e1) {
+						}
+					}
+				}
+			} else {
+				Ref ref = git.getRepository().getRef("master");
+				if (ref == null) ref = git.getRepository().getRef("trunk");
+				if (ref == null) ref = git.getRepository().getRef("HEAD");
+				if (ref == null) return;
+				w.markStart(w.parseCommit(ref.getObjectId()));
+			}
 
 			for (RevCommit commit : w) {
-
 				revs.put(commit.getName(), commit);
-				List<Event> parents = new ArrayList<>();
+				Set<Event> parents = new HashSet<>();
 				for (RevCommit parent : commit.getParents())
 					parents.add(getEvent(parent.getName()));
 
@@ -90,7 +104,8 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 					saveAuthor(author);
 				}
 				List<Author> authors = new ArrayList<>(Arrays.asList(new Author[] { author }));
-				// Better consistency of the time data is allowed using commit time on the repo instead of time of when the authors commited his changed
+				// Better consistency of the time data is allowed using commit time on the repo instead of time of when
+				// the authors commited his changed
 				Event event = new Event(source, commit.getName(), commit.getCommitterIdent().getWhen().getTime(), parents, authors);
 
 				// Adding commit tags

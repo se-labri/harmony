@@ -16,6 +16,5 @@ public class HarmonyLogger {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Calendar cal = Calendar.getInstance();
 		System.err.println("!!![" + dateFormat.format(cal.getTime()) + "] " + message);	}
-	
-	
+		
 }

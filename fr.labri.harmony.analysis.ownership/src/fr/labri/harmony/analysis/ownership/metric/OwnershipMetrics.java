@@ -31,7 +31,7 @@ public class OwnershipMetrics {
 
 			float own = c.getTouches() / (float) total;
 
-			if (own > total * MAJOR_CONTRIBUTOR_THRESHOLD) major++;
+			if (own > MAJOR_CONTRIBUTOR_THRESHOLD) major++;
 			else minor++;
 
 			if (own > ownership) ownership = own;
