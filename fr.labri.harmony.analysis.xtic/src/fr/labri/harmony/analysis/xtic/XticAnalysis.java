@@ -318,28 +318,14 @@ public class XticAnalysis extends AbstractAnalysis {
 
 			String fname = _src.getUrl().replaceAll("\\:", "\\_").replaceAll("\\/", "\\_") + (_apt == null ? "" : "_" + _apt.toString().replaceAll(" ", "_"));
 			try {
-				FileOutputStream fw = new FileOutputStream(fname + "_results.csv");
-				skillSummary(new PrintStream(fw));
-				fw.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			try {
-				FileOutputStream fw = new FileOutputStream(fname + "_count.csv");
-				countSummary(new PrintStream(fw));
-				fw.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			try {
+				System.out.println("ECRITURE DU FICHIER TIME.CSV");
 				FileOutputStream fw = new FileOutputStream(fname + "_time.csv");
 				timeSummary(new PrintStream(fw));
 				fw.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+
 		}
 
 		public void daoPersistResults() {
@@ -381,7 +367,7 @@ public class XticAnalysis extends AbstractAnalysis {
 				else {
 					if (_oldFile == null || _oldText == null) {
 						try {
-							_oldFile = checkoutFile(_action.getEvent(), _actionSource, "v0");
+							_oldFile = checkoutFile(_action.getParentEvent(), _actionSource, "v0");
 							_oldText = Charset.forName("UTF-8").decode(ByteBuffer.wrap(Files.readAllBytes(Paths.get(_oldFile.toString())))).toString();
 						} catch (IOException ex) {
 							ex.printStackTrace();
@@ -407,7 +393,7 @@ public class XticAnalysis extends AbstractAnalysis {
 					TimerToken diff = null;
 					if(TIMER)
 						diff = _timer.start("aptitude_diff");
-
+					
 					_xmlDiff[pos][targetNewFile ? 1 : 0] = res = DiffProducer.Factory(type).computeDiffToXml(_oldFile, _newFile, targetNewFile);
 					if(TIMER)
 						diff.stop();
