@@ -150,11 +150,9 @@ public class PatternAptitude {
 
 	public boolean acceptFile(Action a) {
 		for (Pattern pat : mime.keySet()) {
-			if (mime.get(pat).equals("target")) {
-				Matcher m = pat.matcher(a.getItem().getNativeId().trim());
-				if (m.find())
-					return true;
-			}
+			Matcher m = pat.matcher(a.getItem().getNativeId().trim());
+			if (m.find())
+				return true;
 		}
 		return false;
 	}
@@ -183,18 +181,22 @@ public class PatternAptitude {
 		this.queries = queries;
 	}
 
-	public boolean needContent(boolean newFile) {
+	public boolean needContentNewFile() {
 		for (PatternContent pc : this.contents) {
-			if(pc.getDirection().equals("both"))
-				return true;
-			if (newFile && (pc.getDirection().equals("target")))
-				return true;
-			if (!newFile && (pc.getDirection().equals("source")))
+			if(pc.getDirection().equals("both") || pc.getDirection().equals("target"))
 				return true;
 		}
-		return true;
+		return false;
 	}
-
+	
+	public boolean needContentOldFile() {
+		for (PatternContent pc : this.contents) {
+			if(pc.getDirection().equals("both") || pc.getDirection().equals("source"))
+				return true;
+		}
+		return false;
+	}
+	
 	public boolean needDiff(boolean targetNewFile) {
 		if(queries.get_exprBoth() != null)
 			return true;
