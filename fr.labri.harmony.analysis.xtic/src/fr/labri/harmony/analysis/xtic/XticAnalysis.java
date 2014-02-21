@@ -381,7 +381,7 @@ public class XticAnalysis extends AbstractAnalysis {
 				else {
 					if (_oldFile == null || _oldText == null) {
 						try {
-							_oldFile = checkoutFile(_action.getEvent(), _actionSource, "v0");
+							_oldFile = checkoutFile(_action.getParentEvent(), _actionSource, "v0");
 							_oldText = Charset.forName("UTF-8").decode(ByteBuffer.wrap(Files.readAllBytes(Paths.get(_oldFile.toString())))).toString();
 						} catch (IOException ex) {
 							ex.printStackTrace();
