@@ -34,10 +34,10 @@ public class PatternContent {
 
 	public boolean checkPattern(String oldText, String newText) {
 		if((direction.equals("source") || direction.equals("both"))) 
-			if(this.presence != oldText.contains(value))
+			if(oldText != null && this.presence != oldText.contains(value))
 				return false;
 		if((direction.equals("target") || direction.equals("both"))) 
-			if(this.presence != newText.contains(value))
+			if(newText != null && this.presence != newText.contains(value))
 				return false;
 		return true;
 	}
