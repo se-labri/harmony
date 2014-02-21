@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,7 +15,9 @@ import java.util.Set;
 
 import org.xerial.snappy.Snappy;
 
+import fr.labri.Timer.TimerToken;
 import fr.labri.harmony.analysis.xtic.XticAnalysis.AnalyseSource;
+import fr.labri.harmony.analysis.xtic.aptitude.PatternAptitude;
 import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.ActionKind;
@@ -22,16 +25,21 @@ import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.Source;
 
 public class FilterVCS implements FilterXTic {
-	
+
 	static boolean toCompute = true;
 	static final double NCD_MIN = 0.00D;
 	static final double NCD_MAX = 0.25D;
+	List<PatternAptitude> _patterns = new ArrayList<PatternAptitude>();
+
+	public FilterVCS(List<PatternAptitude> patterns) {
+		_patterns = patterns;
+	}
 
 	public Object filter(AnalyseSource analyse, Event event, Event parent, List<Action> actions) {
-		
+
 		if(toCompute==false)
 			return new HashMap<Action,Action>();
-			
+
 		Source src = analyse._src;
 
 		boolean deleteContent = false;
@@ -44,19 +52,24 @@ public class FilterVCS implements FilterXTic {
 			if (addedContent && deleteContent)
 				break;
 		}
-		
+
 		String localpath = src.getWorkspace().getPath() + "/";
-	
+
 		if (deleteContent && addedContent) {
 			Map<File, Action> itemIds = new HashMap<File, Action>();
 			Set<File> deleted = new HashSet<>();
 			for (Action a : actions) {
-				if (new File(localpath + a.getItem().getNativeId()).isDirectory())
-					continue;
 				if (a.getKind().equals(ActionKind.Delete)){
-					File p = analyse.checkoutFile(parent, a, "v0", "checkout_vcs");
-					deleted.add(p);
-					itemIds.put(p, a);
+					if (new File(localpath + a.getItem().getNativeId()).isDirectory())
+						continue;
+					for(PatternAptitude pattern : _patterns) {
+						if(pattern.acceptFile(a)) {
+							File p = analyse.checkoutFile(parent, a, "v0", "checkout_vcs");
+							deleted.add(p);
+							itemIds.put(p, a); 
+							break;
+						}
+					}
 				}
 			}
 			Set<File> created = new HashSet<>();
@@ -64,14 +77,20 @@ public class FilterVCS implements FilterXTic {
 				if (a.getKind().equals(ActionKind.Create)) {
 					if (new File(localpath + a.getItem().getNativeId()).isDirectory())
 						continue;
-					File p = analyse.checkoutFile(event, a, "v1", "checkout_vcs");
-					created.add(p);
-					itemIds.put(p, a);
+					for(PatternAptitude pattern : _patterns) {
+						if(pattern.acceptFile(a)) {
+							File p = analyse.checkoutFile(event, a, "v1", "checkout_vcs");
+							created.add(p);
+							itemIds.put(p, a);
+							break;
+						}
+					}
 				}
 			}
-			//TimerToken ncd = timer.start("ncd");
+
+			TimerToken ncd = analyse._timer.start("ncd");
 			Map<Action,Action> renamed = bestNCD(actions, itemIds, created, deleted);
-			//ncd.stop();
+			ncd.stop();
 			if (renamed.size() > 0)
 				HarmonyLogger.info(renamed.size()+" files detected as renamed/moved" + "\t" + event.getNativeId());
 			return renamed;
@@ -81,7 +100,7 @@ public class FilterVCS implements FilterXTic {
 
 	Map<Action,Action> bestNCD(List<Action> actions, Map<File, Action> itemIds, Set<File> created, Set<File> deleted) {
 		// Mappings between deleted et created pour choper les move et rename
-	
+
 		Map<Action,Action> renamed = new HashMap<Action, Action>();
 		Map<File, File> best_cdt = computeNCDScore(created, deleted);
 		for (File p : deleted) {
@@ -187,7 +206,7 @@ class NCDUtils {
 		}
 		return 0;
 	}
-	
+
 	public static void main(String[] args) {
 		File source = new File("/home/cedric/gitTest/gitTest/Test/src/labri/harmony/Foo.java");
 		File target = new File("/home/cedric/gitTest/gitTest/Test/src/labri/harmony/xtic/Foo.java");

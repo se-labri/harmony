@@ -19,6 +19,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
+import org.h2.constant.SysProperties;
+
 import fr.labri.Counters;
 import fr.labri.Timer;
 import fr.labri.Timer.TimerToken;
@@ -40,7 +42,7 @@ import fr.labri.harmony.core.model.Source;
 public class XticAnalysis extends AbstractAnalysis {
 
 	private static final boolean DEBUG = Boolean.parseBoolean(System.getProperty("xtic.debug", "false"));
-	private static final boolean TIMER = Boolean.parseBoolean(System.getProperty("xtic.timer", "false"));
+	private static final boolean TIMER = Boolean.parseBoolean(System.getProperty("xtic.timer", "true"));
 	private static final boolean BENCHMARK = Boolean.parseBoolean(System.getProperty("xtic.benchmark", "false"));
 	private static final int BENCHMARK_RUN = Integer.parseInt(System.getProperty("xtic.benchmark.run", "1"));
 
@@ -112,6 +114,9 @@ public class XticAnalysis extends AbstractAnalysis {
 	}
 
 	class AnalyseSource {
+		
+		int totalCheckout_new = 0;
+		
 		final Source _src;
 		final Aptitude _apt;
 		final List<PatternAptitude> _patterns;
@@ -120,6 +125,7 @@ public class XticAnalysis extends AbstractAnalysis {
 		final Counters<String> _actions = new Counters<>();
 		final Timer<String> _timer = new Timer<>(Timer.simpleFactory());
 		final FilterXTic _mimeFilter;
+		Event lastEvent=null;
 
 		public AnalyseSource(Source src, Aptitude aptitude, Map<Aptitude, List<PatternAptitude>> patterns) throws IOException {
 			this._src = src;
@@ -163,6 +169,8 @@ public class XticAnalysis extends AbstractAnalysis {
 				computeNewEvent(e);
 				if(TIMER) 
 					harmony.stop();
+				if(i > 100)
+					break;
 			}
 			if(TIMER)
 				all.stop();
@@ -198,6 +206,7 @@ public class XticAnalysis extends AbstractAnalysis {
 
 		@SuppressWarnings("unchecked")
 		public void computeNewEvent(Event e) {
+			System.out.println(e.getNativeId());
 			TimerToken harmony = null;
 			if(TIMER)
 				harmony = _timer.start("harmony_get_data_from_model");
@@ -223,7 +232,7 @@ public class XticAnalysis extends AbstractAnalysis {
 				// Pre-processing
 				applyPreprocessFilter("preprocess_toomany", new FilterTooManyChanges(), e, parent, actions);
 				applyPreprocessFilter("preprocess_mime", _mimeFilter, e, parent, actions);
-				Object res = applyPreprocessFilter("preprocess_fixvcs", new FilterVCS(), e, parent, actions);
+				Object res = applyPreprocessFilter("preprocess_fixvcs", new FilterVCS(_patterns), e, parent, actions);
 				if(res!=null)
 					renamedFiles = (Map<Action,Action>)res;
 				applyPreprocessFilter("preprocess_fixvcs", new FilterDeleteAction(), e, parent, actions);
@@ -249,26 +258,43 @@ public class XticAnalysis extends AbstractAnalysis {
 				}
 				actions = null;
 			}
-		}
 
+//			System.out.println("-------------");
+//			System.out.println("Actions : "+e.getActions().size());
+//			System.out.println("Time checkout : "+(_timer.get("checkout")-oldCheckout));
+//			System.out.println("Time reset : "+(_timer.get("reset")-oldReset));
+		}
+		
 		public File checkoutFile(Event event, Action action, String value) {
-			return checkoutFile(event, action, value, "checkout");
+			if(action.getEvent().getActions().size() >= 10)
+				return checkoutFile(event, action, value, "reset" );
+			else
+				return checkoutFile(event, action, value, "checkout" );
 		}
 
 		public File checkoutFile(Event event, Action action, String value, String tag) {
 			TimerToken checkout = null;
 			if(TIMER)
 				checkout = _timer.start(tag);
-			_src.getWorkspace().update(event, action.getItem());
+			if(tag.equals("reset")) {
+				if((lastEvent==null) || (lastEvent!=null && lastEvent.getId() != event.getId())) { 
+					_src.getWorkspace().update(event);
+					lastEvent=event;
+				}
+			}
+			else {
+				_src.getWorkspace().update(event, action.getItem());
+			}
+
 			File path = new File(_src.getWorkspace().getPath(), action.getItem().getNativeId());
 			File newFile = new File(computeFile(path.toString(), value));
-			newFile.delete();
-			try {
-				newFile.getParentFile().mkdirs();
-				newFile.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+//			newFile.delete();
+//			try {
+//				newFile.getParentFile().mkdirs();
+//				newFile.createNewFile();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
 			path.renameTo(newFile);
 			if(TIMER)
 				checkout.stop();
@@ -318,7 +344,6 @@ public class XticAnalysis extends AbstractAnalysis {
 
 			String fname = _src.getUrl().replaceAll("\\:", "\\_").replaceAll("\\/", "\\_") + (_apt == null ? "" : "_" + _apt.toString().replaceAll(" ", "_"));
 			try {
-				System.out.println("ECRITURE DU FICHIER TIME.CSV");
 				FileOutputStream fw = new FileOutputStream(fname + "_time.csv");
 				timeSummary(new PrintStream(fw));
 				fw.close();
@@ -395,6 +420,7 @@ public class XticAnalysis extends AbstractAnalysis {
 						diff = _timer.start("aptitude_diff");
 					
 					_xmlDiff[pos][targetNewFile ? 1 : 0] = res = DiffProducer.Factory(type).computeDiffToXml(_oldFile, _newFile, targetNewFile);
+					//System.out.println(res);
 					if(TIMER)
 						diff.stop();
 				}
@@ -415,11 +441,12 @@ public class XticAnalysis extends AbstractAnalysis {
 				int toFind = p.getContents().size();
 
 				if (toFind > 0) {
-					String text = "", oldText = "";
-					if(p.needContent(true))
-						text = getText(true);
-					if(p.needContent(false))
-						oldText = getText(false);
+					if(p.needContentNewFile()) {
+						getText(true);
+					}
+					if(p.needContentOldFile()) {
+						getText(false);
+					}
 					if(_text==null){
 						return 0;
 					}
@@ -427,7 +454,7 @@ public class XticAnalysis extends AbstractAnalysis {
 					if(TIMER)
 						patternmatching = _timer.start("aptitude_matching");
 					for (PatternContent pat : p.getContents()) {
-						if (pat.checkPattern(oldText,text))
+						if (pat.checkPattern(_oldText,_text))
 							toFind--;
 					}
 					if(TIMER)

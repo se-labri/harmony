@@ -46,25 +46,71 @@ public class ReportJSON extends Report {
 
 			/*** write to file ***/
 			JsonGenerator jGenerator = jfactory.createGenerator(ps);
-			jGenerator.writeStartObject(); // {
-			//Dépôts
-			jGenerator.writeFieldName("repositories"); // "messages" :
-			jGenerator.writeStartArray(); // [
+
 
 			//unique id for aptitudes => all the ids of aptitudes
 			Map<Integer,List<Aptitude>> merged_aptitudes_index = new HashMap<Integer, List<Aptitude>>();
 			//unique id for aptitudes => all the ids of aptitudes
 			Map<Integer,List<PatternAptitude>> merged_Paptitudes_index = new HashMap<Integer, List<PatternAptitude>>();
 
-
+			//we do not merge developers here
+			Map<Developer,Source> index_dev_source = new HashMap<Developer, Source>();
 			for(Source src : sources) {
 				//get data
 				List<Developer> devs = dao.getData("xtic", Developer.class, src);
-				System.out.println(src.getUrl()+" "+devs.size());
-	
-
 				for(Developer dev : devs) {
-					System.out.println(dev.getId());
+					index_dev_source.put(dev, src);
+				}
+			}
+			// Node : developers
+
+
+			jGenerator.writeStartObject(); 
+			jGenerator.writeFieldName("repositories"); 
+			jGenerator.writeStartArray(); 
+			for(Source src : sources) {
+				jGenerator.writeStartObject();
+				jGenerator.writeNumberField("id", src.getId()); 
+				jGenerator.writeStringField("url", src.getUrl()); 
+				jGenerator.writeEndObject(); 
+			}
+			jGenerator.writeEndArray(); 
+
+
+			// Node : developers
+
+			jGenerator.writeFieldName("developers"); 
+			jGenerator.writeStartArray(); 
+			for(Source src : sources) {
+				//get data
+				List<Developer> devs = dao.getData("xtic", Developer.class, src);
+				for(Developer dev : devs) {
+					jGenerator.writeStartObject();
+					jGenerator.writeNumberField("id", dev.getId()); 
+					jGenerator.writeStringField("name", dev.getName()); 
+					jGenerator.writeStringField("email", dev.getEmail()); 
+
+					//array of working repo
+
+					jGenerator.writeFieldName("repositories"); 
+					jGenerator.writeStartArray(); 
+					jGenerator.writeStartObject();
+					jGenerator.writeNumberField("repository", index_dev_source.get(dev).getId()); 
+					jGenerator.writeNumberField("commits", dev.getNbCommit());
+					jGenerator.writeEndObject(); 
+					jGenerator.writeEndArray(); 
+
+					jGenerator.writeEndObject(); 
+
+				}
+			}
+			jGenerator.writeEndArray(); 
+
+			//Merge Skill & Patterns
+			for(Source src : sources) {
+				//get data
+				List<Developer> devs = dao.getData("xtic", Developer.class, src);
+				for(Developer dev : devs) {
 					for(PatternAptitude ap : dev.getScore().keySet()) {
 						//Aptitude
 						if(!merged_aptitudes_index.containsKey(ap.getAptitude().hashCode()))
@@ -76,95 +122,76 @@ public class ReportJSON extends Report {
 						merged_Paptitudes_index.get(ap.hashCode()).add(ap);
 					}
 				}	
-				jGenerator.writeStartObject(); // {
-				jGenerator.writeNumberField("id", src.getId()); 
-				jGenerator.writeStringField("name", src.getUrl()); 
-
-				jGenerator.writeFieldName("developers"); // "messages" :
-				jGenerator.writeStartArray(); // [
-				for(Developer dev : devs) {
-					jGenerator.writeStartObject();
-					jGenerator.writeNumberField("id", dev.getId()); 
-					jGenerator.writeStringField("name", dev.getName()); 
-					jGenerator.writeStringField("email", dev.getEmail()); 
-					jGenerator.writeNumberField("commits", dev.getNbCommit());
-					jGenerator.writeEndObject();
-				}
-				jGenerator.writeEndArray(); // ]
-				jGenerator.writeEndObject(); // }
 			}
 
+			int cpt = 1 ;
+			Map<Integer,Integer> ids_aptitude_patterns = new HashMap<Integer, Integer>();
+			for(int apt : merged_aptitudes_index.keySet()) {
+				ids_aptitude_patterns.put(apt, cpt);
+				cpt++;
+			}
+			for(int apt_P : merged_Paptitudes_index.keySet()) {
+				ids_aptitude_patterns.put(apt_P, cpt);
+				cpt++;
+			}
 
-			jGenerator.writeEndArray(); // ]
-
-			//competences
-			jGenerator.writeFieldName("domain_aptitudes"); // "messages" :
+			//
+			//			//competences
+			jGenerator.writeFieldName("skill"); // "messages" :
 			jGenerator.writeStartArray();
 			for(int apt : merged_aptitudes_index.keySet()) {
 				Aptitude tmp = merged_aptitudes_index.get(apt).get(0);
 				jGenerator.writeStartObject(); // {
-				jGenerator.writeNumberField("id", apt);
+				jGenerator.writeNumberField("id", ids_aptitude_patterns.get(apt));
 				jGenerator.writeStringField("name", tmp.getIdName());
 				jGenerator.writeStringField("desc", tmp.getDescription());
-				jGenerator.writeFieldName("concrete_aptitudes"); // "messages" :
-				jGenerator.writeStartArray(); // [
-				for(int apt_P : merged_Paptitudes_index.keySet()) {
-					for(PatternAptitude pattern : merged_Paptitudes_index.get(apt_P)) {
-						if(pattern.getAptitude().hashCode() == apt) {
-							jGenerator.writeStartObject();
-							jGenerator.writeNumberField("id", apt_P); 
-							jGenerator.writeStringField("name", pattern.getIdName());
-							jGenerator.writeStringField("desc", pattern.getDescription());
-							jGenerator.writeEndObject();
-							break;
-						}
-					}
-				}
-				jGenerator.writeEndArray();
-				jGenerator.writeEndObject();
+				jGenerator.writeEndObject(); // {
 			}
 			jGenerator.writeEndArray();
 
+			jGenerator.writeFieldName("pattern"); // "messages" :
+			jGenerator.writeStartArray(); // [
+			for(int apt_P : merged_Paptitudes_index.keySet()) {
+				for(PatternAptitude pattern : merged_Paptitudes_index.get(apt_P)) {
+					jGenerator.writeStartObject();
+					jGenerator.writeNumberField("id", ids_aptitude_patterns.get(apt_P)); 
+					jGenerator.writeNumberField("skill", ids_aptitude_patterns.get(pattern.getAptitude().hashCode())); 
+					jGenerator.writeStringField("name", pattern.getIdName());
+					jGenerator.writeStringField("desc", pattern.getDescription());
+					jGenerator.writeEndObject();
+					break;
+				}
+			}
+			jGenerator.writeEndArray();
+
+
 			//expressions
-			jGenerator.writeFieldName("aptitude_expressions"); // "messages" :
+			jGenerator.writeFieldName("observations"); // "messages" :
 			jGenerator.writeStartArray();
-			Set<Long> tss = new HashSet<>();
-			int i = 0;
+			int limit = 0;
 			for(int apt : merged_aptitudes_index.keySet()) {
-				jGenerator.writeStartObject(); // {
-				jGenerator.writeNumberField("id_domain_aptitude", apt);
-				jGenerator.writeFieldName("expressions");
-				jGenerator.writeStartArray(); // [
-				System.out.println("domain aptitude "+merged_aptitudes_index.get(apt).get(0).getIdName());
-				
 				for(int apt_P : merged_Paptitudes_index.keySet()) {
 					for(PatternAptitude pattern : merged_Paptitudes_index.get(apt_P)) {
 						if(pattern.getAptitude().hashCode() == apt) {
-							jGenerator.writeStartObject();
-							jGenerator.writeNumberField("id_concrete_aptitude", apt_P); 
-							jGenerator.writeFieldName("concrete_expressions"); // "messages" :
-							jGenerator.writeStartArray();
-							System.out.println("\t aptitude "+merged_Paptitudes_index.get(apt_P).get(0).getIdName());
 							for(Source src : sources) {
 								//get data
 								List<Developer> devs = dao.getData("xtic", Developer.class, src);
 								for(Developer dev : devs) {
-									System.out.println(dev.getId());
 									for(PatternAptitude dev_apt : dev.getScore().keySet()) {
 										if(dev_apt.hashCode() == apt_P) {
 											if(!dev.getScore().get(dev_apt).getList().isEmpty()) {
-												jGenerator.writeStartObject();
-												jGenerator.writeNumberField("repo", src.getId()); 
-												jGenerator.writeNumberField("dev", dev.getId());
-												jGenerator.writeFieldName("scores_times");
-												jGenerator.writeStartArray();
 												for(TimedScore ts : dev.getScore().get(dev_apt).getList()) {
-													jGenerator.writeString(ts.getValue()+"_"+(ts.getTimestamp()/1000));
-													tss.add(ts.getTimestamp());
-													i++;
+													if(limit >= 10)
+														break;
+													jGenerator.writeStartObject();
+													jGenerator.writeNumberField("what", ids_aptitude_patterns.get(apt));
+													jGenerator.writeNumberField("where", src.getId()); 
+													jGenerator.writeNumberField("who", dev.getId());
+													jGenerator.writeNumberField("when", ts.getTimestamp()/1000);
+													jGenerator.writeNumberField("amount", ts.getValue());
+													jGenerator.writeEndObject();
+													limit++;
 												}
-												jGenerator.writeEndArray();
-												jGenerator.writeEndObject();
 											}
 											break;
 										}
@@ -172,24 +199,16 @@ public class ReportJSON extends Report {
 
 								}
 							}
-							jGenerator.writeEndArray();
-							//Now we write the expressions
-							jGenerator.writeEndObject();
 							break;
 						}
 					}
 				}
-				jGenerator.writeEndArray();
-				jGenerator.writeEndObject();
 			}
 			jGenerator.writeEndArray();
 
-			jGenerator.writeEndObject(); // }
+			jGenerator.writeEndObject();
 			jGenerator.close();
 
-
-			System.out.println("Il y a "+i+" expressions");
-			System.out.println(tss.size()+" timestamps");
 		} catch (JsonGenerationException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
