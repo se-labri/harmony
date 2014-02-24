@@ -47,16 +47,19 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 	}
 
 	protected Map<String, RevCommit> revs = new HashMap<>();
-	
+
 	@Override
 	public void extractEvents() {
-		Map<String, Set<String>> commitsTags = new HashMap<>(); // Key : commit Id , value : tags
+		Map<String, Set<String>> commitsTags = new HashMap<>(); // Key : commit
+																// Id , value :
+																// tags
 		try {
 			Git git = workspace.getGit();
 
 			List<Ref> tagList = git.tagList().call();
 			for (Ref tag : tagList) {
-				// tag.getName returns the full name (i.e. /refs/tags/the-tag), we need to split it
+				// tag.getName returns the full name (i.e. /refs/tags/the-tag),
+				// we need to split it
 				String[] splitted = tag.getName().split("\\/");
 				String commitId = null;
 				if (tag.isPeeled() && tag.getPeeledObjectId() != null) {
@@ -77,7 +80,7 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 						w.markStart(w.parseCommit(ref.getObjectId()));
 					} catch (IncorrectObjectTypeException e) {
 						try {
-						w.markStart(w.parseCommit(ref.getTarget().getObjectId()));
+							w.markStart(w.parseCommit(ref.getTarget().getObjectId()));
 						} catch (IncorrectObjectTypeException e1) {
 						}
 					}
@@ -104,7 +107,8 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 					saveAuthor(author);
 				}
 				List<Author> authors = new ArrayList<>(Arrays.asList(new Author[] { author }));
-				// Better consistency of the time data is allowed using commit time on the repo instead of time of when
+				// Better consistency of the time data is allowed using commit
+				// time on the repo instead of time of when
 				// the authors commited his changed
 				Event event = new Event(source, commit.getName(), commit.getCommitterIdent().getWhen().getTime(), parents, authors);
 
@@ -148,13 +152,15 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 			HarmonyLogger.error("Unknown action kind: " + d.getChangeType());
 			break;
 		}
-		Item i = getItem(path);
-		if (i == null) {
-			i = new Item(source, path);
-			saveItem(i);
+		if (extractItemWithPath(path)) {
+			Item i = getItem(path);
+			if (i == null) {
+				i = new Item(source, path);
+				saveItem(i);
+			}
+			Action a = new Action(i, kind, e, p, source);
+			saveAction(a);
 		}
-		Action a = new Action(i, kind, e, p, source);
-		saveAction(a);
 	}
 
 	@Override

@@ -119,4 +119,8 @@ public class SourceConfiguration {
 		this.extractAllBranches = extractAllBranches;
 	}
 
+	public boolean hasOption(String optItemFilter) {
+		return options.containsKey(optItemFilter);
+	}
+
 }

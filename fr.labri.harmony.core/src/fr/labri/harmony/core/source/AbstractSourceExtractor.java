@@ -23,6 +23,9 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 	public final static String COMMIT_MESSAGE = "commit_message";
 	public final static String COMMITTER = "committer";
 	public final static String BRANCH = "branch";
+	public final static String OPT_ITEM_FILTER = "item-filter";
+
+	private String itemFilter;
 
 	private final static int EVENT_CACHE_SIZE = 1000;
 	private final static int ACTION_CACHE_SIZE = 1000;
@@ -34,13 +37,10 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 	protected List<Analysis> analyses;
 
 	private HashMap<String, Event> eventsCache;
-	private HashMap<String, Author> authors;
-	private List<Author> authorsCache;
+	private HashMap<String, Author> authorsCache;
 
-	private HashMap<String, Item> items;
-	private List<Item> itemsCache;
+	private HashMap<String, Item> itemsCache;
 	private List<Action> actionsCache;
-	
 
 	protected SourceConfiguration config;
 
@@ -49,11 +49,12 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 		this.config = config;
 		analyses = new ArrayList<>();
 		eventsCache = new HashMap<>();
-		authors = new HashMap<>();
-		authorsCache = new ArrayList<>();
-		items = new HashMap<>();
-		itemsCache = new ArrayList<>();
+		authorsCache = new HashMap<>();
+		itemsCache = new HashMap<>();
 		actionsCache = new ArrayList<>();
+
+		if (config.hasOption(OPT_ITEM_FILTER)) itemFilter = config.getOption(OPT_ITEM_FILTER).toString();
+		else itemFilter = null;
 	}
 
 	public AbstractSourceExtractor() {
@@ -116,7 +117,7 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 
 		onExtractionFinished();
 	}
-	
+
 	@Override
 	public void initializeExistingSource(Source src) {
 		this.source = src;
@@ -130,8 +131,7 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 	}
 
 	/**
-	 * Called at the end of the {@link #initializeSource(boolean)} method, when
-	 * all extraction is finished. Does nothing by default
+	 * Called at the end of the {@link #initializeSource(boolean)} method, when all extraction is finished. Does nothing by default
 	 */
 	protected void onExtractionFinished() {
 		HarmonyLogger.info("Extraction finished for source " + source.getUrl());
@@ -139,10 +139,7 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 
 	protected Event getEvent(String nativeId) {
 		Event e = eventsCache.get(nativeId);
-		if (e == null) {
-			e = dao.getEvent(source, nativeId);
-		}
-
+		if (e == null) e = dao.getEvent(source, nativeId);
 		return e;
 	}
 
@@ -155,28 +152,35 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 	}
 
 	protected Author getAuthor(String name) {
-		return authors.get(name);
+		Author a = authorsCache.get(name);
+		if (a == null) a = dao.getAuthor(source, name);
+		return a;
 	}
 
 	protected void saveAuthor(Author a) {
-		authors.put(a.getName(), a);
-		authorsCache.add(a);
+		authorsCache.put(a.getName(), a);
 	}
 
 	protected void saveAuthorsAndEvents() {
-		dao.saveAuthors(authorsCache);
+		dao.saveAuthors(authorsCache.values());
 		authorsCache.clear();
 		dao.saveEvents(eventsCache.values());
 		eventsCache.clear();
 	}
 
-	protected Item getItem(String path) {
-		return items.get(path);
+	protected boolean extractItemWithPath(String path) {
+		return itemFilter == null || path.matches(itemFilter);
+	}
+	
+	protected Item getItem(String path) {		
+		Item i = itemsCache.get(path);
+		if (i == null) i = dao.getItem(source, path);
+		
+		return i;
 	}
 
 	protected void saveItem(Item i) {
-		items.put(i.getNativeId(), i);
-		itemsCache.add(i);
+		itemsCache.put(i.getNativeId(), i);
 	}
 
 	protected void saveAction(Action a) {
@@ -188,7 +192,7 @@ public abstract class AbstractSourceExtractor<W extends Workspace> extends Abstr
 	}
 
 	protected void saveItemsAndActions() {
-		dao.saveItems(itemsCache);
+		dao.saveItems(itemsCache.values());
 		itemsCache.clear();
 		dao.saveActions(actionsCache);
 		actionsCache.clear();
