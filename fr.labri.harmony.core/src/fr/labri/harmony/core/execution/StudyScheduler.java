@@ -14,7 +14,7 @@ import org.apache.commons.io.FileUtils;
 
 import fr.labri.harmony.core.analysis.ISingleSourceAnalysis;
 import fr.labri.harmony.core.analysis.AnalysisFactory;
-import fr.labri.harmony.core.analysis.IMultipleSourceAnalysis;
+import fr.labri.harmony.core.analysis.IMultipleSourcesAnalysis;
 import fr.labri.harmony.core.config.GlobalConfigReader;
 import fr.labri.harmony.core.config.SourceConfigReader;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
@@ -98,7 +98,7 @@ public class StudyScheduler {
 		List<AnalysisConfiguration> postProcessingAnalysisConfigurations = global.getPostProcessingAnalysisConfigurations();
 		AnalysisFactory analysisFactory = new AnalysisFactory(daoFactory.createDao());
 		for (AnalysisConfiguration analysisConfiguration : postProcessingAnalysisConfigurations) {
-			IMultipleSourceAnalysis postProcessingAnalysis = analysisFactory.createPostProcessingAnalysis(analysisConfiguration);
+			IMultipleSourcesAnalysis postProcessingAnalysis = analysisFactory.createPostProcessingAnalysis(analysisConfiguration);
 			postProcessingAnalysis.runOn(sources);
 		}
 

@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import fr.labri.harmony.core.analysis.SingleSourceAnalysis;
-import fr.labri.harmony.core.analysis.MultipleSourceAnalysis;
+import fr.labri.harmony.core.analysis.MultipleSourcesAnalysis;
 import fr.labri.harmony.core.model.Source;
 
 public class OutputUtils {
@@ -47,7 +47,7 @@ public class OutputUtils {
 	}
 	
 
-	public static java.nio.file.Path buildOutputPath(Source src, MultipleSourceAnalysis analysis, String fileName) throws IOException {
+	public static java.nio.file.Path buildOutputPath(Source src, MultipleSourcesAnalysis analysis, String fileName) throws IOException {
 
 		String baseUrl = analysis.getConfig().getFoldersConfiguration().getOutFolder();
 
