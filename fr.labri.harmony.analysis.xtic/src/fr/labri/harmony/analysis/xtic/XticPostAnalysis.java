@@ -10,13 +10,13 @@ import fr.labri.harmony.analysis.xtic.aptitude.Aptitude;
 import fr.labri.harmony.analysis.xtic.aptitude.PatternAptitude;
 import fr.labri.harmony.analysis.xtic.report.GenerateReport;
 import fr.labri.harmony.analysis.xtic.report.UtilsDeveloper;
-import fr.labri.harmony.core.analysis.MultipleSourceAnalysis;
+import fr.labri.harmony.core.analysis.MultipleSourcesAnalysis;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.model.Source;
 import fr.labri.harmony.core.output.OutputUtils;
 
-public  class XticPostAnalysis extends MultipleSourceAnalysis{
+public  class XticPostAnalysis extends MultipleSourcesAnalysis{
 
 	public XticPostAnalysis() {
 		super();

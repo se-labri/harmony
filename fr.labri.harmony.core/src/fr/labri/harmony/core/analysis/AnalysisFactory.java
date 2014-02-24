@@ -30,8 +30,8 @@ public class AnalysisFactory {
 		return createAnalysis(analysisConfig, ISingleSourceAnalysis.class);
 	}
 	
-	public IMultipleSourceAnalysis createPostProcessingAnalysis(AnalysisConfiguration analysisConfig) {
-		return createAnalysis(analysisConfig, IMultipleSourceAnalysis.class);
+	public IMultipleSourcesAnalysis createPostProcessingAnalysis(AnalysisConfiguration analysisConfig) {
+		return createAnalysis(analysisConfig, IMultipleSourcesAnalysis.class);
 	} 
 	
 	private <T extends IAnalysis> T createAnalysis(AnalysisConfiguration analysisConfig, Class<T> clazz) {

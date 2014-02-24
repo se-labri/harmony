@@ -212,12 +212,12 @@ public class NewAnalysisWizard extends Wizard implements INewWizard,IExecutableE
 		IPackageFragmentRoot srcFolder = javaProject.getPackageFragmentRoot(folder);
 		IPackageFragment fragment = srcFolder.createPackageFragment(projectName, true, monitor);
 		
-		String extendedClass = "AbstractAnalysis";
+		String extendedClass = "SingleSourceAnalysis";
 		String analysisMethodParameters="Source src";
 		String additionnalImports="";
 		
 		if(analysisType.equals("Post-Processing")){
-			extendedClass="AbstractPostProcessingAnalysis";
+			extendedClass="MultipleSourcesAnalysis";
 			analysisMethodParameters="Collection<Source> sources";
 			additionnalImports="import java.util.Collection;";
 		}
@@ -225,21 +225,20 @@ public class NewAnalysisWizard extends Wizard implements INewWizard,IExecutableE
 		
 		// Generate Java Classes
 		String analysisClassContent = "package "+projectName+";"			+nl()+nl()+
-		"import java.util.Properties;"												+nl()+
 		additionnalImports															+nl()+
 		"import fr.labri.harmony.core.analysis."+extendedClass+";"					+nl()+
 		"import fr.labri.harmony.core.config.model.AnalysisConfiguration;"			+nl()+
 		"import fr.labri.harmony.core.dao.Dao;"										+nl()+
 		"import fr.labri.harmony.core.model.Source;"								+nl()+nl()+nl()+
 
-		"public class "+analysisClassName+" extends "+extendedClass+"{"				+nl()+nl()+
+		"public class "+analysisClassName+" extends "+extendedClass+" {"				+nl()+nl()+
 
 		"	public "+analysisClassName+"() {"				+nl()+
 		"		super();"									+nl()+
 		"	}"												+nl()+nl()+
 
-		"	public "+analysisClassName+"(AnalysisConfiguration config, Dao dao, Properties properties) {"	+nl()+
-		"		super(config, dao, properties);"															+nl()+
+		"	public "+analysisClassName+"(AnalysisConfiguration config, Dao dao) {"	+nl()+
+		"		super(config, dao);"															+nl()+
 		"	}"																								+nl()+nl()+
 
 		"	@Override"										+nl()+

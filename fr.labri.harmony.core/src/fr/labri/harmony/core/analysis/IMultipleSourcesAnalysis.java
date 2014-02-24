@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import fr.labri.harmony.core.model.Source;
 
-public interface IMultipleSourceAnalysis extends IAnalysis {
+public interface IMultipleSourcesAnalysis extends IAnalysis {
 
 	/** 
 	 * @param sources
