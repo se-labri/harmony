@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import org.tmatesoft.svn.core.ISVNLogEntryHandler;
 import org.tmatesoft.svn.core.SVNException;
@@ -16,7 +15,7 @@ import org.tmatesoft.svn.core.SVNNodeKind;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 
 import fr.labri.harmony.core.config.model.SourceConfiguration;
-import fr.labri.harmony.core.dao.Dao;
+import fr.labri.harmony.core.dao.ModelPersister;
 import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.ActionKind;
@@ -42,8 +41,8 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 		super();
 	}
 
-	public SvnKitSourceExtractor(SourceConfiguration config, Dao dao, Properties properties) {
-		super(config, dao, properties);
+	public SvnKitSourceExtractor(SourceConfiguration config, ModelPersister modelPersister) {
+		super(config, modelPersister);
 	}
 
 	@Override
@@ -61,7 +60,7 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 		source = new Source();
 		source.setUrl(getUrl());
 		source.setWorkspace(workspace);
-		dao.saveSource(source);
+		modelPersister.saveSource(source);
 
 		if (extractHarmonyModel) {
 			HarmonyLogger.info("Extracting Events for source " + getUrl());
@@ -71,20 +70,13 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 			extractEvents();
 
 			// Save the remaining events
-			saveAuthorsAndEvents();
-			saveItemsAndActions();
+			modelPersister.flushAll();
 
-			source = dao.reloadSource(source);
+			source = modelPersister.reloadSource(source);
 		}
 		source.setConfig(getConfig());
 
 		onExtractionFinished();
-	}
-
-	@Override
-	protected void saveItemsAndActions() {
-		saveAuthorsAndEvents();
-		super.saveItemsAndActions();
 	}
 
 	@Override
@@ -100,10 +92,10 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 			user = "unknown";
 		}
 
-		Author author = getAuthor(user);
+		Author author = modelPersister.getAuthor(source, user);
 		if (author == null) {
 			author = new Author(source, user, user);
-			saveAuthor(author);
+			modelPersister.saveAuthor(author);
 		}
 		List<Author> authors = new ArrayList<>(Arrays.asList(new Author[] { author }));
 
@@ -114,7 +106,7 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 		metadata.put(COMMIT_MESSAGE, logEntry.getMessage());
 		e.setMetadata(metadata);
 
-		saveEvent(e);
+		modelPersister.saveEvent(e);
 
 		if (extractActions) {
 			/*
@@ -163,13 +155,13 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 						}
 					}
 					if (extractItemWithPath(path)) {
-						Item i = getItem(path);
+						Item i = modelPersister.getItem(source, path);
 						if (i == null) {
 							i = new Item(source, path);
-							saveItem(i);
+							modelPersister.saveItem(i);
 						}
 						Action a = new Action(i, kind, e, parent, source);
-						saveAction(a);
+						modelPersister.saveAction(a);
 					}
 				}
 			}

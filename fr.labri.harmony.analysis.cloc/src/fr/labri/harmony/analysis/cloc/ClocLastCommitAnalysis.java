@@ -1,9 +1,8 @@
 package fr.labri.harmony.analysis.cloc;
 
 import java.util.List;
-import java.util.Properties;
 
-import fr.labri.harmony.core.analysis.AbstractAnalysis;
+import fr.labri.harmony.core.analysis.SingleSourceAnalysis;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.model.Event;
@@ -17,13 +16,13 @@ import fr.labri.harmony.core.model.Source;
  * The ClocEntries created by this analysis can be retrieved with the a call to:<br>
  *  <code>dao.getData("cloc",ClocEntries.class, source)</code>  
  */
-public class ClocLastCommitAnalysis extends AbstractAnalysis {
+public class ClocLastCommitAnalysis extends SingleSourceAnalysis {
 
 	public ClocLastCommitAnalysis() {
 	}
 
-	public ClocLastCommitAnalysis(AnalysisConfiguration config, Dao dao, Properties properties) {
-		super(config, dao, properties);
+	public ClocLastCommitAnalysis(AnalysisConfiguration config, Dao dao) {
+		super(config, dao);
 	}
 
 	@Override
@@ -33,7 +32,7 @@ public class ClocLastCommitAnalysis extends AbstractAnalysis {
 
 		src.getWorkspace().update(lastCommit);
 		ClocEntries entries = ClocRunner.runCloc(src.getWorkspace().getPath());
-		if (entries != null) dao.saveData(this.getPersitenceUnitName(), entries, src);
+		if (entries != null) dao.saveData(this.getPersistenceUnitName(), entries, src);
 	}
 
 }

@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import org.eclipse.jgit.api.Git;
@@ -25,7 +24,7 @@ import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
 
 import fr.labri.harmony.core.config.model.SourceConfiguration;
-import fr.labri.harmony.core.dao.Dao;
+import fr.labri.harmony.core.dao.ModelPersister;
 import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.ActionKind;
@@ -42,8 +41,8 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 		super();
 	}
 
-	public JGitSourceExtractor(SourceConfiguration config, Dao dao, Properties properties) {
-		super(config, dao, properties);
+	public JGitSourceExtractor(SourceConfiguration config, ModelPersister modelPersister) {
+		super(config, modelPersister);
 	}
 
 	protected Map<String, RevCommit> revs = new HashMap<>();
@@ -97,14 +96,14 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 				revs.put(commit.getName(), commit);
 				Set<Event> parents = new HashSet<>();
 				for (RevCommit parent : commit.getParents())
-					parents.add(getEvent(parent.getName()));
+					parents.add(modelPersister.getEvent(source, parent.getName()));
 
 				String user = commit.getAuthorIdent().getName();
-				Author author = getAuthor(user);
+				Author author = modelPersister.getAuthor(source, user);
 				if (author == null) {
 					author = new Author(source, user, user);
 					if (commit.getAuthorIdent().getEmailAddress() != null) author.setEmail(commit.getAuthorIdent().getEmailAddress());
-					saveAuthor(author);
+					modelPersister.saveAuthor(author);
 				}
 				List<Author> authors = new ArrayList<>(Arrays.asList(new Author[] { author }));
 				// Better consistency of the time data is allowed using commit
@@ -121,7 +120,7 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 				metadata.put(COMMIT_MESSAGE, commit.getFullMessage());
 				event.setMetadata(metadata);
 
-				saveEvent(event);
+				modelPersister.saveEvent(event);
 			}
 		} catch (Exception e) {
 			throw new SourceExtractorException(e);
@@ -153,13 +152,13 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 			break;
 		}
 		if (extractItemWithPath(path)) {
-			Item i = getItem(path);
+			Item i = modelPersister.getItem(source, path);
 			if (i == null) {
 				i = new Item(source, path);
-				saveItem(i);
+				modelPersister.saveItem(i);
 			}
 			Action a = new Action(i, kind, e, p, source);
-			saveAction(a);
+			modelPersister.saveAction(a);
 		}
 	}
 

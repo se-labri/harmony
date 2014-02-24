@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
 import fr.labri.harmony.analysis.ownership.contributions.Contribution;
 import fr.labri.harmony.analysis.ownership.contributions.ModuleContributions;
 import fr.labri.harmony.analysis.ownership.metric.Metric;
 import fr.labri.harmony.analysis.ownership.metric.MetricSet;
 import fr.labri.harmony.analysis.ownership.metric.OwnershipMetrics;
-import fr.labri.harmony.core.analysis.AbstractAnalysis;
+import fr.labri.harmony.core.analysis.SingleSourceAnalysis;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.log.HarmonyLogger;
@@ -21,7 +20,7 @@ import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.Item;
 import fr.labri.harmony.core.model.Source;
 
-public class ProjectOwnershipAnalysis extends AbstractAnalysis {
+public class ProjectOwnershipAnalysis extends SingleSourceAnalysis {
 	
 	protected final static String OPT_SNAPSHOTS_COMMITS = "snapshots-commits";
 	
@@ -29,8 +28,8 @@ public class ProjectOwnershipAnalysis extends AbstractAnalysis {
 		super();
 	}
 
-	public ProjectOwnershipAnalysis(AnalysisConfiguration config, Dao dao, Properties properties) {
-		super(config, dao, properties);
+	public ProjectOwnershipAnalysis(AnalysisConfiguration config, Dao dao) {
+		super(config, dao);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -71,7 +70,7 @@ public class ProjectOwnershipAnalysis extends AbstractAnalysis {
 		else items = dao.getItems(src, fromDate);
 		
 		ModuleContributions contributions = getModuleContributions(src.getUrl(), fromDate, toDate, items);
-		if (contributions != null) dao.saveData(getPersitenceUnitName(), contributions, src);
+		if (contributions != null) dao.saveData(getPersistenceUnitName(), contributions, src);
 		return contributions;
 	}
 	
@@ -79,7 +78,7 @@ public class ProjectOwnershipAnalysis extends AbstractAnalysis {
 		OwnershipMetrics ownershipMetrics = new OwnershipMetrics(contributions.getContributions());
 		List<Metric> metrics = ownershipMetrics.getMetrics();
 		MetricSet metricSet = new MetricSet(contributions.getModuleName(), contributions.getToDate(), contributions.getFromDate(), metrics);
-		dao.saveData(getPersitenceUnitName(), metricSet, src);
+		dao.saveData(getPersistenceUnitName(), metricSet, src);
 	}
 
 	public ModuleContributions getModuleContributions(String moduleName, Date fromDate, Date toDate, List<Item> itemsInModule) {

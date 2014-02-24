@@ -2,7 +2,7 @@ package fr.labri.harmony.core.analysis;
 
 import fr.labri.harmony.core.model.Source;
 
-public interface Analysis extends HasAnalysisConfiguration{
+public interface ISingleSourceAnalysis extends IAnalysis{
 
 	/**
 	 * Main method of an analysis. Called when the source has been initialized

@@ -13,7 +13,7 @@ import org.jfree.data.time.TimeSeriesCollection;
 
 import fr.labri.harmony.analysis.report.ChartDrawer;
 import fr.labri.harmony.analysis.report.EventComparator;
-import fr.labri.harmony.core.dao.Dao;
+import fr.labri.harmony.core.dao.AbstractDao;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.ActionKind;
 import fr.labri.harmony.core.model.Event;
@@ -21,7 +21,7 @@ import fr.labri.harmony.core.model.Source;
 
 public class ItemNumberChart extends ChartDrawer {
 
-	public ItemNumberChart(Dao dao) {
+	public ItemNumberChart(AbstractDao dao) {
 		super(dao);
 	}
 

@@ -7,13 +7,13 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.data.general.DefaultPieDataset;
 
 import fr.labri.harmony.analysis.report.ChartDrawer;
-import fr.labri.harmony.core.dao.Dao;
+import fr.labri.harmony.core.dao.AbstractDao;
 import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.Source;
 
 public class DevelopersActionsChart extends ChartDrawer {
 
-	public DevelopersActionsChart(Dao dao) {
+	public DevelopersActionsChart(AbstractDao dao) {
 		super(dao);
 	}
 

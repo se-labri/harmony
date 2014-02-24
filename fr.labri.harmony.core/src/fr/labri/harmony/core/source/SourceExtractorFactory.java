@@ -1,30 +1,30 @@
 package fr.labri.harmony.core.source;
 
 import java.util.Collection;
-import java.util.Properties;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
-import fr.labri.harmony.core.AbstractHarmonyService;
 import fr.labri.harmony.core.config.model.SourceConfiguration;
-import fr.labri.harmony.core.dao.Dao;
+import fr.labri.harmony.core.dao.DaoFactory;
+import fr.labri.harmony.core.dao.ModelPersister;
 import fr.labri.harmony.core.log.HarmonyLogger;
+import fr.labri.harmony.core.util.DeclarativeServicesUtils;
 
 public class SourceExtractorFactory {
 
-	private Dao dao;
+	private DaoFactory daoFactory;
 
-	public SourceExtractorFactory(Dao dao) {
-		this.dao = dao;
+	public SourceExtractorFactory(DaoFactory daoFactory) {
+		this.daoFactory = daoFactory;
 	}
 
 	@SuppressWarnings("rawtypes")
 	public SourceExtractor<?> createSourceExtractor(SourceConfiguration config) {
 		BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
 		try {
-			Collection<ServiceReference<SourceExtractor>> refs = context.getServiceReferences(SourceExtractor.class, AbstractHarmonyService.getFilter(config.getSourceExtractorName()));
+			Collection<ServiceReference<SourceExtractor>> refs = context.getServiceReferences(SourceExtractor.class, DeclarativeServicesUtils.getFilter(config.getSourceExtractorName()));
 			if (refs != null && !refs.isEmpty()) {
 				ServiceReference<SourceExtractor> ref = refs.iterator().next();
 				
@@ -32,9 +32,8 @@ public class SourceExtractorFactory {
 					HarmonyLogger.info("Multiple implementations of the source extractor +config.getSourceExtractorName()+ have been found. The first one found has been selected");
 				}
 				
-				Properties properties = extractProperties(ref);
 				SourceExtractor<?> serviceDef = context.getService(ref);
-				SourceExtractor<?> service = serviceDef.getClass().getConstructor(SourceConfiguration.class, Dao.class, Properties.class).newInstance(config, dao, properties);
+				SourceExtractor<?> service = serviceDef.getClass().getConstructor(SourceConfiguration.class, ModelPersister.class).newInstance(config, daoFactory.createDao());
 
 				return service;
 			}else {
@@ -44,13 +43,6 @@ public class SourceExtractorFactory {
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	private Properties extractProperties(ServiceReference<?> ref) {
-		Properties properties = new Properties();
-		for (String key : ref.getPropertyKeys())
-			properties.put(key, ref.getProperty(key));
-		return properties;
 	}
 	
 	

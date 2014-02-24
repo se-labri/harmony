@@ -10,25 +10,24 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Properties;
 
 import fr.labri.harmony.analysis.cloc.ClocEntries;
 import fr.labri.harmony.analysis.cloc.ClocEntry;
-import fr.labri.harmony.core.analysis.AbstractAnalysis;
+import fr.labri.harmony.core.analysis.SingleSourceAnalysis;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.Source;
 import fr.labri.harmony.core.output.OutputUtils;
 
-public class ClocChartAnalysis extends AbstractAnalysis {
+public class ClocChartAnalysis extends SingleSourceAnalysis {
 
 	public ClocChartAnalysis() {
 		super();
 	}
 
-	public ClocChartAnalysis(AnalysisConfiguration config, Dao dao, Properties properties) {
-		super(config, dao, properties);
+	public ClocChartAnalysis(AnalysisConfiguration config, Dao dao) {
+		super(config, dao);
 	}
 
 	@Override

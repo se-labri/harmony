@@ -15,14 +15,14 @@ import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeTableXYDataset;
 
 import fr.labri.harmony.analysis.report.ChartDrawer;
-import fr.labri.harmony.core.dao.Dao;
+import fr.labri.harmony.core.dao.AbstractDao;
 import fr.labri.harmony.core.model.Author;
 import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.Source;
 
 public class ActionAuthorChart extends ChartDrawer {
 
-	public ActionAuthorChart(Dao dao) {
+	public ActionAuthorChart(AbstractDao dao) {
 		super(dao);
 	}
 

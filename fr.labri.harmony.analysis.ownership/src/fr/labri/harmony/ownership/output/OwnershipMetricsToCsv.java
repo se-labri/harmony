@@ -4,25 +4,24 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import fr.labri.harmony.analysis.ownership.metric.Metric;
 import fr.labri.harmony.analysis.ownership.metric.MetricSet;
-import fr.labri.harmony.core.analysis.AbstractAnalysis;
+import fr.labri.harmony.core.analysis.SingleSourceAnalysis;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.model.Source;
 import fr.labri.harmony.core.output.OutputUtils;
 
-public class OwnershipMetricsToCsv extends AbstractAnalysis {
+public class OwnershipMetricsToCsv extends SingleSourceAnalysis {
 
 	public OwnershipMetricsToCsv() {
 		super();
 	}
 
-	public OwnershipMetricsToCsv(AnalysisConfiguration config, Dao dao, Properties properties) {
-		super(config, dao, properties);
+	public OwnershipMetricsToCsv(AnalysisConfiguration config, Dao dao) {
+		super(config, dao);
 	}
 
 	@Override
@@ -30,7 +29,7 @@ public class OwnershipMetricsToCsv extends AbstractAnalysis {
 		List<String[]> lines = new ArrayList<>();
 		ArrayList<String> headers = null;
 
-		List<MetricSet> metricSets = dao.getData(getPersitenceUnitName(), MetricSet.class, src);
+		List<MetricSet> metricSets = dao.getData(getPersistenceUnitName(), MetricSet.class, src);
 		
 		if (metricSets == null || metricSets.size() == 0) return; 
 				

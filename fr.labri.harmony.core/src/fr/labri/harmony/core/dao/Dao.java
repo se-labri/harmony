@@ -1,7 +1,6 @@
 package fr.labri.harmony.core.dao;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +13,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fr.labri.harmony.core.analysis.IAnalysis;
 import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.ActionKind;
@@ -22,46 +22,38 @@ import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.HarmonyModelElement;
 import fr.labri.harmony.core.model.Item;
 import fr.labri.harmony.core.model.Source;
-import fr.labri.harmony.core.source.Workspace;
 
 public class Dao extends AbstractDao {
 
+	/**
+	 * We keep references on the EntityManagerFactories instead of the entity managers themselves
+	 */
+	protected Map<String, HarmonyEntityManagerFactory> entityManagerFactories;
+	
 	Dao(Map<String, HarmonyEntityManagerFactory> entityManagerFactories) {
-		super(entityManagerFactories);
+		super(entityManagerFactories.get(HARMONY_PERSISTENCE_UNIT));
+		this.entityManagerFactories = entityManagerFactories;
 	}
+	
+	
+	public EntityManager getEntityManager(String a) {
+		HarmonyEntityManagerFactory f = entityManagerFactories.get(a);
+		if (f == null) return null;
+		return f.createEntityManager();
+	}
+	
+	public synchronized HarmonyEntityManagerFactory getEntityManagerFactory(IAnalysis harmonyService) {
+		String puName;
+		if (harmonyService == null) puName = HARMONY_PERSISTENCE_UNIT;
+		else puName = harmonyService.getPersistenceUnitName();
+		return entityManagerFactories.get(puName);
+	}
+
 
 	/****************************
 	 * Events Retrieval Methods *
 	 ****************************/
-
-	/**
-	 * 
-	 * @param s
-	 * @param nativeId
-	 * @return The event with the given nativeId, in the given Source, or null if there is no such event
-	 */
-	public Event getEvent(Source s, String nativeId) {
-		return get(Event.class, s, nativeId);
-	}
-
-	/**
-	 * @param source
-	 * @return The events of the source, ordered by their timestamp, from the first to the latest event.
-	 */
-	public List<Event> getEvents(Source source) {
-
-		String queryString = "SELECT e FROM Event e WHERE e.source = :source ORDER BY e.timestamp ASC";
-
-		EntityManager em = getEntityManager();
-		em.getTransaction().begin();
-		TypedQuery<Event> query = em.createQuery(queryString, Event.class);
-		query.setParameter("source", source);
-		List<Event> events = query.getResultList();
-		em.getTransaction().commit();
-
-		return events;
-	}
-
+	
 	/**
 	 * 
 	 * @param item
@@ -164,10 +156,6 @@ public class Dao extends AbstractDao {
 		} catch (NoResultException e) {
 			return new ArrayList<>();
 		}
-	}
-
-	public Item getItem(Source s, String nativeId) {
-		return get(Item.class, s, nativeId);
 	}
 
 	/*****************************
@@ -277,10 +265,6 @@ public class Dao extends AbstractDao {
 	/*****************************
 	 * Authors Retrieval Methods *
 	 *****************************/
-
-	public Author getAuthor(Source s, String nativeId) {
-		return get(Author.class, s, nativeId);
-	}
 
 	/**
 	 * @param item
@@ -450,65 +434,6 @@ public class Dao extends AbstractDao {
 			m.getTransaction().rollback();
 			return null;
 		}
-	}
-
-	public Source reloadSource(Source source) {
-		Workspace ws = source.getWorkspace();
-
-		EntityManager m = getEntityManager();
-		m.getTransaction().begin();
-		source = m.find(Source.class, source.getId());
-		m.getTransaction().commit();
-
-		// The workspace is transient, so we have to reset it when reloading
-		// the source;
-		source.setWorkspace(ws);
-
-		return source;
-	}
-
-	/****************************************
-	 * Save methods (for Source extractors) *
-	 ****************************************/
-
-	public void saveSource(Source s) {
-		save(s);
-	}
-
-	public void saveEvent(Event e) {
-		save(e);
-	}
-
-	public void saveItem(Item i) {
-		save(i);
-	}
-
-	public void saveAuthor(Author a) {
-		save(a);
-	}
-
-	public void saveAction(Action a) {
-		save(a);
-	}
-
-	public void saveEvents(Collection<Event> events) {
-		save(events);
-	}
-
-	public void saveAuthors(Collection<Author> authors) {
-		save(authors);
-	}
-
-	public void saveActions(Collection<Action> actions) {
-		save(actions);
-	}
-
-	public void saveItems(Collection<Item> items) {
-		save(items);
-	}
-
-	public void updateAction(Action a) {
-		update(a);
 	}
 
 }

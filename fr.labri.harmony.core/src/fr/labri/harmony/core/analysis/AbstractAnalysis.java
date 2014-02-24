@@ -1,31 +1,21 @@
 package fr.labri.harmony.core.analysis;
 
-import java.util.Properties;
-
-import fr.labri.harmony.core.AbstractHarmonyService;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 
-/**
- * Class to inherit to develop an analysis. <br>
- * Any subclass <strong>must</strong> implement both the default constructor
- * {@link #AbstractAnalysis()} and
- * {@link #AbstractAnalysis(AnalysisConfiguration, Dao, Properties)}
- * 
- */
-public abstract class AbstractAnalysis extends AbstractHarmonyService implements Analysis {
+public abstract class AbstractAnalysis implements IAnalysis {
 
 	protected AnalysisConfiguration config;
-
-	public AbstractAnalysis() {
-		super();
-	}
-
-	public AbstractAnalysis(AnalysisConfiguration config, Dao dao, Properties properties) {
+	protected Dao dao;
+	
+	public AbstractAnalysis(AnalysisConfiguration config, Dao dao) {
 		// Be careful if you modify the signature of this constructor, it is
 		// called using reflexivity by AnalysisFactory
-		super(dao, properties);
+		this.dao = dao;
 		this.config = config;
+	}
+	
+	public AbstractAnalysis() {
 	}
 
 	@Override
@@ -34,7 +24,7 @@ public abstract class AbstractAnalysis extends AbstractHarmonyService implements
 	}
 
 	@Override
-	public String getPersitenceUnitName() {
+	public String getPersistenceUnitName() {
 		return config.getPersistenceUnit();
 	}
 

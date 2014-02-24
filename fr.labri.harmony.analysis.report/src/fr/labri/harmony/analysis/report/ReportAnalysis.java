@@ -4,10 +4,8 @@ import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import org.jfree.chart.JFreeChart;
 
@@ -33,22 +31,21 @@ import fr.labri.harmony.analysis.report.charts.ItemAuthorChart;
 import fr.labri.harmony.analysis.report.charts.ItemEditionChart;
 import fr.labri.harmony.analysis.report.charts.ItemKindChart;
 import fr.labri.harmony.analysis.report.charts.ItemNumberChart;
-import fr.labri.harmony.core.analysis.AbstractAnalysis;
+import fr.labri.harmony.core.analysis.SingleSourceAnalysis;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Source;
-import fr.labri.harmony.core.output.FileUtils;
 import fr.labri.harmony.core.output.OutputUtils;
 
-public class ReportAnalysis extends AbstractAnalysis {
+public class ReportAnalysis extends SingleSourceAnalysis {
 
 	public ReportAnalysis() {
 		super();
 	}
 
-	public ReportAnalysis(AnalysisConfiguration config, Dao dao, Properties properties) {
-		super(config, dao, properties);
+	public ReportAnalysis(AnalysisConfiguration config, Dao dao) {
+		super(config, dao);
 	}
 
 	@Override
@@ -78,14 +75,14 @@ public class ReportAnalysis extends AbstractAnalysis {
 	
 	public List<RepositoryAnalyzer> getRepositoryAnalyzers() {
 		List<RepositoryAnalyzer> repAnalyzers = new ArrayList<>();
-		repAnalyzers.add(new DevelopersActionsAnalyzer(getDao(), this));
+		repAnalyzers.add(new DevelopersActionsAnalyzer(dao, this));
 		
 		return repAnalyzers;
 	}
 
 	public List<ChartDrawer> getChartDrawers() {
 		List<ChartDrawer> produces = new ArrayList<>();
-		produces.add(new DevelopersActionsChart(getDao()));
+		produces.add(new DevelopersActionsChart(dao));
 		produces.add(new ItemNumberChart(dao));
 		//produces.add(new ClocChart(dao));
 		 produces.add(new EventAuthorChart(dao));

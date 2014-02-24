@@ -9,7 +9,7 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 
-import fr.labri.harmony.core.dao.Dao;
+import fr.labri.harmony.core.dao.AbstractDao;
 import fr.labri.harmony.core.dao.HarmonyEntityManagerFactory;
 import fr.labri.harmony.core.log.HarmonyLogger;
 
@@ -18,8 +18,8 @@ public class ExecutionMonitor {
 	private HarmonyEntityManagerFactory emf;
 	private ThreadTimes tt;
 
-	public ExecutionMonitor(Dao dao) {
-		emf = dao.getEntityManagerFactory(null);
+	public ExecutionMonitor(AbstractDao dao) {
+		emf = dao.getHarmonyModelEMF();
 		tt = new ThreadTimes(100);
 
 	}

@@ -3,42 +3,42 @@ package fr.labri.harmony.core.analysis;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Properties;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-import fr.labri.harmony.core.AbstractHarmonyService;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
+import fr.labri.harmony.core.dao.AbstractDao;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.log.HarmonyLogger;
+import fr.labri.harmony.core.util.DeclarativeServicesUtils;
 
 public class AnalysisFactory {
 
 	static final String PROPERTY_DEPENDENCIES = "depends";
 	static final String PROPERTY_PERSISTENCE_UNIT = "persistence-unit";
 
-	private Dao dao;
+	private AbstractDao dao;
 
-	public AnalysisFactory(Dao dao) {
+	public AnalysisFactory(AbstractDao dao) {
 		this.dao = dao;
 	}
 
-	public Analysis createAnalysis(AnalysisConfiguration analysisConfig) {
-		return createAnalysis(analysisConfig, Analysis.class);
+	public ISingleSourceAnalysis createAnalysis(AnalysisConfiguration analysisConfig) {
+		return createAnalysis(analysisConfig, ISingleSourceAnalysis.class);
 	}
 	
-	public PostProcessingAnalysis createPostProcessingAnalysis(AnalysisConfiguration analysisConfig) {
-		return createAnalysis(analysisConfig, PostProcessingAnalysis.class);
+	public IMultipleSourceAnalysis createPostProcessingAnalysis(AnalysisConfiguration analysisConfig) {
+		return createAnalysis(analysisConfig, IMultipleSourceAnalysis.class);
 	} 
 	
-	private <T extends HasAnalysisConfiguration> T createAnalysis(AnalysisConfiguration analysisConfig, Class<T> clazz) {
+	private <T extends IAnalysis> T createAnalysis(AnalysisConfiguration analysisConfig, Class<T> clazz) {
 		Collection<ServiceReference<T>> serviceReferences;
 		try {
 			BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
-			serviceReferences = context.getServiceReferences(clazz, AbstractHarmonyService.getFilter(analysisConfig.getAnalysisName()));
+			serviceReferences = context.getServiceReferences(clazz, DeclarativeServicesUtils.getFilter(analysisConfig.getAnalysisName()));
 			if (serviceReferences != null && !serviceReferences.isEmpty()) {
 
 				ServiceReference<T> analysisReference = serviceReferences.iterator().next();
@@ -53,8 +53,8 @@ public class AnalysisFactory {
 				analysisConfig.setPersistenceUnit((String) analysisReference.getProperty(PROPERTY_PERSISTENCE_UNIT));
 
 				@SuppressWarnings("unchecked")
-				T analysis = (T) context.getService(analysisReference).getClass().getConstructor(AnalysisConfiguration.class, Dao.class, Properties.class)
-						.newInstance(analysisConfig, dao, extractProperties(analysisReference));
+				T analysis = (T) context.getService(analysisReference).getClass().getConstructor(AnalysisConfiguration.class, Dao.class)
+						.newInstance(analysisConfig, dao);
 
 				return analysis;
 			}
@@ -67,10 +67,4 @@ public class AnalysisFactory {
 		return null;
 	} 
 
-	private Properties extractProperties(ServiceReference<?> ref) {
-		Properties properties = new Properties();
-		for (String key : ref.getPropertyKeys())
-			properties.put(key, ref.getProperty(key));
-		return properties;
-	}
 }

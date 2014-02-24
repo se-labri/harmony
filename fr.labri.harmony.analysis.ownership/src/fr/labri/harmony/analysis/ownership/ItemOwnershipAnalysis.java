@@ -5,14 +5,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
 import fr.labri.harmony.analysis.ownership.contributions.Contribution;
 import fr.labri.harmony.analysis.ownership.contributions.ModuleContributions;
 import fr.labri.harmony.analysis.ownership.metric.Metric;
 import fr.labri.harmony.analysis.ownership.metric.MetricSet;
 import fr.labri.harmony.analysis.ownership.metric.OwnershipMetrics;
-import fr.labri.harmony.core.analysis.AbstractAnalysis;
+import fr.labri.harmony.core.analysis.SingleSourceAnalysis;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.log.HarmonyLogger;
@@ -34,7 +33,7 @@ import fr.labri.harmony.core.model.Source;
  * 
  * @author SE@LaBRI * 
  */
-public class ItemOwnershipAnalysis extends AbstractAnalysis {
+public class ItemOwnershipAnalysis extends SingleSourceAnalysis {
 
 	protected final static String OPT_SNAPSHOTS_COMMITS = "snapshots-commits";
 
@@ -42,8 +41,8 @@ public class ItemOwnershipAnalysis extends AbstractAnalysis {
 		super();
 	}
 
-	public ItemOwnershipAnalysis(AnalysisConfiguration config, Dao dao, Properties properties) {
-		super(config, dao, properties);
+	public ItemOwnershipAnalysis(AnalysisConfiguration config, Dao dao) {
+		super(config, dao);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -80,13 +79,13 @@ public class ItemOwnershipAnalysis extends AbstractAnalysis {
 	}
 
 	protected void computeMetrics(Source src, Date fromDate, Date toDate) {
-		List<ModuleContributions> allContributions = dao.getData(getPersitenceUnitName(), ModuleContributions.class, src);
+		List<ModuleContributions> allContributions = dao.getData(getPersistenceUnitName(), ModuleContributions.class, src);
 
 		for (ModuleContributions contributions : allContributions) {
 			OwnershipMetrics ownershipMetrics = new OwnershipMetrics(contributions.getContributions());
 			List<Metric> metrics = ownershipMetrics.getMetrics();
 			MetricSet metricSet = new MetricSet(contributions.getModuleName(), toDate, fromDate, metrics);
-			dao.saveData(getPersitenceUnitName(), metricSet, src);
+			dao.saveData(getPersistenceUnitName(), metricSet, src);
 		}
 	}
 
@@ -97,7 +96,7 @@ public class ItemOwnershipAnalysis extends AbstractAnalysis {
 		
 		for (Item item : items) {
 			ModuleContributions contributions = getItemContributions(fromDate, toDate, item);
-			if (contributions != null) dao.saveData(getPersitenceUnitName(), contributions, src);
+			if (contributions != null) dao.saveData(getPersistenceUnitName(), contributions, src);
 		}
 	}
 	

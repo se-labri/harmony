@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import org.tmatesoft.hg.core.HgChangeset;
@@ -17,7 +16,7 @@ import org.tmatesoft.hg.core.HgFileRevision;
 import org.tmatesoft.hg.util.Path;
 
 import fr.labri.harmony.core.config.model.SourceConfiguration;
-import fr.labri.harmony.core.dao.Dao;
+import fr.labri.harmony.core.dao.ModelPersister;
 import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.ActionKind;
@@ -37,8 +36,8 @@ public class Hg4JSourceExtractor extends AbstractSourceExtractor<Hg4JWorkspace> 
 		super();
 	}
 
-	public Hg4JSourceExtractor(SourceConfiguration config, Dao dao, Properties properties) {
-		super(config, dao, properties);
+	public Hg4JSourceExtractor(SourceConfiguration config, ModelPersister modelPersister) {
+		super(config, modelPersister);
 	}
 
 	@Override
@@ -68,10 +67,10 @@ public class Hg4JSourceExtractor extends AbstractSourceExtractor<Hg4JWorkspace> 
 				// Parent Events
 				Set<Event> parents = new HashSet<>();
 				if (!chgSet.getFirstParentRevision().isNull()) {
-					parents.add(getEvent(chgSet.getFirstParentRevision().toString()));
+					parents.add(modelPersister.getEvent(source, chgSet.getFirstParentRevision().toString()));
 				}
 				if (!chgSet.getSecondParentRevision().isNull()) {
-					parents.add(getEvent(chgSet.getSecondParentRevision().toString()));
+					parents.add(modelPersister.getEvent(source, chgSet.getSecondParentRevision().toString()));
 				}
 
 				// Authors
@@ -82,11 +81,11 @@ public class Hg4JSourceExtractor extends AbstractSourceExtractor<Hg4JWorkspace> 
 					user = user.substring(0, user.indexOf("<")).trim();
 					mail = base.substring(base.indexOf("<") + 1, base.indexOf(">")).trim();
 				}
-				Author author = getAuthor(user);
+				Author author = modelPersister.getAuthor(source, user);
 				if (author == null) {
 					author = new Author(source, user, user);
 					author.setEmail(mail);
-					saveAuthor(author);
+					modelPersister.saveAuthor(author);
 				}
 				List<Author> authors = new ArrayList<>(Arrays.asList(new Author[] { author }));
 
@@ -98,7 +97,7 @@ public class Hg4JSourceExtractor extends AbstractSourceExtractor<Hg4JWorkspace> 
 				metadata.put(BRANCH, chgSet.getBranch());
 				e.setMetadata(metadata);
 
-				saveEvent(e);
+				modelPersister.saveEvent(e);
 			}
 		} catch (Exception e) {
 			throw new SourceExtractorException(e);
@@ -123,38 +122,38 @@ public class Hg4JSourceExtractor extends AbstractSourceExtractor<Hg4JWorkspace> 
 			// ... added ...
 			for (HgFileRevision fileRev : currentChgSet.getAddedFiles()) {
 				if (extractItemWithPath(fileRev.getPath().toString())) {
-					Item i = getItem(fileRev.getPath().toString());
+					Item i = modelPersister.getItem(source,fileRev.getPath().toString());
 					if (i == null) {
 						i = new Item(source, fileRev.getPath().toString());
-						saveItem(i);
+						modelPersister.saveItem(i);
 					}
 					Action a = new Action(i, ActionKind.Create, e, parent, source);
-					saveAction(a);
+					modelPersister.saveAction(a);
 				}
 			}
 
 			// ... or modified ...
 			for (HgFileRevision fileRev : currentChgSet.getModifiedFiles()) {
-				Item i = getItem(fileRev.getPath().toString());
+				Item i = modelPersister.getItem(source, fileRev.getPath().toString());
 				if (i == null) {
 					// Should not happen
 					i = new Item(source, fileRev.getPath().toString());
-					saveItem(i);
+					modelPersister.saveItem(i);
 				}
 				Action a = new Action(i, ActionKind.Edit, e, parent, source);
-				saveAction(a);
+				modelPersister.saveAction(a);
 			}
 
 			// ... or finally deleted
 			for (Path path : currentChgSet.getRemovedFiles()) {
-				Item i = getItem(path.toString());
+				Item i = modelPersister.getItem(source, path.toString());
 				if (i == null) {
 					// Should not happen
 					i = new Item(source, path.toString());
-					saveItem(i);
+					modelPersister.saveItem(i);
 				}
 				Action a = new Action(i, ActionKind.Delete, e, parent, source);
-				saveAction(a);
+				modelPersister.saveAction(a);
 			}
 
 		}

@@ -6,8 +6,8 @@ import java.nio.file.Path;
 import java.util.HashMap;
 
 import au.com.bytecode.opencsv.CSVWriter;
-import fr.labri.harmony.core.analysis.AbstractAnalysis;
-import fr.labri.harmony.core.dao.Dao;
+import fr.labri.harmony.core.analysis.SingleSourceAnalysis;
+import fr.labri.harmony.core.dao.AbstractDao;
 import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.Source;
@@ -15,7 +15,7 @@ import fr.labri.harmony.core.output.OutputUtils;
 
 public class DevelopersActionsAnalyzer extends RepositoryAnalyzer {
 
-	public DevelopersActionsAnalyzer(Dao dao,AbstractAnalysis rootAnalysis) {
+	public DevelopersActionsAnalyzer(AbstractDao dao,SingleSourceAnalysis rootAnalysis) {
 		super(dao, rootAnalysis);
 	}
 
