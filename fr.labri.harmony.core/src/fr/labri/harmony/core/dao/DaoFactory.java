@@ -41,6 +41,10 @@ public class DaoFactory {
 		return new Dao(entityManagerFactories);
 	}
 	
+	public ModelPersister createModelPersister() {
+		return new ModelPersister(entityManagerFactories.get(AbstractDao.HARMONY_PERSISTENCE_UNIT));
+	}
+	
 	
 	
 }

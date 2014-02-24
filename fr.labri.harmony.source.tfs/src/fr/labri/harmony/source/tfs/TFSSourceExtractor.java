@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Properties;
 
 import com.microsoft.tfs.core.clients.versioncontrol.soapextensions.Change;
 import com.microsoft.tfs.core.clients.versioncontrol.soapextensions.ChangeType;
@@ -12,7 +11,7 @@ import com.microsoft.tfs.core.clients.versioncontrol.soapextensions.Changeset;
 import com.microsoft.tfs.core.clients.versioncontrol.soapextensions.ItemType;
 
 import fr.labri.harmony.core.config.model.SourceConfiguration;
-import fr.labri.harmony.core.dao.Dao;
+import fr.labri.harmony.core.dao.ModelPersister;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.ActionKind;
 import fr.labri.harmony.core.model.Author;
@@ -28,8 +27,8 @@ public class TFSSourceExtractor extends AbstractSourceExtractor<TFSWorkspace> {
 		super();
 	}
 
-	public TFSSourceExtractor(SourceConfiguration config, Dao dao, Properties properties) {
-		super(config, dao, properties);
+	public TFSSourceExtractor(SourceConfiguration config, ModelPersister modelPersister) {
+		super(config, modelPersister);
 	}
 
 	@Override
@@ -59,10 +58,10 @@ public class TFSSourceExtractor extends AbstractSourceExtractor<TFSWorkspace> {
 				// Author Identification
 				String userName = changeset.getOwner();
 				String displayName = changeset.getOwnerDisplayName();
-				Author author = getAuthor(userName);
+				Author author = modelPersister.getAuthor(source, userName);
 				if (author == null) {
 					author = new Author(source, userName, displayName);
-					saveAuthor(author);
+					modelPersister.saveAuthor(author);
 				}
 				List<Author> authors = new ArrayList<>(Arrays.asList(new Author[] { author }));
 
@@ -72,7 +71,7 @@ public class TFSSourceExtractor extends AbstractSourceExtractor<TFSWorkspace> {
 				if (last != null) parents.add(last);
 
 				Event e = new Event(source, String.valueOf(eventId), eventTime, parents, authors);
-				saveEvent(e);
+				modelPersister.saveEvent(e);
 
 				last = e;
 
@@ -106,10 +105,10 @@ public class TFSSourceExtractor extends AbstractSourceExtractor<TFSWorkspace> {
 				// String itemId = Integer.toString(change.getItem().getItemID());
 				String itemId = change.getItem().getServerItem();
 				if (extractItemWithPath(itemId)) {
-					Item i = getItem(itemId);
+					Item i = modelPersister.getItem(source, itemId);
 					if (i == null) {
 						i = new Item(source, itemId);
-						saveItem(i);
+						modelPersister.saveItem(i);
 					}
 
 					ActionKind kind = null;
@@ -127,7 +126,7 @@ public class TFSSourceExtractor extends AbstractSourceExtractor<TFSWorkspace> {
 						parentOfA = e.getParents().get(0);
 					}
 					Action a = new Action(i, kind, e, parentOfA, source);
-					saveAction(a);
+					modelPersister.saveAction(a);
 				}
 				// TODO Add metadata management
 				/*

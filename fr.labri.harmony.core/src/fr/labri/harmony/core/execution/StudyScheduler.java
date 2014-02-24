@@ -12,9 +12,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 
-import fr.labri.harmony.core.analysis.Analysis;
+import fr.labri.harmony.core.analysis.ISingleSourceAnalysis;
 import fr.labri.harmony.core.analysis.AnalysisFactory;
-import fr.labri.harmony.core.analysis.PostProcessingAnalysis;
+import fr.labri.harmony.core.analysis.IMultipleSourceAnalysis;
 import fr.labri.harmony.core.config.GlobalConfigReader;
 import fr.labri.harmony.core.config.SourceConfigReader;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
@@ -33,7 +33,7 @@ public class StudyScheduler {
 
 	private ExecutorService threadsPool;
 	private SchedulerConfiguration schedulerConfiguration;
-	private Dao dao;
+	private DaoFactory daoFactory;
 	private int executionReportId;
 	private ExecutionMonitor mainMonitor;
 
@@ -63,11 +63,8 @@ public class StudyScheduler {
 			HarmonyLogger.error("No source to analyze");
 			return;
 		}
-
-		// We create a global DAO which is in charge of building and managing the EntityManagers from all the bundles
-		// defining analyses
-		DaoFactory daoFactory = new DaoFactory(global.getDatabaseConfiguration());
-		dao = daoFactory.createDao();
+		
+		daoFactory = new DaoFactory(global.getDatabaseConfiguration());
 
 		// Initialization of the ExecutorService in order to manage the concurrent execution of the analyses
 		if (this.schedulerConfiguration.getNumberOfThreads() > NUMBER_OF_EXECUTION_UNIT_AVAILABLE) {
@@ -77,10 +74,10 @@ public class StudyScheduler {
 		}
 		this.threadsPool = Executors.newFixedThreadPool(this.schedulerConfiguration.getNumberOfThreads());
 
-		SourceExtractorFactory sourceExtractorFactory = new SourceExtractorFactory(dao);
+		SourceExtractorFactory sourceExtractorFactory = new SourceExtractorFactory(daoFactory);
 
 		// Create the ExecutionReport
-		mainMonitor = new ExecutionMonitor(dao);
+		mainMonitor = new ExecutionMonitor(daoFactory.createDao());
 		executionReportId = mainMonitor.initMonitoring();
 
 		List<AnalysisConfiguration> analysisConfigurations = global.getAnalysisConfigurations();
@@ -96,18 +93,18 @@ public class StudyScheduler {
 		mainMonitor.printExecutionReport(executionReportId);
 
 		// We run the post-processing analyses
-		Collection<Source> sources = getSources(sourceConfigurations);
+		Collection<Source> sources = getSources(sourceConfigurations, daoFactory.createDao());
 
 		List<AnalysisConfiguration> postProcessingAnalysisConfigurations = global.getPostProcessingAnalysisConfigurations();
-		AnalysisFactory analysisFactory = new AnalysisFactory(dao);
+		AnalysisFactory analysisFactory = new AnalysisFactory(daoFactory.createDao());
 		for (AnalysisConfiguration analysisConfiguration : postProcessingAnalysisConfigurations) {
-			PostProcessingAnalysis postProcessingAnalysis = analysisFactory.createPostProcessingAnalysis(analysisConfiguration);
+			IMultipleSourceAnalysis postProcessingAnalysis = analysisFactory.createPostProcessingAnalysis(analysisConfiguration);
 			postProcessingAnalysis.runOn(sources);
 		}
 
 	}
 
-	private Collection<Source> getSources(List<SourceConfiguration> sourceConfigurations) {
+	private Collection<Source> getSources(List<SourceConfiguration> sourceConfigurations, Dao dao) {
 		ArrayList<Source> sources = new ArrayList<>();
 		for (SourceConfiguration configuration : sourceConfigurations) {
 			Source source = dao.getSourceByUrl(configuration.getRepositoryURL());
@@ -141,7 +138,7 @@ public class StudyScheduler {
 
 				try {
 					long startTime = System.currentTimeMillis();
-
+					Dao dao = daoFactory.createDao();
 					// Before launching any analysis on the source we must extract it (clone repository, build and store the Harmony model)
 					// If a source exists in the DB before the extraction, we reuse it and do not extract the model again.
 					Source src = dao.getSourceByUrl(url);
@@ -173,7 +170,7 @@ public class StudyScheduler {
 					// that an interruption of the thread wasn't requested due to the timeout limit.
 					// TODO catch exception in the loop.
 					for (Iterator<AnalysisConfiguration> it = analysesConfigurations.iterator(); it.hasNext() && !this.isInterrupted();) {
-						Analysis currentAnalysis = analysisFactory.createAnalysis(it.next());
+						ISingleSourceAnalysis currentAnalysis = analysisFactory.createAnalysis(it.next());
 						HarmonyLogger.info("Running analysis " + currentAnalysis.getConfig().getAnalysisName() + " on source "
 								+ sourceExtractor.getSource().getUrl());
 						currentAnalysis.runOn(sourceExtractor.getSource());
@@ -186,7 +183,7 @@ public class StudyScheduler {
 					executionReport.setException(e);
 					e.printStackTrace();
 				} finally {
-					ExecutionMonitor monitor = new ExecutionMonitor(dao);
+					ExecutionMonitor monitor = new ExecutionMonitor(daoFactory.createDao());
 					monitor.addSourceExecutionReport(executionReportId, executionReport);
 				}
 			}

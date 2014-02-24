@@ -4,9 +4,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Properties;
 
-import fr.labri.harmony.core.analysis.AbstractAnalysis;
+import fr.labri.harmony.core.analysis.SingleSourceAnalysis;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.model.Event;
@@ -16,15 +15,15 @@ import fr.labri.harmony.core.model.Source;
 /**
  * Compute the number of lines of code per Item (i.e. per file) at a given commit (by default the last commit available)
  */
-public class ClocItemAnalysis extends AbstractAnalysis {
+public class ClocItemAnalysis extends SingleSourceAnalysis {
 
 	private static final String OPT_CLOC_COMMIT_ID = "cloc-commit-id";
 
 	public ClocItemAnalysis() {
 	}
 
-	public ClocItemAnalysis(AnalysisConfiguration config, Dao dao, Properties properties) {
-		super(config, dao, properties);
+	public ClocItemAnalysis(AnalysisConfiguration config, Dao dao) {
+		super(config, dao);
 	}
 
 	@Override
@@ -47,7 +46,7 @@ public class ClocItemAnalysis extends AbstractAnalysis {
 			Path itemPath = Paths.get(src.getWorkspace().getPath(), item.getNativeId());
 			if (Files.exists(itemPath)) {
 				ClocEntries clocEntries = ClocRunner.runCloc(itemPath.toString());
-				dao.saveData(getPersitenceUnitName(), clocEntries, item);
+				dao.saveData(getPersistenceUnitName(), clocEntries, item);
 			}
 		}
 	}

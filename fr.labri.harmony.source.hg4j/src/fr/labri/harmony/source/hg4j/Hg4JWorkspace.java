@@ -1,10 +1,8 @@
 package fr.labri.harmony.source.hg4j;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 
-import org.tmatesoft.hg.core.HgBadArgumentException;
 import org.tmatesoft.hg.core.HgCheckoutCommand;
 import org.tmatesoft.hg.core.HgCloneCommand;
 import org.tmatesoft.hg.core.HgException;
@@ -15,8 +13,6 @@ import org.tmatesoft.hg.repo.HgLookup;
 import org.tmatesoft.hg.repo.HgRemoteRepository;
 import org.tmatesoft.hg.util.CancelledException;
 
-import fr.labri.harmony.core.log.HarmonyLogger;
-import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.Item;
 import fr.labri.harmony.core.source.AbstractLocalWorkspace;

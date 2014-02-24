@@ -3,13 +3,14 @@ package fr.labri.harmony.core.dao;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
-import fr.labri.harmony.core.AbstractHarmonyService;
+import fr.labri.harmony.core.model.Author;
+import fr.labri.harmony.core.model.Event;
+import fr.labri.harmony.core.model.Item;
 import fr.labri.harmony.core.model.Source;
 import fr.labri.harmony.core.model.SourceElement;
 
@@ -17,34 +18,18 @@ public abstract class AbstractDao {
 	
 	public static final String HARMONY_PERSISTENCE_UNIT = "harmony";
 	
-	/**
-	 * We keep references on the EntityManagerFactories instead of the entity managers themselves
-	 */
-	protected Map<String, HarmonyEntityManagerFactory> entityManagerFactories;
+	protected HarmonyEntityManagerFactory harmonyModelEMF;
 	
-	AbstractDao(Map<String, HarmonyEntityManagerFactory> entityManagerFactories) {
-		this.entityManagerFactories = entityManagerFactories;
-	}
-		
-	public Map<String, HarmonyEntityManagerFactory> getEntityManagerFactories() {
-		return entityManagerFactories;
-	}
-	
-	public EntityManager getEntityManager(String a) {
-		HarmonyEntityManagerFactory f = entityManagerFactories.get(a);
-		if (f == null) return null;
-		return f.createEntityManager();
+	public HarmonyEntityManagerFactory getHarmonyModelEMF() {
+		return harmonyModelEMF;
 	}
 
-	public EntityManager getEntityManager() {
-		return getEntityManager(HARMONY_PERSISTENCE_UNIT);
+	AbstractDao(HarmonyEntityManagerFactory harmonyModelEMF) { 
+		this.harmonyModelEMF = harmonyModelEMF;
 	}
-	
-	public synchronized HarmonyEntityManagerFactory getEntityManagerFactory(AbstractHarmonyService harmonyService) {
-		String puName;
-		if (harmonyService == null) puName = HARMONY_PERSISTENCE_UNIT;
-		else puName = harmonyService.getPersitenceUnitName();
-		return entityManagerFactories.get(puName);
+		
+	public EntityManager getEntityManager() {
+		return harmonyModelEMF.createEntityManager();
 	}
 	
 	/*******************
@@ -129,6 +114,42 @@ public abstract class AbstractDao {
 		m.merge(e);
 		m.getTransaction().commit();
 		m.close();
+	}
+	
+	/**
+	 * 
+	 * @param s
+	 * @param nativeId
+	 * @return The event with the given nativeId, in the given Source, or null if there is no such event
+	 */
+	public Event getEvent(Source s, String nativeId) {
+		return get(Event.class, s, nativeId);
+	}
+
+	public Item getItem(Source s, String nativeId) {
+		return get(Item.class, s, nativeId);
+	}
+	
+	public Author getAuthor(Source s, String nativeId) {
+		return get(Author.class, s, nativeId);
+	}
+	
+	/**
+	 * @param source
+	 * @return The events of the source, ordered by their timestamp, from the first to the latest event.
+	 */
+	public List<Event> getEvents(Source source) {
+	
+		String queryString = "SELECT e FROM Event e WHERE e.source = :source ORDER BY e.timestamp ASC";
+	
+		EntityManager em = getEntityManager();
+		em.getTransaction().begin();
+		TypedQuery<Event> query = em.createQuery(queryString, Event.class);
+		query.setParameter("source", source);
+		List<Event> events = query.getResultList();
+		em.getTransaction().commit();
+	
+		return events;
 	}
 
 }

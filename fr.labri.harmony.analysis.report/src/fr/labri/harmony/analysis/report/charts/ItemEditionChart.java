@@ -11,13 +11,13 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import fr.labri.harmony.analysis.report.ChartDrawer;
-import fr.labri.harmony.core.dao.Dao;
+import fr.labri.harmony.core.dao.AbstractDao;
 import fr.labri.harmony.core.model.Item;
 import fr.labri.harmony.core.model.Source;
 
 public class ItemEditionChart extends ChartDrawer {
 
-	public ItemEditionChart(Dao dao) {
+	public ItemEditionChart(AbstractDao dao) {
 		super(dao);
 	}
 

@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Properties;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,7 +13,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import fr.labri.harmony.core.config.model.SourceConfiguration;
-import fr.labri.harmony.core.dao.Dao;
+import fr.labri.harmony.core.dao.ModelPersister;
 import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Action;
 import fr.labri.harmony.core.model.ActionKind;
@@ -30,8 +29,8 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 		super();
 	}
 
-	public GitSourceExtractor(SourceConfiguration config, Dao dao, Properties properties) {
-		super(config, dao, properties);
+	public GitSourceExtractor(SourceConfiguration config, ModelPersister modelPersister) {
+		super(config, modelPersister);
 	}
 
 	private static final String FORMAT = "{^@^hash^@^: ^@^%H^@^, " + "^@^parentHash^@^ :^@^%P^@^, " + "^@^time^@^: ^@^%at^@^, " + "^@^authorName^@^ : ^@^%an^@^, "
@@ -59,12 +58,12 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 	private void extractAction(String line, Event e, Event p) {
 		String[] tokens = line.split("\\s+");
 		if (extractItemWithPath(tokens[1])) {
-			Item i = getItem(tokens[1]);
+			Item i = modelPersister.getItem(source, tokens[1]);
 			if (i == null) {
 				i = new Item();
 				i.setSource(source);
 				i.setNativeId(tokens[1]);
-				saveItem(i);
+				modelPersister.saveItem(i);
 			}
 			ActionKind kind = extractKind(tokens[0]);
 			Action a = new Action();
@@ -73,7 +72,7 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 			a.setParentEvent(p);
 			a.setKind(kind);
 			a.setItem(i);
-			saveAction(a);
+			modelPersister.saveAction(a);
 		}
 	}
 
@@ -109,20 +108,20 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 				Set<Event> parents = new HashSet<>();
 				for (String parentHash : parentHashes) {
 					if (!"".equals(parentHash)) {
-						Event parent = dao.getEvent(source, parentHash);
+						Event parent = modelPersister.getEvent(source, parentHash);
 						if (parent != null) parents.add(parent);
 					}
 				}
 
-				Author a = getAuthor(authorName);
+				Author a = modelPersister.getAuthor(source, authorName);
 				if (a == null) {
 					a = new Author(source, authorName, authorName);
-					saveAuthor(a);
+					modelPersister.saveAuthor(a);
 				}
 
 				Event e = new Event(source, hash, time, parents, Arrays.asList(new Author[] { a }));
 
-				saveEvent(e);
+				modelPersister.saveEvent(e);
 			}
 		} catch (Exception e) {
 			throw new SourceExtractorException(e);

@@ -29,7 +29,7 @@ import fr.labri.harmony.analysis.xtic.aptitude.AptitudeReader;
 import fr.labri.harmony.analysis.xtic.aptitude.AptitudeReaderException;
 import fr.labri.harmony.analysis.xtic.aptitude.Parser;
 import fr.labri.harmony.analysis.xtic.aptitude.PatternAptitude;
-import fr.labri.harmony.core.analysis.AbstractAnalysis;
+import fr.labri.harmony.core.analysis.SingleSourceAnalysis;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 import fr.labri.harmony.core.log.HarmonyLogger;
@@ -39,7 +39,7 @@ import fr.labri.harmony.core.model.Author;
 import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.Source;
 
-public class XticAnalysis extends AbstractAnalysis {
+public class XticAnalysis extends SingleSourceAnalysis {
 
 	private static final boolean DEBUG = Boolean.parseBoolean(System.getProperty("xtic.debug", "false"));
 	private static final boolean TIMER = Boolean.parseBoolean(System.getProperty("xtic.timer", "true"));
@@ -91,7 +91,7 @@ public class XticAnalysis extends AbstractAnalysis {
 		}
 
 		for (Aptitude as : aptitudes) {
-			dao.saveData(this.getPersitenceUnitName(), as, src);
+			dao.saveData(this.getPersistenceUnitName(), as, src);
 		}
 
 		if (BENCHMARK)
@@ -359,7 +359,7 @@ public class XticAnalysis extends AbstractAnalysis {
 				for(PatternAptitude apt : _patterns){
 					dev.addAptitudeScore(apt, apt.scoreFor(dev));
 				}
-				dao.saveData(getPersitenceUnitName(), dev, _src);
+				dao.saveData(getPersistenceUnitName(), dev, _src);
 			}
 		}
 
