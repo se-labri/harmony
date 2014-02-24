@@ -2,7 +2,7 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="false" name="ProjectOwnershipAnalysis">
 <implementation class="fr.labri.harmony.analysis.ownership.ProjectOwnershipAnalysis"/>
    <service>
-      <provide interface="fr.labri.harmony.core.analysis.Analysis"/>
+      <provide interface="fr.labri.harmony.core.analysis.IAnalysis"/>
    </service>
    <property name="persistence-unit" type="String" value="ownership"/>
 </scr:component> 

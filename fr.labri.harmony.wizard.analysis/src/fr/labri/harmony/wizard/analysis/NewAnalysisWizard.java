@@ -292,7 +292,7 @@ public class NewAnalysisWizard extends Wizard implements INewWizard,IExecutableE
 		"	<scr:component xmlns:scr=\"http://www.osgi.org/xmlns/scr/v1.1.0\" immediate=\"false\" name=\""+analysisClassName+"\">"+nl()+
 		"	<implementation class=\""+projectName+"."+analysisClassName+"\"/>"+nl()+
 		   "	<service>"+nl()+
-		   "		<provide interface=\"fr.labri.harmony.core.analysis.Analysis\"/>"+nl()+
+		   "		<provide interface=\"fr.labri.harmony.core.analysis.IAnalysis\"/>"+nl()+
 		  "	</service>"+nl();
 		if(databaseRequired){ analysisFileContent +=  "	<property name=\"persistence-unit\" type=\"String\" value=\""+analysisClassName.toLowerCase()+"\"/>"+nl();}
 		analysisFileContent +="</scr:component> ";
