@@ -17,9 +17,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
-
-import org.h2.constant.SysProperties;
 
 import fr.labri.Counters;
 import fr.labri.Timer;
@@ -50,8 +47,8 @@ public class XticAnalysis extends SingleSourceAnalysis {
 		super();
 	}
 
-	public XticAnalysis(AnalysisConfiguration config, Dao dao, Properties properties) {
-		super(config, dao, properties);
+	public XticAnalysis(AnalysisConfiguration config, Dao dao) {
+		super(config, dao);
 		if(config.getOptions() != null ) {
 			if(config.getOptions().containsKey("MAX_COMMIT_SIZE")) {
 				FilterTooManyChanges.LIMIT_ACTIONS_PER_EVENT = Integer.valueOf(config.getOptions().get("MAX_COMMIT_SIZE").toString());
