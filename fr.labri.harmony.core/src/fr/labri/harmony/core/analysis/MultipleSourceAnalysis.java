@@ -5,6 +5,9 @@ import fr.labri.harmony.core.dao.Dao;
 
 public abstract class MultipleSourceAnalysis extends AbstractAnalysis implements IMultipleSourceAnalysis {
 
+	public MultipleSourceAnalysis() {
+	}
+	
 	public MultipleSourceAnalysis(AnalysisConfiguration config, Dao dao) {
 		// Be careful if you modify the signature of this constructor, it is
 		// called using reflexivity by AnalysisFactory
