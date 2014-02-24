@@ -11,9 +11,6 @@ import fr.labri.harmony.analysis.xtic.aptitude.Aptitude;
 import fr.labri.harmony.analysis.xtic.aptitude.PatternAptitude;
 import fr.labri.harmony.analysis.xtic.report.GenerateReport;
 import fr.labri.harmony.analysis.xtic.report.UtilsDeveloper;
-import fr.labri.harmony.analysis.xtic.report.json.ReportJSON;
-import fr.labri.harmony.analysis.xtic.report.json.ReportJSONStudent;
-import fr.labri.harmony.analysis.xtic.report.json.ReportJSONMongo;
 import fr.labri.harmony.core.analysis.AbstractPostProcessingAnalysis;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
@@ -38,7 +35,6 @@ public  class XticPostAnalysis extends AbstractPostProcessingAnalysis{
 
 	@Override
 	public void runOn(Collection<Source> sources) {
-//		new ReportJSONMongo("report.json").printReport(new ArrayList<>(sources), dao);
 		for(Source src : sources) {
 			List<Developer> devs = dao.getData("xtic", Developer.class, src);
 			List<Aptitude> apts = new ArrayList<Aptitude>();
