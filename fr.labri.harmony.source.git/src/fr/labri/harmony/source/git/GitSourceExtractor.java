@@ -29,7 +29,7 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 	public GitSourceExtractor() {
 		super();
 	}
-	
+
 	public GitSourceExtractor(SourceConfiguration config, Dao dao, Properties properties) {
 		super(config, dao, properties);
 	}
@@ -58,21 +58,23 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 
 	private void extractAction(String line, Event e, Event p) {
 		String[] tokens = line.split("\\s+");
-		Item i = getItem(tokens[1]);
-		if (i == null) {
-			i = new Item();
-			i.setSource(source);
-			i.setNativeId(tokens[1]);
-			saveItem(i);
+		if (extractItemWithPath(tokens[1])) {
+			Item i = getItem(tokens[1]);
+			if (i == null) {
+				i = new Item();
+				i.setSource(source);
+				i.setNativeId(tokens[1]);
+				saveItem(i);
+			}
+			ActionKind kind = extractKind(tokens[0]);
+			Action a = new Action();
+			a.setSource(source);
+			a.setEvent(e);
+			a.setParentEvent(p);
+			a.setKind(kind);
+			a.setItem(i);
+			saveAction(a);
 		}
-		ActionKind kind = extractKind(tokens[0]);
-		Action a = new Action();
-		a.setSource(source);
-		a.setEvent(e);
-		a.setParentEvent(p);
-		a.setKind(kind);
-		a.setItem(i);
-		saveAction(a);
 	}
 
 	private ActionKind extractKind(String s) {
@@ -88,8 +90,6 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 			return null;
 		}
 	}
-
-
 
 	@Override
 	public void extractEvents() {
@@ -121,7 +121,7 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 				}
 
 				Event e = new Event(source, hash, time, parents, Arrays.asList(new Author[] { a }));
-				
+
 				saveEvent(e);
 			}
 		} catch (Exception e) {
@@ -164,7 +164,7 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 	@Override
 	public void initializeWorkspace() {
 		workspace = new GitWorkspace(this);
-		workspace.init();	
+		workspace.init();
 	}
 
 }

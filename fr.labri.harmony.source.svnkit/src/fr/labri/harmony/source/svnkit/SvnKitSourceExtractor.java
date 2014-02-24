@@ -80,7 +80,6 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 
 		onExtractionFinished();
 	}
-	
 
 	@Override
 	protected void saveItemsAndActions() {
@@ -109,7 +108,7 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 		List<Author> authors = new ArrayList<>(Arrays.asList(new Author[] { author }));
 
 		Event e = new Event(source, String.valueOf(logEntry.getRevision()), logEntry.getDate().getTime(), parents, authors);
-	
+
 		// TODO handle more metadata
 		Map<String, String> metadata = new HashMap<String, String>();
 		metadata.put(COMMIT_MESSAGE, logEntry.getMessage());
@@ -122,8 +121,8 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 			 * Needed for the operation below
 			 */
 			String url = this.source.getUrl();
-			if(url.endsWith("/")) url=url.substring(0,url.length()-1);
-			
+			if (url.endsWith("/")) url = url.substring(0, url.length() - 1);
+
 			for (SVNLogEntryPath entry : logEntry.getChangedPaths().values()) {
 				ActionKind kind = null;
 				if (entry.getKind() == SVNNodeKind.FILE) {
@@ -142,40 +141,36 @@ public class SvnKitSourceExtractor extends AbstractSourceExtractor<SvnKitWorkspa
 					}
 					/*
 					 * It is possible to launch Harmony on SVN urls that have the following forms :
-					 * "url/trunk/"
-					 * "url/trunk/src"
-					 * "url/trunk/src/test"
-					 * Problem : SVN will return items with a path which is context-independent, for instance :
-					 * "/trunk/src/test/Test.java" 
-					 * whatever the url you mention.
-					 * The code below will produce items with a context-dependent path. Thus, :
-					 * "url/trunk/" -> "src/test/Test.java"
-					 * "url/trunk/src" -> "test/Test.java"
-					 * "url/trunk/src/test" -> "Test.java"
+					 * "url/trunk/" "url/trunk/src" "url/trunk/src/test" Problem : SVN will return
+					 * items with a path which is context-independent, for instance :
+					 * "/trunk/src/test/Test.java" whatever the url you mention. The code below will
+					 * produce items with a context-dependent path. Thus, : "url/trunk/" ->
+					 * "src/test/Test.java" "url/trunk/src" -> "test/Test.java" "url/trunk/src/test"
+					 * -> "Test.java"
 					 */
 					String path = entry.getPath();
-					if(path.startsWith("/")) path = path.substring(1);
+					if (path.startsWith("/")) path = path.substring(1);
 					String tokens[] = path.split("\\/");
 					String commonPart = "";
-					for(String token : tokens) {
-						commonPart+="/"+token;
-						if(url.endsWith(commonPart) || url.endsWith(commonPart+"/")){
+					for (String token : tokens) {
+						commonPart += "/" + token;
+						if (url.endsWith(commonPart) || url.endsWith(commonPart + "/")) {
 							commonPart = commonPart.substring(1);
-							if(url.equals(commonPart)==false) {
+							if (url.equals(commonPart) == false) {
 								path = path.substring(commonPart.length());
-							}
-							else
-								path = "/";
+							} else path = "/";
 							break;
 						}
 					}
-					Item i = getItem(path);
-					if (i == null) {
-						i = new Item(source, path);
-						saveItem(i);
+					if (extractItemWithPath(path)) {
+						Item i = getItem(path);
+						if (i == null) {
+							i = new Item(source, path);
+							saveItem(i);
+						}
+						Action a = new Action(i, kind, e, parent, source);
+						saveAction(a);
 					}
-					Action a = new Action(i, kind, e, parent, source);
-					saveAction(a);
 				}
 			}
 		}
