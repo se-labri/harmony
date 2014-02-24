@@ -35,13 +35,13 @@ public class AnalysisFactory {
 	} 
 	
 	private <T extends IAnalysis> T createAnalysis(AnalysisConfiguration analysisConfig, Class<T> clazz) {
-		Collection<ServiceReference<T>> serviceReferences;
+		Collection<ServiceReference<IAnalysis>> serviceReferences;
 		try {
 			BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
-			serviceReferences = context.getServiceReferences(clazz, DeclarativeServicesUtils.getFilter(analysisConfig.getAnalysisName()));
+			serviceReferences = context.getServiceReferences(IAnalysis.class, DeclarativeServicesUtils.getFilter(analysisConfig.getAnalysisName()));
 			if (serviceReferences != null && !serviceReferences.isEmpty()) {
 
-				ServiceReference<T> analysisReference = serviceReferences.iterator().next();
+				ServiceReference<IAnalysis> analysisReference = serviceReferences.iterator().next();
 
 				if (serviceReferences.size() > 1) {
 					HarmonyLogger.info("Multiple implementations of the analysis" + analysisConfig.getAnalysisName() + "have been found. The first one has been selected");

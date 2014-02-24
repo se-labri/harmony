@@ -33,7 +33,7 @@ public class SourceExtractorFactory {
 				}
 				
 				SourceExtractor<?> serviceDef = context.getService(ref);
-				SourceExtractor<?> service = serviceDef.getClass().getConstructor(SourceConfiguration.class, ModelPersister.class).newInstance(config, daoFactory.createDao());
+				SourceExtractor<?> service = serviceDef.getClass().getConstructor(SourceConfiguration.class, ModelPersister.class).newInstance(config, daoFactory.createModelPersister());
 
 				return service;
 			}else {
