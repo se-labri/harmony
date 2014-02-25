@@ -3,7 +3,6 @@ package fr.labri.harmony.core.config;
 import static fr.labri.harmony.core.config.ConfigProperties.ANALYSES;
 import static fr.labri.harmony.core.config.ConfigProperties.DATABASE;
 import static fr.labri.harmony.core.config.ConfigProperties.FOLDERS;
-import static fr.labri.harmony.core.config.ConfigProperties.MANAGE_CREATE_SOURCES;
 import static fr.labri.harmony.core.config.ConfigProperties.*;
 
 import java.io.File;
@@ -80,8 +79,7 @@ public class GlobalConfigReader {
 	}
 
 	public SchedulerConfiguration getSchedulerConfiguration() {
-		JsonNode n = globalConfig.get(MANAGE_CREATE_SOURCES);
-		if (n == null) n = globalConfig.get(SCHEDULER);
+		JsonNode n = globalConfig.get(SCHEDULER);
 		try {
 			return mapper.readValue(n.toString(), SchedulerConfiguration.class);
 		} catch (Exception e) {
