@@ -77,6 +77,10 @@ public class SourceConfiguration {
 	public String getItemfilter() {
 		return 	itemFilter;
 	}
+	
+	public void setItemFilter(String itemFilter) {
+		this.itemFilter = itemFilter;
+	}
 
 	public void setSourceExtractorName(String sourceExtractorName) {
 		this.sourceExtractorName = sourceExtractorName;
