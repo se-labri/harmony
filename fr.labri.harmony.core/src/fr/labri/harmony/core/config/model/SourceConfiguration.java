@@ -50,7 +50,7 @@ public class SourceConfiguration {
 		if (username == null) username = defaultConfig.getUsername();
 		if (password == null) password = defaultConfig.getPassword();
 		if (pathOnServer == null) pathOnServer = defaultConfig.getPathOnServer();
-		if (itemFilter == null) itemFilter = defaultConfig.getItemfilter();
+		if (itemFilter == null) itemFilter = defaultConfig.getItemFilter();
 		if (foldersConfiguration == null) foldersConfiguration = defaultConfig.getFoldersConfiguration();
 		if (configurationFileName == null) configurationFileName = defaultConfig.getConfigurationFileName();
 		if (extractAllBranches == null) extractAllBranches = defaultConfig.extractAllBranches();
@@ -74,7 +74,7 @@ public class SourceConfiguration {
 	}
 	
 	@JsonProperty("item-filter")
-	public String getItemfilter() {
+	public String getItemFilter() {
 		return 	itemFilter;
 	}
 	
