@@ -35,7 +35,7 @@ public class OutputUtils {
 
 		String urlFolder = convertToFolderName(src.getUrl() + pathOnServer);
 
-		Path outputPath = Paths.get(baseUrl, urlFolder, analysis.getClass().getName());
+		Path outputPath = Paths.get(baseUrl, urlFolder, analysis.getClass().getSimpleName());
 		File outputFolder = outputPath.toFile();
 		if (!outputFolder.exists()) {
 			outputFolder.mkdirs();
@@ -59,7 +59,7 @@ public class OutputUtils {
 
 		String urlFolder = convertToFolderName(src.getUrl() + pathOnServer);
 
-		Path outputPath = Paths.get(baseUrl, urlFolder, analysis.getClass().getName());
+		Path outputPath = Paths.get(baseUrl, urlFolder, analysis.getClass().getSimpleName());
 		File outputFolder = outputPath.toFile();
 		if (!outputFolder.exists()) {
 			outputFolder.mkdirs();
