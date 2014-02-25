@@ -4,11 +4,6 @@ public class ConfigProperties {
 
 	public static final String DATABASE = "database";
 	
-	/**
-	 * The use of manage-create-sources is deprecated, but kept for compatibility
-	 * Use scheduler instead.
-	 */
-	public static final String MANAGE_CREATE_SOURCES = "manage-create-sources";
 	public static final String SCHEDULER = "scheduler";
 	public static final String NUM_THREADS = "threads";
 	public static final String TIMEOUT = "timeout";
