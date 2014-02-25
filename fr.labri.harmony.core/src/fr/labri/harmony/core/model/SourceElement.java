@@ -19,7 +19,7 @@ import org.eclipse.persistence.annotations.Index;
 
 /**
  * Superclass of the elements contained in a {@link Source}. <br>
- * It mainly provides the common fields of these elements, such as the native id of the element and tne metadata associated to it.
+ * It mainly provides the common fields of these elements, such as the native id of the element and the metadata associated to it.
  *
  */
 @MappedSuperclass
