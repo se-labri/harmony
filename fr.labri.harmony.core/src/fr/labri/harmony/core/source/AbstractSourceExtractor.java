@@ -17,28 +17,17 @@ public abstract class AbstractSourceExtractor<W extends Workspace> implements So
 	public final static String COMMIT_MESSAGE = "commit_message";
 	public final static String COMMITTER = "committer";
 	public final static String BRANCH = "branch";
-	public final static String OPT_ITEM_FILTER = "item-filter";
 
 	protected ModelPersister modelPersister;
-	
-	private String itemFilter;
-
 	protected W workspace;
-
 	protected Source source;
-
 	protected List<ISingleSourceAnalysis> analyses;
-
 	protected SourceConfiguration config;
 
 	public AbstractSourceExtractor(SourceConfiguration config, ModelPersister modelPersister) {
 		this.config = config;
-		analyses = new ArrayList<>();
-		
+		analyses = new ArrayList<>();	
 		this.modelPersister = modelPersister;
-
-		if (config.hasOption(OPT_ITEM_FILTER)) itemFilter = config.getOption(OPT_ITEM_FILTER).toString();
-		else itemFilter = null;
 	}
 
 	public AbstractSourceExtractor() {
@@ -81,11 +70,9 @@ public abstract class AbstractSourceExtractor<W extends Workspace> implements So
 		if (extractHarmonyModel) {
 			HarmonyLogger.info("Extracting Events for source " + getUrl());
 			extractEvents();
-
 			// Save the remaining events
 			modelPersister.flushEvents();
 			
-
 			if (extractActions) {
 				HarmonyLogger.info("Extracting Actions for source " + getUrl());
 
@@ -121,7 +108,6 @@ public abstract class AbstractSourceExtractor<W extends Workspace> implements So
 	}
 
 	protected boolean extractItemWithPath(String path) {
-		return itemFilter == null || path.matches(itemFilter);
+		return config.getItemfilter() == null || path.matches(config.getItemfilter());
 	}
-
 }

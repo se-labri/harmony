@@ -141,7 +141,7 @@ public class SourceConfiguration {
 	}
 
 	public boolean extractAllBranches() {
-		return extractAllBranches;
+		return (extractAllBranches == null) ? false : extractAllBranches;
 	}
 
 	@JsonProperty("extract-all-branches")

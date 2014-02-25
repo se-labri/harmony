@@ -8,11 +8,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class SchedulerConfiguration {
 	private int numberOfThreads = 1;
 
-	// Global timeout in secint
+	// Global timeout in second
 	private int globalTimeOut = 108;
 
 	public SchedulerConfiguration() {
-	};
+	}
 
 	public SchedulerConfiguration(int numberOfThreads, int globalTimeOut) {
 		this(numberOfThreads);
@@ -24,9 +24,6 @@ public class SchedulerConfiguration {
 
 		if (numberOfThreads > 0) {
 			this.numberOfThreads = numberOfThreads;
-		} else {
-			// A negative or null number of threads was requested, the value was
-			// left to default (1 thread)
 		}
 	}
 

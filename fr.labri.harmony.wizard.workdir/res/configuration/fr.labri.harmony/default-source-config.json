@@ -1,6 +1,18 @@
-[
+{
+	"default": {
+		"class":"JGitSourceExtractor",
+		"item-filter":null,
+		"extract-all-branches":false,
+		"options": {
+			"custom-option":"custom-value"
+		},
+		"user":null,
+		"password":null,
+		"path":null
+	},
+	"sources": [
 	{
-		"url":"https://github.com/jrfaller/test-git.git",
-		"class":"JGitSourceExtractor"
+		"url":"https://github.com/jrfaller/test-git.git"
 	}
-]
+	]
+}
