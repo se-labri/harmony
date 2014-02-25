@@ -108,6 +108,6 @@ public abstract class AbstractSourceExtractor<W extends Workspace> implements So
 	}
 
 	protected boolean extractItemWithPath(String path) {
-		return config.getItemfilter() == null || path.matches(config.getItemfilter());
+		return config.getItemFilter() == null || path.matches(config.getItemFilter());
 	}
 }
