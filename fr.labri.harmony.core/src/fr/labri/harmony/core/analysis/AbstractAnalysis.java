@@ -3,7 +3,7 @@ package fr.labri.harmony.core.analysis;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
 
-public abstract class AbstractAnalysis implements IAnalysis {
+abstract class AbstractAnalysis implements IAnalysis {
 
 	protected AnalysisConfiguration config;
 	protected Dao dao;
