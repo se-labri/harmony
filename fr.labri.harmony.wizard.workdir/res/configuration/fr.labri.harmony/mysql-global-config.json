@@ -7,18 +7,21 @@
 		"clean-database":true
 	},
 	"scheduler":{
-		"threads":1,
+		"threads":2,
 		"timeout":100000
+	},
+	"folders":{
+		"tmp":"tmp",
+		"out":"out"
 	},
 	"source-analyses":[
 		{
 			"class":"ReportAnalysis",
 			"require-harmony-model":true,
-			"require-actions":true
-			
+			"require-actions":true,
+			"options":{
+				"custom-option":"custom-value"
+			}
 		}
-	],
-	"folders": {
-		"tmp":"harmonySources"
-	}
+	]
 }
