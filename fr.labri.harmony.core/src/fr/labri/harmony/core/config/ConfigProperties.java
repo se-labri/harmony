@@ -1,6 +1,9 @@
 package fr.labri.harmony.core.config;
 
 public class ConfigProperties {
+	
+	public static final String DEFAULT = "default";
+	public static final String SOURCES = "sources";
 
 	public static final String DATABASE = "database";
 	
@@ -13,6 +16,7 @@ public class ConfigProperties {
 	public static final String FOLDERS = "folders";
 	
 	public static final String URL = "url";
+	public static final String ITEM_FILTER = "item-filter";
 	
 	public static final String CLASS = "class";
 	public static final String OPTIONS = "options";

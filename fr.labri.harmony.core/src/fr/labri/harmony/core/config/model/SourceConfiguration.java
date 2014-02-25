@@ -1,6 +1,7 @@
 package fr.labri.harmony.core.config.model;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -18,20 +19,44 @@ public class SourceConfiguration {
 	private String username;
 	private String password;
 	private String pathOnServer;
+	private String itemFilter;
 	private FoldersConfiguration foldersConfiguration;
 	private String configurationFileName;
-	private boolean extractAllBranches;
+	private Boolean extractAllBranches;
 
 	private HashMap<String, Object> options;
 
 	public SourceConfiguration() {
+		repositoryURL = null;
+		sourceExtractorName = null;
+		username = null;
+		password = null;
+		pathOnServer = null;
+		itemFilter = null;
+		foldersConfiguration = null;
+		configurationFileName = null;
+		extractAllBranches = null;
 		options = new HashMap<>();
-		setExtractAllBranches(false);
 	}
 
 	public SourceConfiguration(String repositoryURL, SourceExtractor<?> srcConnector) {
 		this();
 		this.repositoryURL = repositoryURL;
+	}
+	
+	public void addDefaultValues(SourceConfiguration defaultConfig) {
+		if (repositoryURL == null) repositoryURL = defaultConfig.getRepositoryURL();
+		if (sourceExtractorName == null) sourceExtractorName = defaultConfig.getSourceExtractorName();
+		if (username == null) username = defaultConfig.getUsername();
+		if (password == null) password = defaultConfig.getPassword();
+		if (pathOnServer == null) pathOnServer = defaultConfig.getPathOnServer();
+		if (itemFilter == null) itemFilter = defaultConfig.getItemfilter();
+		if (foldersConfiguration == null) foldersConfiguration = defaultConfig.getFoldersConfiguration();
+		if (configurationFileName == null) configurationFileName = defaultConfig.getConfigurationFileName();
+		if (extractAllBranches == null) extractAllBranches = defaultConfig.extractAllBranches();
+		for (Map.Entry<String, Object> entry : defaultConfig.getOptions().entrySet()) {
+			if (!options.containsKey(entry.getKey())) options.put(entry.getKey(), entry.getValue());
+		}
 	}
 
 	public String getRepositoryURL() {
@@ -47,6 +72,11 @@ public class SourceConfiguration {
 	public String getSourceExtractorName() {
 		return sourceExtractorName;
 	}
+	
+	@JsonProperty("item-filter")
+	public String getItemfilter() {
+		return 	itemFilter;
+	}
 
 	public void setSourceExtractorName(String sourceExtractorName) {
 		this.sourceExtractorName = sourceExtractorName;
@@ -56,7 +86,7 @@ public class SourceConfiguration {
 	public void setFoldersConfiguration(FoldersConfiguration foldersConfiguration) {
 		this.foldersConfiguration = foldersConfiguration;
 	}
-
+	
 	public FoldersConfiguration getFoldersConfiguration() {
 		return foldersConfiguration;
 	}

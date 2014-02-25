@@ -1,5 +1,8 @@
 package fr.labri.harmony.core.config;
 
+import static fr.labri.harmony.core.config.ConfigProperties.DEFAULT;
+import static fr.labri.harmony.core.config.ConfigProperties.SOURCES;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,7 +10,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import fr.labri.harmony.core.config.model.SourceConfiguration;
 
@@ -15,8 +17,8 @@ public class SourceConfigReader {
 
 	private final static String DEFAULT_CONFIG_PATH = "configuration/fr.labri.harmony/default-source-config.json";
 
-	
-	private ArrayNode sourceConfig;
+
+	private JsonNode sourceConfig;
 	private GlobalConfigReader global;
 	private ObjectMapper mapper;
 	private String configurationFileName;
@@ -27,14 +29,16 @@ public class SourceConfigReader {
 		mapper = new ObjectMapper();
 		File configFile = new File(path);
 		configurationFileName = configFile.getName();
-		sourceConfig = (ArrayNode) mapper.readTree(configFile);
+		sourceConfig = mapper.readTree(configFile);
 	}
 
 	public List<SourceConfiguration> getSourcesConfigurations() {
 		ArrayList<SourceConfiguration> configs = new ArrayList<>();
-		for (JsonNode c : sourceConfig) {
+		SourceConfiguration defaultConfig = getDefaultConfiguation();
+		for (JsonNode c : sourceConfig.get(SOURCES)) {
 			try {
 				SourceConfiguration config = mapper.readValue(c.toString(), SourceConfiguration.class);
+				config.addDefaultValues(defaultConfig);
 				config.setFoldersConfiguration(global.getFoldersConfig());
 				config.setConfigurationFileName(configurationFileName);
 				configs.add(config);
@@ -44,5 +48,17 @@ public class SourceConfigReader {
 		}
 		return configs;
 	}
+
+	private SourceConfiguration getDefaultConfiguation() {
+		JsonNode n = sourceConfig.get(DEFAULT);
+		if (n != null) {
+			try {
+				return mapper.readValue(n.toString(), SourceConfiguration.class);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+}
 
 }
