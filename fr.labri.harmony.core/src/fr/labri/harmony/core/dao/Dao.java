@@ -1,6 +1,7 @@
 package fr.labri.harmony.core.dao;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -29,19 +30,18 @@ public class Dao extends AbstractDao {
 	 * We keep references on the EntityManagerFactories instead of the entity managers themselves
 	 */
 	protected Map<String, HarmonyEntityManagerFactory> entityManagerFactories;
-	
+
 	Dao(Map<String, HarmonyEntityManagerFactory> entityManagerFactories) {
 		super(entityManagerFactories.get(HARMONY_PERSISTENCE_UNIT));
 		this.entityManagerFactories = entityManagerFactories;
 	}
-	
-	
+
 	public EntityManager getEntityManager(String a) {
 		HarmonyEntityManagerFactory f = entityManagerFactories.get(a);
 		if (f == null) return null;
 		return f.createEntityManager();
 	}
-	
+
 	public synchronized HarmonyEntityManagerFactory getEntityManagerFactory(IAnalysis harmonyService) {
 		String puName;
 		if (harmonyService == null) puName = HARMONY_PERSISTENCE_UNIT;
@@ -49,11 +49,10 @@ public class Dao extends AbstractDao {
 		return entityManagerFactories.get(puName);
 	}
 
-
 	/****************************
 	 * Events Retrieval Methods *
 	 ****************************/
-	
+
 	/**
 	 * 
 	 * @param item
@@ -72,7 +71,7 @@ public class Dao extends AbstractDao {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param src
@@ -81,16 +80,16 @@ public class Dao extends AbstractDao {
 	 */
 	public Event getEventWithTag(Source src, String tag) {
 		String queryString = "SELECT e FROM Event e WHERE e.source = :source AND :tag MEMBER OF e.tags";
-		
+
 		TypedQuery<Event> query = getEntityManager().createQuery(queryString, Event.class);
 		query.setParameter("source", src).setParameter("tag", tag).setMaxResults(1);
-		
+
 		try {
 			return query.getSingleResult();
 		} catch (NoResultException e) {
 			return null;
 		}
-		
+
 	}
 
 	/**
@@ -149,7 +148,8 @@ public class Dao extends AbstractDao {
 				+ "(SELECT MAX(e.timestamp) FROM Event e, Action a WHERE a.item = i AND a MEMBER OF e.actions AND e.timestamp < :date))";
 
 		TypedQuery<Item> query = em.createQuery(queryString, Item.class);
-		query.setParameter("source", src).setParameter("date", date.getTime()).setParameter("createKind", ActionKind.Create).setParameter("deleteKind", ActionKind.Delete);
+		query.setParameter("source", src).setParameter("date", date.getTime()).setParameter("createKind", ActionKind.Create)
+				.setParameter("deleteKind", ActionKind.Delete);
 
 		try {
 			return query.getResultList();
@@ -195,18 +195,20 @@ public class Dao extends AbstractDao {
 	/**
 	 * 
 	 * @param item
-	 * @param fromDate Can be null
-	 * @param toDate Can be null
+	 * @param fromDate
+	 *            Can be null
+	 * @param toDate
+	 *            Can be null
 	 * @return The list of actions which affected and item between fromDate and toDate, ordered by timestamp
 	 */
 	public List<Action> getActions(Item item, Date fromDate, Date toDate) {
 		EntityManager em = getEntityManager();
 		String stringQuery = "SELECT a FROM Action a JOIN a.item i JOIN a.event e WHERE i = :item ";
-				
+
 		if (fromDate != null) stringQuery += " AND e.timestamp >= :fromDate ";
-		if (toDate != null) stringQuery += " AND e.timestamp <= :toDate "; 
+		if (toDate != null) stringQuery += " AND e.timestamp <= :toDate ";
 		stringQuery += "ORDER BY e.timestamp";
-		
+
 		TypedQuery<Action> query = em.createQuery(stringQuery, Action.class);
 		query.setParameter("item", item);
 
@@ -285,8 +287,8 @@ public class Dao extends AbstractDao {
 	 * @param item
 	 * @param fromDate
 	 * @param toDate
-	 * @return The set of authors which performed an action on this item between fromDate and toDate. The return type is a list but it is guaranteed that is
-	 *         does not contain duplicates
+	 * @return The set of authors which performed an action on this item between fromDate and toDate. The return type is a list but it is guaranteed that is does not contain
+	 *         duplicates
 	 */
 	public List<Author> getAuthors(Item item, Date fromDate, Date toDate) {
 		EntityManager m = getEntityManager();
@@ -374,9 +376,30 @@ public class Dao extends AbstractDao {
 		dataEntityManager.getTransaction().commit();
 
 		int dataId = (int) entityManagerFactories.get(database).getPersistenceUnitUtil().getIdentifier(data);
-		DataMappingObject dmo = new DataMappingObject(database, data.getClass().getSimpleName(), dataId, harmonyModelElement.getId(), harmonyModelElement.getClass()
-				.getSimpleName());
+		DataMappingObject dmo = new DataMappingObject(database, data.getClass().getSimpleName(), dataId, harmonyModelElement.getId(), harmonyModelElement
+				.getClass().getSimpleName());
 		save(dmo);
+	}
+
+	public void saveDataList(String database, Collection<? extends Object> dataCollection, HarmonyModelElement harmonyModelElement) {
+
+		EntityManager dataEntityManager = getEntityManager(database);
+		dataEntityManager.getTransaction().begin();
+		for (Object data : dataCollection) {
+			dataEntityManager.persist(data);
+		}
+		dataEntityManager.getTransaction().commit();
+
+		EntityManager harmonyEM = getEntityManager();
+		harmonyEM.getTransaction().begin();
+		for (Object data : dataCollection) {
+			int dataId = (int) entityManagerFactories.get(database).getPersistenceUnitUtil().getIdentifier(data);
+			DataMappingObject dmo = new DataMappingObject(database, data.getClass().getSimpleName(), dataId, harmonyModelElement.getId(), harmonyModelElement
+					.getClass().getSimpleName());
+			harmonyEM.persist(dmo);
+		}
+		harmonyEM.getTransaction().commit();
+
 	}
 
 	/**
