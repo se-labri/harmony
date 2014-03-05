@@ -1,1 +1,0 @@
-$('.descriptor').tooltip({html: true})

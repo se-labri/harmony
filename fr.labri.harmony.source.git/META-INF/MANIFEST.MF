@@ -12,3 +12,5 @@ Import-Package: com.fasterxml.jackson.databind,
  com.fasterxml.jackson.databind.node,
  javax.persistence;version="2.0.4",
  org.apache.commons.io
+Bundle-ClassPath: .,
+ lib/subgit.jar
