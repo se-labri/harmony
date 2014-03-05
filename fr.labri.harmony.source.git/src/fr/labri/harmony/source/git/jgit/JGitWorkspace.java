@@ -18,7 +18,7 @@ import fr.labri.harmony.core.source.WorkspaceException;
 
 public class JGitWorkspace extends AbstractLocalWorkspace {
 
-	private Git git;
+	protected Git git;
 
 	public JGitWorkspace(SourceExtractor<?> sourceExtractor) {
 		super(sourceExtractor);
@@ -45,15 +45,19 @@ public class JGitWorkspace extends AbstractLocalWorkspace {
 
 	@Override
 	public void initNewWorkspace() {
+		initNewWorkspaceByUrl(getUrl());
+	}
+
+	protected void initNewWorkspaceByUrl(String url) {
 		try {
-			ProcessBuilder b = new ProcessBuilder("git", "clone", getUrl(), getPath());
+			ProcessBuilder b = new ProcessBuilder("git", "clone", url, getPath());
 			Process p = b.start();
 			p.waitFor();
 			git = Git.open(new File(getPath()));
 		} catch (Exception e) {
 			try {
 				HarmonyLogger.info("Native git not found, cloning with JGit");
-				git = Git.cloneRepository().setURI(getUrl()).setDirectory(new File((getPath()))).call();
+				git = Git.cloneRepository().setURI(url).setDirectory(new File((getPath()))).call();
 			} catch (Exception e1) {
 				try {
 					FileUtils.deleteDirectory(new File(getPath()));
@@ -73,6 +77,7 @@ public class JGitWorkspace extends AbstractLocalWorkspace {
 			// check if index.lock is here, and remove it
 			Files.deleteIfExists(Paths.get(getPath(), ".git", "index.lock"));
 			git = Git.open(new File(getPath()));
+			System.out.println("YIOOOOOO");
 			//git.pull().call();
 		} catch (Exception e) {
 			throw new WorkspaceException(e);

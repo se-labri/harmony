@@ -127,7 +127,7 @@ public class JGitSourceExtractor extends AbstractSourceExtractor<JGitWorkspace> 
 		}
 	}
 
-	private void extractAction(DiffEntry d, Event e, Event p) {
+	protected void extractAction(DiffEntry d, Event e, Event p) {
 		String path = d.getNewPath();
 		ActionKind kind = null;
 		switch (d.getChangeType()) {

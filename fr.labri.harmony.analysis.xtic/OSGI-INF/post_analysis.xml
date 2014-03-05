@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-	<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="false" name="XticPostAnalysis">
-	<implementation class="fr.labri.harmony.analysis.xtic.XticPostAnalysis"/>
-	<service>
-		<provide interface="fr.labri.harmony.core.analysis.IAnalysis"/>
-	</service>
- 	<property name="persistence-unit" type="String" value="xtic"/>
-</scr:component> 
