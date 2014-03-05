@@ -1,0 +1,29 @@
+
+
+<aptitude id="maven" desc="sample of aptitudes for maven">
+	
+	<pattern id="pom_touch" desc="touch pom.xml file">
+		<file value="pom\.xml$" />
+	</pattern>
+
+	<pattern id="pom_xsi_location" desc="modify pom.XML header">
+		<file value="pom\.xml$" />
+		<diff parser="XML">
+			<xpath
+				query="//ATTRIBUTE/NAME[@label='xsi:schemaLocation'][../VALUE[@added]]"
+				direction="source" />
+		</diff>
+	</pattern>
+
+
+	<pattern id="pom_update_version" desc="update version of an existing dependency">
+		<file value="pom\.xml$" />
+		<diff parser="XML">
+			<xpath
+				query="//ELEMENT/NAME[@label='dependency'][not(@added)]
+				[../ELEMENT/NAME[@label='version'][../DATA[@added]]]"
+				direction="target" />
+		</diff>
+	</pattern>
+
+</aptitude>
