@@ -77,7 +77,6 @@ public class JGitWorkspace extends AbstractLocalWorkspace {
 			// check if index.lock is here, and remove it
 			Files.deleteIfExists(Paths.get(getPath(), ".git", "index.lock"));
 			git = Git.open(new File(getPath()));
-			System.out.println("YIOOOOOO");
 			//git.pull().call();
 		} catch (Exception e) {
 			throw new WorkspaceException(e);
