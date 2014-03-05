@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<CompilationUnit added="1">
+	<TypeDeclaration added="1">
+		<Modifier label="public" added="1"></Modifier>
+		<SimpleName label="Test" added="1"></SimpleName>
+		<MethodDeclaration added="1">
+			<Modifier label="public" added="1"></Modifier>
+			<PrimitiveType label="boolean" added="1"></PrimitiveType>
+			<SimpleName label="equals" added="1"></SimpleName>
+			<SingleVariableDeclaration added="1">
+				<SimpleType label="Object" added="1">
+					<SimpleName label="Object" added="1"></SimpleName>
+				</SimpleType>
+				<SimpleName label="obj" added="1"></SimpleName>
+			</SingleVariableDeclaration>
+			<Block added="1"></Block>
+		</MethodDeclaration>
+		<MethodDeclaration added="1">
+			<Modifier label="public" added="1"></Modifier>
+			<PrimitiveType label="int" added="1"></PrimitiveType>
+			<SimpleName label="hashCode" added="1"></SimpleName>
+			<Block added="1"></Block>
+		</MethodDeclaration>
+	</TypeDeclaration>
+</CompilationUnit>
