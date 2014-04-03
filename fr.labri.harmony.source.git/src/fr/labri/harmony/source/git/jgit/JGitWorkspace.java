@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
+import org.eclipse.jgit.api.errors.GitAPIException;
 
 import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Event;
@@ -85,11 +86,20 @@ public class JGitWorkspace extends AbstractLocalWorkspace {
 
 	@Override
 	public void update(Event e) throws WorkspaceException {
-		try {
-			git.reset().setMode(ResetType.HARD).setRef(e.getNativeId()).call();
-		} catch (Exception ex) {
-			throw new WorkspaceException(ex);
-		}
+			try {
+				ProcessBuilder b = new ProcessBuilder("git", "reset", "--hard", e.getNativeId());
+				b.directory(new File(getPath()));
+				Process p = b.start();
+				p.waitFor();
+			} catch (Exception ex) {
+				try {
+					git.reset().setMode(ResetType.HARD).setRef(e.getNativeId()).call();
+				} catch (GitAPIException e1) {
+					throw new WorkspaceException(e1);
+				}
+			}
+			
+		
 	}
 	
 	@Override
