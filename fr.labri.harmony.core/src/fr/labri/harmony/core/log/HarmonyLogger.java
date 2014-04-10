@@ -6,15 +6,16 @@ import java.util.Calendar;
 
 public class HarmonyLogger {
 
-	public static void info(String message) {
+	public static void info(String message, Object... params) {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Calendar cal = Calendar.getInstance();
-		System.out.println("[" + dateFormat.format(cal.getTime()) + "] " + message);
+		System.out.printf("[%s] %s\n", dateFormat.format(cal.getTime()), String.format(message, (Object[])params));
 	}
 
-	public static void error(String message) {
+	public static void error(String message, Object... params) {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Calendar cal = Calendar.getInstance();
-		System.err.println("!!![" + dateFormat.format(cal.getTime()) + "] " + message);	}
-		
+	
+		System.err.printf("!!![%s] %s\n", dateFormat.format(cal.getTime()), String.format(message, (Object[])params)); // TODO Factorize code
+	}		
 }
