@@ -8,7 +8,7 @@
             class="fr.labri.harmony.wizard.workdir.WorkingDirectoryWizard"
             icon="icons/logo.png"
             id="fr.labri.harmony.wizard.workdir.WorkingDirectoryWizard"
-            name="WorkingDirectory"
+            name="Harmony WorkingDirectory"
             project="true">
       </wizard>
       <category

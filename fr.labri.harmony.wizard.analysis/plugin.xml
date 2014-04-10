@@ -14,7 +14,7 @@
             finalPerspective="org.eclipse.pde.ui.PDEPerspective"
             icon="icons/logo.png"
             id="fr.labri.harmony.wizard.analysis.NewAnalysisWizard"
-            name="Analysis"
+            name="Harmony Analysis"
             project="true">
       </wizard>
    </extension>
