@@ -1,6 +1,7 @@
 package fr.labri.harmony.analysis.cloc;
 
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
 import fr.labri.harmony.core.analysis.SingleSourceAnalysis;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
+import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.Item;
 import fr.labri.harmony.core.model.Source;
@@ -43,10 +45,14 @@ public class ClocItemAnalysis extends SingleSourceAnalysis {
 		src.getWorkspace().update(selectedEvent);
 
 		for (Item item : src.getItems()) {
-			Path itemPath = Paths.get(src.getWorkspace().getPath(), item.getNativeId());
-			if (Files.exists(itemPath)) {
-				ClocEntries clocEntries = ClocRunner.runCloc(itemPath.toString());
-				dao.saveData(getPersistenceUnitName(), clocEntries, item);
+			try {
+				Path itemPath = Paths.get(src.getWorkspace().getPath(), item.getNativeId());
+				if (Files.exists(itemPath)) {
+					ClocEntries clocEntries = ClocRunner.runCloc(itemPath.toString());
+					dao.saveData(getPersistenceUnitName(), clocEntries, item);
+				}
+			} catch (InvalidPathException e) { // this exception may be fired on Windows if there is an illegal char.
+				HarmonyLogger.error(e.getMessage());
 			}
 		}
 	}
