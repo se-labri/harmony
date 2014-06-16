@@ -36,6 +36,8 @@
 								<artifact><id>net.sf.opencsv:opencsv:2.3</id></artifact>
 								<artifact><id>mysql:mysql-connector-java:5.1.31</id></artifact>
 								<artifact><id>com.fasterxml.jackson.core:jackson-core:2.3.2</id></artifact>
+								<artifact><id>com.fasterxml.jackson.core:jackson-databind:2.3.2</id></artifact>
+								<artifact><id>com.fasterxml.jackson.core:jackson-annotations:2.3.2</id></artifact>
 								<artifact><id>net.sf.saxon:Saxon-HE:9.5.1-5</id></artifact>
 								<artifact><id>nz.ac.waikato.cms.weka:weka-dev:3.7.11</id></artifact>
 								<artifact><id>com.h2database:h2:1.4.178</id></artifact>
@@ -45,6 +47,7 @@
 								<artifact><id>org.tmatesoft.hg4j:hg4j:1.0.0</id></artifact>
 								<artifact><id>org.xerial.snappy:snappy-java:1.1.0.1</id></artifact>
 								<artifact><id>fr.labri.gumtree:client:1.0-SNAPSHOT</id></artifact>
+								<artifact><id>commons-io:commons-io:2.4</id></artifact>
 							</artifacts>
 						</configuration>
 					</execution>
