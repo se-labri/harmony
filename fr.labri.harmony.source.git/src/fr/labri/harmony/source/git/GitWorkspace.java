@@ -1,14 +1,17 @@
 package fr.labri.harmony.source.git;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
+import java.io.IOException;
+import java.util.List;
 
-import fr.labri.harmony.core.model.*;
-import fr.labri.harmony.core.source.*;
+import fr.labri.harmony.core.model.Action;
+import fr.labri.harmony.core.model.Event;
+import fr.labri.harmony.core.source.AbstractLocalWorkspace;
+import fr.labri.harmony.core.source.SourceExtractor;
+import fr.labri.harmony.core.source.WorkspaceException;
+import fr.labri.harmony.core.util.ProcessExecutor;
 
 public class GitWorkspace extends AbstractLocalWorkspace {
-	
+
 	public GitWorkspace(SourceExtractor<?> sourceExtractor) {
 		super(sourceExtractor);
 	}
@@ -17,56 +20,41 @@ public class GitWorkspace extends AbstractLocalWorkspace {
 	public void init() {
 		super.init();
 	}
-	
+
 	@Override
 	public boolean isInitialized() {
 		try {
-			ProcessBuilder b = new ProcessBuilder("git", "rev-parse", "--is-inside-work-tree");
-			b.directory(new File(getPath()));
-			b.redirectErrorStream(true);
-			Process p = b.start();
-			
-			BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			String line = r.readLine();
-			p.waitFor();
-			r.close();
-			return line.equals("true");
-		} catch (Exception e) {
+			List<String> out = new ProcessExecutor("git", "rev-parse", "--is-inside-work-tree").setDirectory(getPath()).run().getOutput();
+			return out.get(0).equals("true");
+		} catch (IOException | InterruptedException e) {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public void initNewWorkspace() {
 		try {
-			ProcessBuilder b = new ProcessBuilder("git", "clone", getUrl(), getPath());
-			Process p = b.start();
-			p.waitFor();
-		} catch (Exception e) {
-			throw new WorkspaceException(e);
-		}
-	}
-	
-	@Override
-	public void initExistingWorkspace() {
-		try {
-			ProcessBuilder b = new ProcessBuilder("git", "pull");
-			Process p = b.start();
-			p.waitFor();
-		} catch (Exception e) {
+			new ProcessExecutor("git", "clone", getUrl(), getPath()).run();
+		} catch (IOException | InterruptedException e) {
 			throw new WorkspaceException(e);
 		}
 	}
 
 	@Override
-	public void update(Event e) throws WorkspaceException {
+	public void initExistingWorkspace() {
 		try {
-			ProcessBuilder b = new ProcessBuilder("git", "reset", "--hard", e.getNativeId());
-			b.directory(new File(getPath()));
-			Process p = b.start();
-			p.waitFor();
-		} catch (Exception ex) {
-			throw new WorkspaceException(ex);
+			new ProcessExecutor("git", "pull").run();
+		} catch (IOException | InterruptedException e) {
+			throw new WorkspaceException(e);
+		}
+	}
+
+	@Override
+	public void update(Event event) throws WorkspaceException {
+		try {
+			new ProcessExecutor("git", "reset", "--hard", event.getNativeId()).setDirectory(getPath()).run();
+		} catch (IOException | InterruptedException e) {
+			throw new WorkspaceException(e);
 		}
 	}
 
