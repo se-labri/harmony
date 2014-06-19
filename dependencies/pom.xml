@@ -11,7 +11,7 @@
 	<repositories>
 		<repository>
 			<id>tmatesoft</id>
-			<url>http://maven.tmatesoft.com/content/repositories/releases/</url>
+			<url>http://maven.tmatesoft.com/content/repositories/snapshots/</url>
 		</repository>
 		<repository>
 			<id>labri</id>
@@ -44,7 +44,9 @@
 								<artifact><id>org.jdom:jdom:2.0.2</id></artifact>
 								<artifact><id>jfree:jfreechart:1.0.13</id></artifact>
 								<artifact><id>com.lowagie:itext:4.2.1</id></artifact>
-								<artifact><id>org.tmatesoft.hg4j:hg4j:1.0.0</id></artifact>
+								<artifact><id>org.tmatesoft.hg4j:hg4j:1.2.0-SNAPSHOT</id></artifact>
+								<artifact><id>org.tmatesoft.svnkit:svnkit:1.8.6-SNAPSHOT</id></artifact>
+								<artifact><id>org.tmatesoft.sqljet:sqljet:1.1.10-SNAPSHOT</id></artifact>
 								<artifact><id>org.xerial.snappy:snappy-java:1.1.0.1</id></artifact>
 								<artifact><id>fr.labri.gumtree:client:1.0-SNAPSHOT</id></artifact>
 								<artifact><id>commons-io:commons-io:2.4</id></artifact>
