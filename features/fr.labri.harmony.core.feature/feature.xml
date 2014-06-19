@@ -81,18 +81,27 @@ If the Library as you received it specifies that a proxy can decide whether futu
       <import plugin="javax.persistence"/>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.eclipse.persistence.core"/>
-      <import feature="org.eclipse.persistence.jpa" version="2.5.0.v20130507-3faac2b"/>
       <import plugin="org.junit"/>
-      <import feature="org.eclipse.gemini.jpa.feature" version="1.2.0.M1"/>
-      <import feature="org.eclipse.persistence.jpa" version="2.5.0.v20130507-3faac2b"/>
-      <import feature="com.fasterxml.jackson" version="2.2.3"/>
-      <import feature="com.mysql.jdbc" version="5.1.26"/>
-      <import feature="org.apache.commons.io" version="2.4"/>
-      <import feature="org.h2" version="1.3.173"/>
-      <import feature="com.microsoft.tfs.client.eclipse.feature" version="11.0.0" match="greaterOrEqual"/>
-      <import feature="org.tmatesoft.hg4j" version="1.2" match="greaterOrEqual"/>
-      <import feature="org.tmatesoft.svnkit" version="1.7.11"  match="greaterOrEqual"/>
       <import feature="org.eclipse.jgit" version="3.0.3" match="greaterOrEqual"/>
+      <import feature="org.eclipse.gemini.jpa.feature" version="1.2.0.M1"/>
+      <import feature="com.microsoft.tfs.client.eclipse.feature" version="11.0.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.jgit" version="3.0.3" match="greaterOrEqual"/>
+      <import plugin="org.h2" version="1.3.173" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.gemini.jpa" version="1.2.0" match="greaterOrEqual"/>
+      <import plugin="com.mysql.jdbc" version="5.1.26" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.debug.core" version="3.8.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.commons.io" version="2.4.0" match="greaterOrEqual"/>
+      <import plugin="com.fasterxml.jackson.core.jackson-annotations"/>
+      <import plugin="com.fasterxml.jackson.core.jackson-core"/>
+      <import plugin="com.fasterxml.jackson.core.jackson-databind"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.persistence.jpa"/>
+      <import plugin="fr.labri.harmony.core" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.tmatesoft.hg4j" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.tmatesoft.svnkit" version="1.7.8" match="greaterOrEqual"/>
+      <import plugin="com.microsoft.tfs.core"/>
+      <import plugin="com.microsoft.tfs.util"/>
+      <import plugin="com.microsoft.tfs.core.httpclient"/>
    </requires>
 
    <plugin
@@ -102,7 +111,7 @@ If the Library as you received it specifies that a proxy can decide whether futu
          version="0.0.0"
          unpack="false"/>
 
- <plugin
+   <plugin
          id="fr.labri.harmony.source.git"
          download-size="0"
          install-size="0"

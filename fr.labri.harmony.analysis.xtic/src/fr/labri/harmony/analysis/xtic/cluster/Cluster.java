@@ -12,6 +12,7 @@ import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.SparseInstance;
 import weka.core.converters.CSVLoader;
 
 import java.io.File;
@@ -68,7 +69,7 @@ public class Cluster {
 				Instances instances = new Instances(attname, attributes, 0);
 				
 				for(double value : values){
-					Instance wekaInstance = new Instance(1);
+					Instance wekaInstance = new SparseInstance(1);
 					wekaInstance.setValue(0, value);
 					instances.add(wekaInstance);
 				}

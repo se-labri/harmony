@@ -67,18 +67,23 @@ If the Library as you received it specifies that a proxy can decide whether futu
    <requires>
       <import plugin="javax.persistence"/>
       <import plugin="org.eclipse.osgi"/>
-      <import feature="au.com.bytecode.opencsv" version="2.3"/>
-      <import feature="org.jfree.chart" version="1.0.15"/>
-      <import feature="com.mysql.jdbc" version="5.1.26"/>
-      <import feature="fr.labri.harmony.core" version="1.0.0.qualifier"/>
-      <import feature="org.h2" version="1.3.173"/>
-      <import feature="nz.ac.waikato.cms.weka" version="1.0.0"/>
-      <import feature="org.xerial.snappy" version="2.0.5"/>
-      <import feature="org.jdom" version="2.0.5"/>
       <import plugin="org.apache.xerces" version="2.9.0" match="greaterOrEqual"/>
-      <import plugin="javax.xml.stream" version="1.0.1" match="greaterOrEqual"/>
       <import plugin="org.apache.xml.serializer" version="2.7.1" match="greaterOrEqual"/>
-      <import feature="fr.labri.gumtree" version="1.0.0"/>
+      <import feature="fr.labri.harmony.core" version="1.0.0.qualifier"/>
+      <import plugin="fr.labri.harmony.core" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.h2" version="1.3.173" match="greaterOrEqual"/>
+      <import plugin="com.mysql.jdbc" version="5.1.26" match="greaterOrEqual"/>
+      <import plugin="fr.labri.harmony.analysis.cloc" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="net.sf.opencsv" version="2.3.0" match="greaterOrEqual"/>
+      <import plugin="com.lowagie.itext"/>
+      <import plugin="jfree.jcommon"/>
+      <import plugin="jfree.chart"/>
+      <import plugin="nz.ac.waikato.cms.weka.dev" version="3.7.11" match="greaterOrEqual"/>
+      <import plugin="com.fasterxml.jackson.core.jackson-core" version="2.3.2" match="greaterOrEqual"/>
+      <import plugin="net.sf.saxon.Saxon-HE" version="9.5.1" match="greaterOrEqual"/>
+      <import plugin="org.xerial.snappy.snappy-java" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.jdom" version="2.0.2" match="greaterOrEqual"/>
+      <import plugin="com.fasterxml.jackson.core.jackson-databind"/>
    </requires>
 
    <plugin
