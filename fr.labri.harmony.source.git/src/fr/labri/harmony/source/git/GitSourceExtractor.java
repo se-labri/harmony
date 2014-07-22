@@ -105,8 +105,8 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 
 	private void gitDiff(Event event, Event parent) {
 		try {
-			ProcessExecutor executor = new ProcessExecutor("git", "diff", "-z", "--name-status", "--no-renames", event.getNativeId(),
-					parent == null ? GIT_EMPTY_TREE : parent.getNativeId());
+			ProcessExecutor executor = new ProcessExecutor("git", "diff", "-z", "--name-status", "--no-renames", parent == null ? GIT_EMPTY_TREE : parent.getNativeId(),
+					event.getNativeId());
 			// Run diff --numstat -M to get the churn and the renames
 			executor.setDirectory(workspace.getPath());
 			executor.run();
@@ -153,8 +153,8 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 
 	private void extractActionsMetadata(Event event, Event parent, ArrayList<Action> actions) {
 		try {
-			ProcessExecutor executor = new ProcessExecutor("git", "diff", "--numstat", "-M", event.getNativeId(), parent == null ? GIT_EMPTY_TREE
-					: parent.getNativeId());
+			ProcessExecutor executor = new ProcessExecutor("git", "diff", "--numstat", "-M", parent == null ? GIT_EMPTY_TREE
+					: parent.getNativeId(), event.getNativeId());
 			// Run diff --numstat -M to get the churn and the renames
 			executor.setDirectory(workspace.getPath());
 			executor.run();
@@ -206,11 +206,11 @@ public class GitSourceExtractor extends AbstractSourceExtractor<GitWorkspace> {
 				}
 				if (oldName != null) { // if there is a rename
 					// HarmonyLogger.info(numStatTokens[2]);
-					action.getMetadata().put("renamed", oldName);
+					action.getMetadata().put(Action.RENAME_KEY, oldName);
 				}
 				if (!numStatTokens[0].contains("-")) {
 					int churn = Integer.parseInt(numStatTokens[0]) + Integer.parseInt(numStatTokens[1]);
-					action.getMetadata().put("churn", Integer.toString(churn));
+					action.getMetadata().put(Action.CHURN_KEY, Integer.toString(churn));
 				}
 			}
 		} catch (IOException | InterruptedException ex) {

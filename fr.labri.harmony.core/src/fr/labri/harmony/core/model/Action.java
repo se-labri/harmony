@@ -15,6 +15,8 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Action extends SourceElement {
 
+	public final static String RENAME_KEY = "renamed";
+	public final static String CHURN_KEY = "churn";
 	
 	@Enumerated
     private ActionKind kind;
