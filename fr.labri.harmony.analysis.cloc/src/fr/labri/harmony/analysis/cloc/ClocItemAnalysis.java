@@ -1,15 +1,17 @@
 package fr.labri.harmony.analysis.cloc;
 
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
 import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 
 import fr.labri.harmony.core.analysis.SingleSourceAnalysis;
 import fr.labri.harmony.core.config.model.AnalysisConfiguration;
 import fr.labri.harmony.core.dao.Dao;
-import fr.labri.harmony.core.log.HarmonyLogger;
 import fr.labri.harmony.core.model.Event;
 import fr.labri.harmony.core.model.Item;
 import fr.labri.harmony.core.model.Source;
@@ -29,7 +31,7 @@ public class ClocItemAnalysis extends SingleSourceAnalysis {
 	}
 
 	@Override
-	public void runOn(Source src) throws Exception {
+	public void runOn(final Source src) throws Exception {
 
 		Event selectedEvent = null;
 
@@ -44,17 +46,35 @@ public class ClocItemAnalysis extends SingleSourceAnalysis {
 
 		src.getWorkspace().update(selectedEvent);
 
-		for (Item item : src.getItems()) {
-			try {
-				Path itemPath = Paths.get(src.getWorkspace().getPath(), item.getNativeId());
-				if (Files.exists(itemPath)) {
-					ClocEntries clocEntries = ClocRunner.runCloc(itemPath.toString());
-					dao.saveData(getPersistenceUnitName(), clocEntries, item);
-				}
-			} catch (InvalidPathException e) { // this exception may be fired on Windows if there is an illegal char.
-				HarmonyLogger.error(e.getMessage());
+		final Path workspacePath = Paths.get(src.getWorkspace().getPath());
+		Files.walkFileTree(workspacePath, new FileVisitor<Path>() {
+
+			@Override
+			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+				return FileVisitResult.CONTINUE;
 			}
-		}
+
+			@Override
+			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+				String nativeId = workspacePath.relativize(file).toString().replace("\\", "/");
+				Item i = dao.getItem(src, nativeId);
+				if (i != null) {
+					ClocEntries clocEntries = ClocRunner.runCloc(file.toAbsolutePath().toString());
+					dao.saveData(getPersistenceUnitName(), clocEntries, i);
+				}
+				return FileVisitResult.CONTINUE;
+			}
+
+			@Override
+			public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+				return FileVisitResult.CONTINUE;
+			}
+
+			@Override
+			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+				return FileVisitResult.CONTINUE;
+			}
+		});
 	}
 
 }
