@@ -25,7 +25,8 @@ public class ClocRunner {
 		ClocEntries entries = new ClocEntries();
 		Process p;
 		try {
-			p = Runtime.getRuntime().exec(new String[] { "cloc", "--xml", "--quiet", "--skip-uniqueness", new File(workspacePath).getAbsolutePath() });
+			//FIXME: should use ProcessExecutor
+			p = Runtime.getRuntime().exec(new String[] { "cloc", "--xml", "--quiet", "--skip-uniqueness", "--script-lang=Python,python", new File(workspacePath).getAbsolutePath() });
 			BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			StringBuffer b = new StringBuffer();
 			String line;
