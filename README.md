@@ -1,4 +1,5 @@
-#The Harmony Project
+# The Harmony Project
+
 Harmony is the next generation tool to reverse-engineer the information contained in the software version control systems. It is an extensible framework allowing you to gather the information you need to perform advanced studies against the history of software projects.
 
 #User Manual
@@ -9,7 +10,7 @@ In addition to the User Manual, several screencasts are available to guide you :
 - Harmony installation: http://www.youtube.com/watch?v=wFGXayQADeA
 - Creation of a simple analysis: http://www.youtube.com/watch?v=iQCeLmu2WDg
 
-#Using Harmony in a research project
+# Using Harmony in a research project
 If you use Harmony within a research project, please cite the following technical report:
 
 >@article{Falleri2013:Harmony,
@@ -27,7 +28,7 @@ If you use Harmony within a research project, please cite the following technica
   bibsource = {DBLP, http://dblp.uni-trier.de}
 }
 
-#Who are we?
+# Who are we?
 The Harmony project is mainly developed by the people of the [Software Engineering research group](http://se.labri.fr/). Here is the list of the persons that have been involved in the Harmony project.
 
 - Jean-Rémy Falleri: lead developer
